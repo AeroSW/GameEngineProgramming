@@ -1,2 +1,12 @@
 
 \.metadata/
+
+GameEngineProgramming/\.settings/
+
+RemoteSystemsTempFiles/\.project
+
+RemoteSystemsTempFiles/
+
+GameEngineProgramming/\.cproject
+
+GameEngineProgramming/\.project
