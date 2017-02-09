@@ -1,0 +1,19 @@
+<Level_1>
+	<name> Level 1 </name>
+	<objects>
+		<mesh> cube </mesh>
+		<mesh> cylinder </mesh>
+	</objects>
+	<transformations>
+		<cube>
+			<translation> ... </translation>
+			<rotation> ... </rotation>
+			<scale> ... </scale>
+		</cube>
+		<cylinder>
+			<rotation> ... </rotation>
+			<translation> ... </translation>
+			<rotation> ... </rotation>
+		</cylinder>
+	</transformations>
+</Level_1>
