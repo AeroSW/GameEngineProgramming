@@ -77,7 +77,19 @@ std::string xml_parser::parse_level_file(std::ifstream &file, const std::string 
 	uint32 search_length = search_tag.size();
 	std::string lvl_file_path;
 	if(tag.size() == search_length){
-
+		std::string str;
+		file >> std::noskipws >> str;
+		str = trim_ws(str);
+		int end_tag_loc = str.find("</Level_Count>");
+		if(end_tag_loc != -1){
+			std::string file_name = str.substr(0, (unsigned) end_tag_loc);
+			file_name = trim_ws(file_name);
+			return file_name;
+		}
+		else{
+			file >> std::noskipws >> str; // Grab the end tag loc
+			return str;
+		}
 	}
 	else{
 
