@@ -78,7 +78,7 @@ class manager{
 			 * 		Returns a boolean value representing success
 			 * 		or not.
 			 */
-			bool add_scene(std::string xml_filename);
+			bool add_scene(const std::string &xml_filename);
 };
 
 #endif /* MANAGER_H_ */

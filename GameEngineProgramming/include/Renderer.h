@@ -18,6 +18,7 @@ class render{
 	private:
 		Ogre::Root * root;
 		Ogre::RenderWindow * window;
+		Ogre::ResourceGroupManager * resource_group;
 		Ogre::SceneManager * scene;
 		Ogre::Camera * cam;
 		Ogre::Viewport * viewport;
@@ -75,7 +76,7 @@ class render{
 		 * 	Returns:	Boolean value representing whether scene was
 		 * 				successfully loaded or not.
 		 */
-		bool add_scene(std::string xml_scene_file);
+		bool add_scene(const std::string &xml_scene_file);
 };
 
 #endif /* RENDERER_H_ */
