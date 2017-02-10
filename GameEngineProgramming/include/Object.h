@@ -22,6 +22,7 @@ struct transform{
 };
 struct object{
 	std::string url;
+	uint32 id;
 	std::vector<transform> transforms;
 };
 
