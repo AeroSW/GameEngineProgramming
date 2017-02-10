@@ -15,12 +15,21 @@ xml_parser::~xml_parser(){}
 std::vector<std::shared_ptr<level> > xml_parser::parse_game(std::string &filepath){
 	uint32 num_levels = 0;
 	std::vector<std::string> *files;
-	std::vector<std::shared_ptr<level> > game_levels;
+	std::vector<std::shared_ptr<level> > * game_levels = new std::vector<std::shared_ptr<level> >();
 
 	std::ifstream in_file(filepath);
 	std::string tag;
 	if(in_file.is_open()){
 		files = retrieve_files(in_file);
+		in_file.close();
+		uint32 num_files = files->size();
+		for(uint32 c = 0; c < num_files; c++){
+			game_levels->push_back(parse_level((*files)[c]));
+		}
+	}
+	else{
+		std::cerr << "Could not open file" << std::endl;
+		std::exit(1);
 	}
 	return game_levels;
 }
@@ -42,11 +51,8 @@ std::vector<std::string> * xml_parser::retrieve_files(std::ifstream &in_file){
 		}
 		std::cout << "FEED_1_" << std::endl;
 		in_file /*>> std::noskipws*/ >> tag;
-		std::cout << "NO TRIM\t" << tag << std::endl;
 		tag = trim_ws(tag);
-		std::cout << "TRIMMED\t" << tag << std::endl;
 		if(count_flag && count <= num_levels){
-			std::cout << "count_flag: " << count_flag << std::endl;
 			search_str = "<Level_" + std::to_string(count) + ">";
 		}
 		else if(count > num_levels){
