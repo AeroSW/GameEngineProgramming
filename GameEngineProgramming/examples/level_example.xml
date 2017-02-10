@@ -1,19 +1,39 @@
-<Level_1>
+<level>
 	<name> Level 1 </name>
+	<cameras>
+		<camera>
+			<id>0001</id>
+			<loc>0.0,0.0,0.0</loc>
+			<target>0.0,0.0,1.0</target>
+			<clip>0.5,100.0</clip>
+		</camera>
+	</cameras>
+	<lights>
+		<light>
+			<loc>0.0,0.0,0.0</loc>
+			<color>0.1,0.2,0.8</color>
+		</light>
+	</lights>
 	<objects>
-		<mesh> cube </mesh>
-		<mesh> cylinder </mesh>
+		<object>
+			<name> cube1 </name>
+			<mesh> ../mesh/cube.mesh </mesh>
+			<mat> ../resrc/cube1.material </mat>
+			<transformations>
+				<trans> 1.0,1.0,1.0 </trans>
+				<rotat> 5.0,5.0,5.0 </rotat>
+				<scale> 5.0,5.0,5.0 </scale>
+			</transformations>
+		</object>
+		<object>
+			<name> cylinder1 </name>
+			<mesh> ../mesh/cylinder.mesh </mesh>
+			<mat> ../resrc/cylinder.material </mat>
+			<transformations>
+				<rotat> 5.0,5.0,5.0 </rotat>
+				<trans> 5.0,5.0,5.0 </trans>
+				<rotat> 5.0,5.0,5.0 </rotat>
+			</transformations>
+		</object>
 	</objects>
-	<transformations>
-		<cube>
-			<translation> 5.0,5.0,5.0 </translation>
-			<rotation> 5.0,5.0,5.0 </rotation>
-			<scale> 5.0,5.0,5.0 </scale>
-		</cube>
-		<cylinder>
-			<rotation> 5.0,5.0,5.0 </rotation>
-			<translation> 5.0,5.0,5.0 </translation>
-			<rotation> 5.0,5.0,5.0 </rotation>
-		</cylinder>
-	</transformations>
-</Level_1>
+</level>
