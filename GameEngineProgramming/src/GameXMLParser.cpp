@@ -7,35 +7,65 @@
 
 #include "GameXMLParser.h"
 #include <fstream>
+#include <iostream>
 
-std::vector<std::shared_ptr<level> > xml_parser::parse_game(std::string filename){
+xml_parser::xml_parser(){}
+xml_parser::~xml_parser(){}
+
+std::vector<std::shared_ptr<level> > xml_parser::parse_game(std::string &filepath){
 	uint32 num_levels = 0;
-	std::vector<std::string> files;
+	std::vector<std::string> *files;
 	std::vector<std::shared_ptr<level> > game_levels;
 
-	std::ifstream in_file(filename);
+	std::ifstream in_file(filepath);
 	std::string tag;
 	if(in_file.is_open()){
-		bool count_flag = false;
-		std::string search_str;
-		uint32 count = 0;
-		while(!in_file.eof() || count <= num_levels){
-			in_file >> std::noskipws >> tag;
-			tag = trim_ws(tag);
-			if(count_flag){
-				search_str = "<Level_" + std::to_string(count) + ">";
-			}
-			if(tag.find("<Level_Count>") == 0 && !count_flag){
-				num_levels = parse_level_count(in_file, tag);
-				count_flag = true;
-				count++;
-			}
-			else if(count_flag && tag.find(search_str) && count <= num_levels){
-				files.push_back(parse_level_file(in_file, tag, search_str));
-				count++;
-			}
+		files = retrieve_files(in_file);
+	}
+	return game_levels;
+}
+
+
+
+std::vector<std::string> * xml_parser::retrieve_files(std::ifstream &in_file){
+	std::vector<std::string> * files = new std::vector<std::string>();
+	bool count_flag = false;
+	std::string tag;
+	std::string search_str = "";
+	uint32 count = 0;
+	uint32 num_levels = 0;
+	std::cout << "Hello Segfault" << std::endl;
+	while(!in_file.eof() || count <= num_levels){
+		if(in_file.eof()){
+			in_file.clear();
+			in_file.seekg(in_file.beg);
+		}
+		std::cout << "FEED_1_" << std::endl;
+		in_file /*>> std::noskipws*/ >> tag;
+		std::cout << "NO TRIM\t" << tag << std::endl;
+		tag = trim_ws(tag);
+		std::cout << "TRIMMED\t" << tag << std::endl;
+		if(count_flag && count <= num_levels){
+			std::cout << "count_flag: " << count_flag << std::endl;
+			search_str = "<Level_" + std::to_string(count) + ">";
+		}
+		else if(count > num_levels){
+			break;
+		}
+		// Time to search for tags.
+		if(tag.find("<Level_Count>") == 0 && !count_flag){
+			num_levels = parse_level_count(in_file, tag);
+			std::cout << "NUMLEVELS\t" << num_levels << std::endl;
+			count_flag = true;
+			count++;
+		}
+		else if(count_flag && tag.find(search_str) == 0 && count <= num_levels){
+			files->push_back(parse_level_file(in_file, tag, search_str));
+			std::cout << "FILE:\t" << (*files)[0] << std::endl;
+			count++;
 		}
 	}
+	return files;
 }
 
 uint64 xml_parser::parse_level_count(std::ifstream &file, const std::string &tag){
@@ -74,25 +104,45 @@ uint64 xml_parser::parse_level_count(std::ifstream &file, const std::string &tag
 }
 
 std::string xml_parser::parse_level_file(std::ifstream &file, const std::string &tag, const std::string &search_tag){
+	std::cout << "Inside before err" << std::endl;
 	uint32 search_length = search_tag.size();
 	std::string lvl_file_path;
+
+	std::cout << "TAG:\t" << tag << std::endl;
+	std::cout << "Search\t" << search_tag << std::endl;
+
+	std::string end_tag = "</" + search_tag.substr(1,search_length);
 	if(tag.size() == search_length){
 		std::string str;
-		file >> std::noskipws >> str;
+		file >> str;
 		str = trim_ws(str);
-		int end_tag_loc = str.find("</Level_Count>");
+		int end_tag_loc = str.find(end_tag);
 		if(end_tag_loc != -1){
 			std::string file_name = str.substr(0, (unsigned) end_tag_loc);
 			file_name = trim_ws(file_name);
 			return file_name;
 		}
 		else{
-			file >> std::noskipws >> str; // Grab the end tag loc
+			std::string tmp;
+			file >> tmp; // Grab the end tag loc
 			return str;
 		}
 	}
 	else{
-
+		uint32 str_size = tag.size();
+		std::string sub_str = tag.substr(search_length, str_size);
+		sub_str = trim_ws(sub_str);
+		int end_tag_loc = sub_str.find(end_tag);
+		if(end_tag_loc != -1){
+			std::string file_name = sub_str.substr(0, (unsigned) end_tag_loc);
+			file_name = trim_ws(file_name);
+			return file_name;
+		}
+		else{
+			std::string tmp;
+			file >> tmp; // Grab the end tag loc
+			return sub_str;
+		}
 	}
 }
 

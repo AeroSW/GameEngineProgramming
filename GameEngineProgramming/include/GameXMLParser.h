@@ -11,6 +11,7 @@
 class Level;
 
 #include "UnsignedTypes.h"
+#include "Level.h"
 #include <memory>
 #include <string>
 #include <vector>
@@ -30,6 +31,7 @@ class xml_parser{
 
 		std::vector<std::string> objects;
 
+		std::vector<std::string> * retrieve_files(std::ifstream &file);
 		uint64 parse_level_count(std::ifstream &file, const std::string &tag);
 		std::string parse_level_file(std::ifstream &file, const std::string &tag, const std::string &search_tag);
 		/**
@@ -62,7 +64,7 @@ class xml_parser{
 		 * 		It then constructs these levels and returns their
 		 * 		references in a vector.
 		 */
-		static std::vector<std::shared_ptr<level> > parse_game(std::string filepath);
+		std::vector<std::shared_ptr<level> > parse_game(std::string &filepath);
 		static bool write_file(std::string filename, std::vector<level*>);
 };
 
