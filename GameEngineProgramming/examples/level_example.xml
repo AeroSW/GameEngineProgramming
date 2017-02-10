@@ -6,14 +6,14 @@
 	</objects>
 	<transformations>
 		<cube>
-			<translation> ... </translation>
-			<rotation> ... </rotation>
-			<scale> ... </scale>
+			<translation> 5.0,5.0,5.0 </translation>
+			<rotation> 5.0,5.0,5.0 </rotation>
+			<scale> 5.0,5.0,5.0 </scale>
 		</cube>
 		<cylinder>
-			<rotation> ... </rotation>
-			<translation> ... </translation>
-			<rotation> ... </rotation>
+			<rotation> 5.0,5.0,5.0 </rotation>
+			<translation> 5.0,5.0,5.0 </translation>
+			<rotation> 5.0,5.0,5.0 </rotation>
 		</cylinder>
 	</transformations>
 </Level_1>

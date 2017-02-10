@@ -44,6 +44,8 @@ class xml_parser{
 		 */
 		std::string trim_ws(const std::string &str);
 		std::shared_ptr<level> parse_level(std::string filepath);
+		level * extract_level(std::ifstream &file);
+		std::string parse_lvl_name(std::ifstream &file, std::string &tag);
 
 	protected:
 

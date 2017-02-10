@@ -152,6 +152,92 @@ std::string xml_parser::parse_level_file(std::ifstream &file, const std::string 
 	}
 }
 
+std::shared_ptr<level> xml_parser::parse_level(std::string filepath){
+	std::ifstream level_file(filepath);
+	if(level_file.is_open()){
+		level * l = extract_level(level_file);
+		std::shared_ptr<level> lvl(l);
+		return lvl;
+	}
+	else{
+		std::cerr << "Could not find file" << std::endl;
+		std::exit(1);
+	}
+	return NULL;
+}
+
+level * xml_parser::extract_level(std::ifstream &file){
+	bool name_found = 0;
+	std::string name;
+	while(!name_found && file.eof()){
+		std::string tag;
+		file >> tag;
+		tag = trim_ws(tag); // Trim whitespace
+		if(tag.find("<name>") != -1){ // Found the tag.
+			name = parse_lvl_name(file, tag);
+			name_found = 1;
+		}
+	}
+	if(file.eof()){
+		std::cerr << "Level Name Could not be Found" << std::endl;
+		std::exit(4);
+	}
+	file.seekg(file.beg);
+	level * l = new level(name);
+
+}
+
+std::string xml_parser::parse_lvl_name(std::ifstream &file, std::string &tag){
+	uint32 tag_length = tag.size();
+	if(tag_length != 6){
+		uint32 split_loc = tag.find("<name>") + 6;
+		std::string sub_str = tag.substr(split_loc, tag_length);
+		sub_str = trim_ws(sub_str);
+		if(sub_str.size() == 0){
+			std::string next_line;
+			file >> next_line;
+			next_line = trim_ws(next_line);
+			if(next_line.find("</name>") != -1){
+				std::string name = next_line.substr(0,next_line.size() - 7);
+				name = trim_ws(name);
+				return name;
+			}
+			else{
+				std::string dummy;
+				file >> dummy;
+				return next_line;
+			}
+		}
+		else{
+			if(sub_str.find("</name>") != -1){
+				std::string name = sub_str.substr(0,sub_str.size() - 7);
+				name = trim_ws(name);
+				return name;
+			}
+			else{
+				std::string dummy;
+				file >> dummy;
+				return sub_str;
+			}
+		}
+	}
+	else{
+		std::string next_line;
+		file >> next_line;
+		next_line = trim_ws(next_line);
+		if(next_line.find("</name>") != -1){
+			std::string name = next_line.substr(0,next_line.size() - 7);
+			name = trim_ws(name);
+			return name;
+		}
+		else{
+			std::string dummy;
+			file >> dummy;
+			return next_line;
+		}
+	}
+}
+
 std::string xml_parser::trim_ws(const std::string &str){
 	std::string sub_str(str);
 		unsigned int str_length = sub_str.size();
