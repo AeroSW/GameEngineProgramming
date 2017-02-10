@@ -46,6 +46,8 @@ class xml_parser{
 		std::shared_ptr<level> parse_level(std::string filepath);
 		level * extract_level(std::ifstream &file);
 		std::string parse_lvl_name(std::ifstream &file, std::string &tag);
+		void extract_meshes(std::ifstream &file, std::string &tag, std::vector<std::shared_ptr<object> > &objs);
+		std::string parse_mesh(std::ifstream &file, std::string &tag);
 
 	protected:
 

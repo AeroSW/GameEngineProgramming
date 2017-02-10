@@ -182,9 +182,20 @@ level * xml_parser::extract_level(std::ifstream &file){
 		std::cerr << "Level Name Could not be Found" << std::endl;
 		std::exit(4);
 	}
+	file.clear();
 	file.seekg(file.beg);
 	level * l = new level(name);
-
+	bool object_flag = 0;
+	std::vector<std::shared_ptr<object> > objects;
+	while(!object_flag && !file.eof()){
+		std::string tag;
+		file >> tag;
+		tag = trim_ws(tag);
+		if(tag.find("<objects>") != -1){
+			extract_meshes(file, tag, objects);
+			object_flag = true;
+		}
+	}
 }
 
 std::string xml_parser::parse_lvl_name(std::ifstream &file, std::string &tag){
@@ -238,16 +249,81 @@ std::string xml_parser::parse_lvl_name(std::ifstream &file, std::string &tag){
 	}
 }
 
+void xml_parser::extract_meshes(std::ifstream &file, std::string &tag, std::vector<std::shared_ptr<object> > &objs){
+	// Assuming \n
+	while(1){
+		if(file.eof()){
+			std::cerr << "Missing </objects> Tag" << std::endl;
+			std::exit(7);
+		}
+		std::string next_tag;
+		file >> next_tag;
+		next_tag = trim_ws(next_tag);
+		if(next_tag.find("</objects>") != -1){
+			break;
+		}
+		if(next_tag.find("<mesh>") != -1){
+			std::shared_ptr<object> obj(new object());
+			obj->url = parse_mesh(file, next_tag);
+			objs.push_back(obj);
+		}
+	}
+}
+
+std::string xml_parser::parse_mesh(std::ifstream &file, std::string &tag){
+	uint32 tag_sze = tag.size();
+	if(tag_sze != 6){
+		std::string sub_string = tag.substr(6, tag_sze);
+		sub_string = trim_ws(sub_string);
+		int end_tag_loc = sub_string.find("</mesh>");
+		uint32 sub_string_sze = sub_string.size();
+		if(end_tag_loc != -1 && sub_string_sze != 7){
+			std::string mesh_file = sub_string.substr(0, sub_string_sze - 7);
+			return mesh_file;
+		}
+		else if(end_tag_loc != -1){
+			std::cerr << "No Mesh File Given" << std::endl;
+			std::exit(6);
+		}
+		else{
+			std::string dummy;
+			file >> dummy; // Skip over </mesh>
+			return sub_string;
+		}
+	}
+	else{
+		std::string next_line;
+		file >> next_line;
+		next_line = trim_ws(next_line);
+		int end_tag_loc = next_line.find("</mesh>");
+		uint32 sub_string_sze = next_line.size();
+		if(end_tag_loc != -1 && sub_string_sze != 7){
+			std::string mesh_file = next_line.substr(0, sub_string_sze - 7);
+			return mesh_file;
+		}
+		else if(end_tag_loc != -1){
+			std::cerr << "No Mesh File Given" << std::endl;
+			std::exit(6);
+		}
+		else{
+			std::string dummy;
+			file >> dummy; // Skip over </mesh>
+			return next_line;
+		}
+	}
+	return NULL;
+}
+
 std::string xml_parser::trim_ws(const std::string &str){
 	std::string sub_str(str);
-		unsigned int str_length = sub_str.size();
-		while(sub_str[0] == '	' || sub_str[0] == ' '){ // Remove front whitespace
-			sub_str = sub_str.substr(1, str_length);
-			str_length = sub_str.size();
-		}
-		while(sub_str[str_length-1] == '	' || sub_str[str_length-1] == ' '){ // Remove end whitespace
-			sub_str = sub_str.substr(0, str_length-1);
-			str_length = sub_str.size();
-		}
-		return sub_str;
+	unsigned int str_length = sub_str.size();
+	while(sub_str[0] == '	' || sub_str[0] == ' '){ // Remove front whitespace
+		sub_str = sub_str.substr(1, str_length);
+		str_length = sub_str.size();
+	}
+	while(sub_str[str_length-1] == '	' || sub_str[str_length-1] == ' '){ // Remove end whitespace
+		sub_str = sub_str.substr(0, str_length-1);
+		str_length = sub_str.size();
+	}
+	return sub_str;
 }
