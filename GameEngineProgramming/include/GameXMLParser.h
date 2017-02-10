@@ -43,7 +43,7 @@ class xml_parser{
 		 * 		and end of the string.
 		 */
 		std::string trim_ws(const std::string &str);
-		static std::shared_ptr<level> parse_level(std::string filename);
+		std::shared_ptr<level> parse_level(std::string filepath);
 
 	protected:
 
