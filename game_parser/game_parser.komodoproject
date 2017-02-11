@@ -2,5 +2,6 @@
 <!-- Komodo Project File - DO NOT EDIT -->
 <project id="c2b9ca8c-1aa6-4219-bf13-2207b61de8fc" kpf_version="5" name="game_parser.komodoproject">
 <preference-set idref="c2b9ca8c-1aa6-4219-bf13-2207b61de8fc" id="project" preftype="project">
+  <long id="prefs_version">1</long>
 </preference-set>
 </project>
