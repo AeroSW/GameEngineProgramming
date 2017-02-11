@@ -28,13 +28,13 @@ struct mesh : public object{
 		std::string get_name();
 		std::string get_matpath();
 		std::string get_meshpath();
-		std::vector<std::shared_ptr<transform> > * get_transforms;
+		std::vector<std::shared_ptr<transform> > * get_transforms();
 		
-		void add_transform(std::vector<double> &transform_vector);
+		void add_transform(TRANSF t, std::vector<double> &transform_vector);
 		void add_transform(transform &transf);
 		void add_transform(transform * transf);
 		void add_transform(std::shared_ptr<transform> &transf);
-		void rmv_transform(uint32 index);
+		void rmv_transform(unsigned int index);
 		void set_name(std::string &n);
 		void set_matpath(std::string &mat);
 		void set_meshpath(std::string &mesh);

@@ -23,7 +23,7 @@ mesh_loc(path),mat_loc(mat){
 	name = std::string(n);
 	transforms = new std::vector<std::shared_ptr<transform> >();
 }
-mesh::mesh(const mesh::mesh &m):
+mesh::mesh(const mesh &m):
 mesh_loc(m.mesh_loc),mat_loc(mat_loc), transforms(m.transforms){
 	name = std::string(m.name);
 	transforms = new std::vector<std::shared_ptr<transform> >();
@@ -38,7 +38,7 @@ std::string mesh::get_matpath(){
 std::string mesh::get_meshpath(){
 	return mesh_loc;
 }
-std::vector<std::shared_ptr<transform> > * mesh::get_transforms{
+std::vector<std::shared_ptr<transform> > * mesh::get_transforms(){
 	return transforms;
 }
 
@@ -62,8 +62,8 @@ void mesh::add_transform(std::shared_ptr<transform> &transf){
 	transforms->push_back(transf);
 }
 
-void mesh::rmv_transform(uint32 index){
-	if(index >= transforms.size()){
+void mesh::rmv_transform(unsigned int index){
+	if(index >= transforms->size()){
 		// raise exception
 	}
 	else{

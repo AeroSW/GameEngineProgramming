@@ -1,4 +1,4 @@
-#include "light.h"
+#include "Light.h"
 
 light::light():
 color(3,1), location(3,0){

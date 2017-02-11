@@ -1,5 +1,5 @@
 #include "Camera.h"
-#include <math>
+#include <cmath>
 
 camera::camera():
 clip(2), loc(3,0), target(3,0){
@@ -37,11 +37,11 @@ std::vector<double> * camera::get_target(){
 }
 
 void camera::set_name(std::string &n){
-	name = string(n);
+	name = std::string(n);
 }
 void camera::set_clip(std::vector<double> &c){
-	unsigned double v1 = std::abs(c[0]);
-	unsigned double v2 = std::abs(c[1]);
+	double v1 = std::abs(c[0]);
+	double v2 = std::abs(c[1]);
 	if(v1 < v2){
 		clip[0] = v1;
 		clip[1] = v2;

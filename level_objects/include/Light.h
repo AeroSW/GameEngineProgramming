@@ -2,6 +2,7 @@
 #define LIGHT_H_
 
 #include "Object.h"
+#include <vector>
 
 struct light : public object{
 	public:
