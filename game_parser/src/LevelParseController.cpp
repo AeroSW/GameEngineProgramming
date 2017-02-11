@@ -360,18 +360,30 @@ void lpcontroller::transf_state(std::shared_ptr<level> &the_level, std::string &
 }
 void lpcontroller::target_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
-		
+		std::vector<double> targ_vector = parse_vector(line);
+		if(the_stack->top() == TAGS::CAM){
+			the_level->point_cam_at(cc, targ_vector);
+		}
 	}
 	else{
-		
+		curr_tag = the_stack->pop();
+		if(curr_tag == TAGS::CAM){
+			curr = cam;
+		}
 	}
 }
 void lpcontroller::clip_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
-		
+		std::vector<double> clip_vector = parse_vector(line);
+		if(the_stack->top() == TAGS::CAM){
+			the_level->cam_clip_at(cc, clip_vector);
+		}
 	}
 	else{
-		
+		curr_tag = the_stack->pop();
+		if(curr_tag == TAGS::CAM){
+			curr = cam;
+		}
 	}
 }
 void lpcontroller::mesh_state(std::shared_ptr<level> &the_level, std::string &line){
