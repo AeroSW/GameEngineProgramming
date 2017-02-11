@@ -1,9 +1,9 @@
-#ifndef NAMEPARSE_H_
-#define NAMEPARSE_H_
+#ifndef LIGHTSPARSE_H_
+#define LIGHTSPARSE_H_
 
 #include "TagParse.h"
 
-struct name_parser: public tag_parser{
+struct lights_parser: public tag_parser{
 	static std::string beg_tag;
 	static std::string end_tag;
 	std::string parse_tag(std::ifstream &file, std::string &line);
