@@ -1,14 +1,12 @@
 #include "LevelParseController.h"
 #include "HelpFuncs.h"
+#include "Mesh.h"
 #include <fstream>
+#include <iostream>
 
 // Private Constructor
 lpcontroller::lpcontroller(){
-	curr = TAG::NONE;
-	prev = TAG::NONE;
-	mc = 0;
-	ml = 0;
-	mo = 0;
+	curr_tag = TAGS::NONE;
 	cc = 0;
 	lc = 0;
 	oc = 0;
@@ -62,10 +60,11 @@ lpcontroller::~lpcontroller(){
 	delete scale;
 }
 
-std::shared_ptr<level> parse_lvl(const std::string &filename){
+std::shared_ptr<level> lpcontroller::parse_lvl(const std::string &filename){
 	std::ifstream file(filename); // Open the file.
-	std::shared_ptr<level> the_level(new level("place holder"));
-	if(!filename.is_open()){
+	std::string __tmp_str = "place_holder";
+	std::shared_ptr<level> the_level(new level(__tmp_str));
+	if(!file.is_open()){
 		std::cerr << "File does not exist." << std::endl;
 		std::exit(1);
 	}
@@ -73,7 +72,7 @@ std::shared_ptr<level> parse_lvl(const std::string &filename){
 	while(1){
 		if(curr_tag != TAGS::NONE){
 			line = curr->parse_tag(file, line);
-			if(curr_tag == TAGS::LVL) lvl_state(line);
+			if(curr_tag == TAGS::LVL) lvl_state(the_level, line);
 			else if(curr_tag == TAGS::CAM) cam_state(the_level, line);
 			else if(curr_tag == TAGS::CAMS) cams_state(the_level, line);
 			else if(curr_tag == TAGS::COLOR) color_state(the_level, line);
@@ -89,14 +88,14 @@ std::shared_ptr<level> parse_lvl(const std::string &filename){
 			else if(curr_tag == TAGS::CLIP) clip_state(the_level, line);
 			else if(curr_tag == TAGS::MESH) mesh_state(the_level, line);
 			else if(curr_tag == TAGS::MAT) mat_state(the_level, line);
-			else if(curr_tag == TAGS::TRANSL) transl_state(the_level, line);
-			else if(curr_tag == TAGS::ROTAT) rotat_state(the_level, line);
-			else if(curr_tag == TAGS::SCALE) scale_state(the_level, line);
+			else if(curr_tag == TAGS::TRA) transl_state(the_level, line);
+			else if(curr_tag == TAGS::ROT) rotat_state(the_level, line);
+			else if(curr_tag == TAGS::SCA) scale_state(the_level, line);
 		}
 		else{
 			file >> line;
-			line = skip_ws(line);
-			none_state(line);
+			line = trim_ws(line);
+			none_state(the_level, line);
 		}
 	}
 }
@@ -114,7 +113,7 @@ void lpcontroller::none_state(std::shared_ptr<level> &the_level, std::string &li
 void lpcontroller::lvl_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
 		the_stack->push(curr_tag);
-		if(line.find(name_parser::name_tag) != -1){
+		if(line.find(name_parser::beg_tag) != -1){
 			curr_tag = TAGS::NAME;
 			curr = name;
 		}
@@ -132,13 +131,14 @@ void lpcontroller::lvl_state(std::shared_ptr<level> &the_level, std::string &lin
 		}
 	}
 	else{
-		curr_tag = the_stack->pop();
+		curr_tag = the_stack->top();
+		the_stack->pop();
 		curr = 0;
 	}
 }
 void lpcontroller::cam_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
-		the_stack.push(curr_tag);
+		the_stack->push(curr_tag);
 		if(line.find(name_parser::beg_tag) != -1){
 			curr_tag = TAGS::NAME;
 			curr = name;
@@ -157,7 +157,8 @@ void lpcontroller::cam_state(std::shared_ptr<level> &the_level, std::string &lin
 		}
 	}
 	else{
-		curr_tag = the_stack->pop();
+		curr_tag = the_stack->top();
+		the_stack->pop();
 		curr = cams;
 		cc++;
 	}
@@ -175,7 +176,8 @@ void lpcontroller::cams_state(std::shared_ptr<level> &the_level, std::string &li
 		}
 	}
 	else{
-		curr_tag = the_stack->pop();
+		curr_tag = the_stack->top();
+		the_stack->pop();
 		curr = lvl;
 	}
 }
@@ -186,11 +188,10 @@ void lpcontroller::color_state(std::shared_ptr<level> &the_level, std::string &l
 			the_level->set_light_color(lc,color_vector);
 		}
 	}
-	else{
-		curr_tag = the_stack.pop();
-		if(curr_tag == TAGS::LIGHT){
-			curr = light;
-		}
+	curr_tag = the_stack->top();
+		the_stack->pop();
+	if(curr_tag == TAGS::LIGHT){
+		curr = light;
 	}
 }
 void lpcontroller::light_state(std::shared_ptr<level> &the_level, std::string &line){
@@ -210,14 +211,15 @@ void lpcontroller::light_state(std::shared_ptr<level> &the_level, std::string &l
 		}
 	}
 	else{
-		curr_tag = the_stack.pop();
+		curr_tag = the_stack->top();
+		the_stack->pop();
 		curr = lights;
 		lc++; // Finished adding a light.
 	}
 }
 void lpcontroller::lights_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
-		the_stack.push(curr_tag);
+		the_stack->push(curr_tag);
 		if(line.find(num_parser::beg_tag) != -1){
 			curr_tag = TAGS::NUM;
 			curr = num;
@@ -228,71 +230,77 @@ void lpcontroller::lights_state(std::shared_ptr<level> &the_level, std::string &
 		}
 	}
 	else{
-		curr_tag = the_stack.pop();
+		curr_tag = the_stack->top();
+		the_stack->pop();
 		curr = lvl;
 	}
 }
 void lpcontroller::loc_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
 		std::vector<double> loc_vector = parse_vector(line);
-		if(the_stack.top() == TAGS::CAM){
+		if(the_stack->top() == TAGS::CAM){
 			the_level->set_cam_loc(cc, loc_vector);
 		}
-		else if(the_stack.top() == TAGS::LIGHT){
+		else if(the_stack->top() == TAGS::LIGHT){
 			the_level->set_light_loc(lc, loc_vector);
 		}
 	}
-	else{
-		curr_tag = the_stack->pop();
-		if(curr_tag == TAGS::CAM){
-			curr = cam;
-		}
-		else if(curr_tag == TAGS::LIGHT){
-			curr = light;
-		}
+	curr_tag = the_stack->top();
+	if(curr_tag == TAGS::CAM){
+		curr = cam;
+	}
+	else if(curr_tag == TAGS::LIGHT){
+		curr = light;
 	}
 }
 void lpcontroller::name_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
-		if(the_stack.top() == TAGS::LVL){
+		if(the_stack->top() == TAGS::LVL){
 			the_level->set_name(line);
 		}
-		else if(the_stack.top() == TAGS::CAM){
+		else if(the_stack->top() == TAGS::CAM){
 			the_level->set_cam_name(cc, line);
 		}
-		else if(the_stack.top() == TAGS::LIGHT){
+		else if(the_stack->top() == TAGS::LIGHT){
 			the_level->set_light_name(lc, line);
 		}
-		else if(the_stack.top() == TAGS::OBJ){
+		else if(the_stack->top() == TAGS::OBJ){
 			the_level->set_mesh_name(lc, line);
 		}
 	}
-	else{
-		curr_tag = the_stack->pop();
-		if(curr_tag == TAGS::LVL) curr = lvl;
-		else if(curr_tag == TAGS::CAM) curr = cam;
-		else if(curr_tag == TAGS::LIGHT) curr = light;
-		else if(curr_tag == TAGS::OBJ) curr = object;
-	}
+	curr_tag = the_stack->top();
+		the_stack->pop();
+	if(curr_tag == TAGS::LVL) curr = lvl;
+	else if(curr_tag == TAGS::CAM) curr = cam;
+	else if(curr_tag == TAGS::LIGHT) curr = light;
+	else if(curr_tag == TAGS::OBJ) curr = object;
 }
 void lpcontroller::num_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
-		if(the_stack.top() == TAGS::CAMS){
-			mc += std::stoul(line);
+		if(the_stack->top() == TAGS::CAMS){
+			uint32 num_cams = std::stoul(line);
+			for(uint32 c = 0; c < num_cams; c++){
+				the_level->add_cam();
+			}
 		}
-		else if(the_stack.top() == TAGS::LIGHTS){
-			ml += std::stoul(line);
+		else if(the_stack->top() == TAGS::LIGHTS){
+			uint32 num_lights = std::stoul(line);
+			for(uint32 c = 0; c < num_lights; c++){
+				the_level->add_light();
+			}
 		}
-		else if(the_stack.top() == TAGS::OBJS){
-			mo += std::stoul(line);
+		else if(the_stack->top() == TAGS::OBJS){
+			uint32 num_objects = std::stoul(line);
+			for(uint32 c = 0; c < num_objects; c++){
+				the_level->add_mesh();
+			}
 		}
 	}
-	else{
-		curr_tag = the_stack->pop();
-		if(curr_tag == TAGS::CAMS) curr = cams;
-		else if(curr_tag == TAGS::LIGHTS) curr = lights;
-		else if(curr_tag == TAGS::OBJS) curr = objects;
-	}
+	curr_tag = the_stack->top();
+		the_stack->pop();
+	if(curr_tag == TAGS::CAMS) curr = cams;
+	else if(curr_tag == TAGS::LIGHTS) curr = lights;
+	else if(curr_tag == TAGS::OBJS) curr = objects;
 }
 void lpcontroller::obj_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
@@ -309,13 +317,14 @@ void lpcontroller::obj_state(std::shared_ptr<level> &the_level, std::string &lin
 			curr_tag = TAGS::MAT;
 			curr = mat;
 		}
-		else if(line.find(transform_parser::beg_tag) == -1){
+		else if(line.find(transforms_parser::beg_tag) == -1){
 			curr_tag = TAGS::TRANSF;
-			curr = transform;
+			curr = transforms;
 		}
 	}
 	else{
-		curr_tag = the_stack->pop();
+		curr_tag = the_stack->top();
+		the_stack->pop();
 		curr = objects;
 		oc++;
 	}
@@ -333,7 +342,8 @@ void lpcontroller::objs_state(std::shared_ptr<level> &the_level, std::string &li
 		}
 	}
 	else{
-		curr_tag = the_stack->pop();
+		curr_tag = the_stack->top();
+		the_stack->pop();
 		curr = lvl;
 	}
 }
@@ -341,20 +351,21 @@ void lpcontroller::transf_state(std::shared_ptr<level> &the_level, std::string &
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
 		the_stack->push(curr_tag);
 		if(line.find(trans_parser::beg_tag) != -1){
-			curr_tag = TAGS::TRANSL;
+			curr_tag = TAGS::TRA;
 			curr = trans;
 		}
 		else if(line.find(rotat_parser::beg_tag) != -1){
-			curr_tag = TAGS::ROTAT;
+			curr_tag = TAGS::ROT;
 			curr = rotat;
 		}
 		else if(line.find(scale_parser::beg_tag) != -1){
-			curr_tag = TAGS::SCALE;
+			curr_tag = TAGS::SCA;
 			curr = scale;
 		}
 	}
 	else{
-		curr_tag = the_stack->pop();
+		curr_tag = the_stack->top();
+		the_stack->pop();
 		curr = object;
 	}
 }
@@ -362,67 +373,88 @@ void lpcontroller::target_state(std::shared_ptr<level> &the_level, std::string &
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
 		std::vector<double> targ_vector = parse_vector(line);
 		if(the_stack->top() == TAGS::CAM){
-			the_level->point_cam_at(cc, targ_vector);
+			the_level->set_cam_target(cc, targ_vector);
 		}
 	}
-	else{
-		curr_tag = the_stack->pop();
-		if(curr_tag == TAGS::CAM){
-			curr = cam;
-		}
+	curr_tag = the_stack->top();
+		the_stack->pop();
+	if(curr_tag == TAGS::CAM){
+		curr = cam;
 	}
 }
 void lpcontroller::clip_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
 		std::vector<double> clip_vector = parse_vector(line);
 		if(the_stack->top() == TAGS::CAM){
-			the_level->cam_clip_at(cc, clip_vector);
+			the_level->set_cam_clip(cc, clip_vector);
 		}
 	}
-	else{
-		curr_tag = the_stack->pop();
-		if(curr_tag == TAGS::CAM){
-			curr = cam;
-		}
+	curr_tag = the_stack->top();
+		the_stack->pop();
+	if(curr_tag == TAGS::CAM){
+		curr = cam;
 	}
 }
 void lpcontroller::mesh_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
-		
+		if(the_stack->top() == TAGS::OBJ){
+			the_level->set_mesh_path(oc, line);
+		}
 	}
-	else{
-		
+	curr_tag = the_stack->top();
+		the_stack->pop();
+	if(curr_tag == TAGS::OBJ){
+		curr = object;
 	}
 }
 void lpcontroller::mat_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
-		
+		if(the_stack->top() == TAGS::OBJ){
+			the_level->set_mesh_matpath(oc, line);
+		}
 	}
-	else{
-		
+	curr_tag = the_stack->top();
+		the_stack->pop();
+	if(curr_tag == TAGS::OBJ){
+		curr = object;
 	}
 }
 void lpcontroller::transl_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
-		
+		std::vector<double> trans_vector = parse_vector(line);
+		if(the_stack->top() == TAGS::TRANSF){
+			the_level->add_mesh_transform(oc, TRANSF::TRANS, trans_vector);
+		}
 	}
-	else{
-		
+	curr_tag = the_stack->top();
+		the_stack->pop();
+	if(curr_tag == TAGS::TRANSF){
+		curr = transforms;
 	}
 }
 void lpcontroller::rotat_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
-		
+		std::vector<double> trans_vector = parse_vector(line);
+		if(the_stack->top() == TAGS::TRANSF){
+			the_level->add_mesh_transform(oc, TRANSF::ROTAT, trans_vector);
+		}
 	}
-	else{
-		
+	curr_tag = the_stack->top();
+		the_stack->pop();
+	if(curr_tag == TAGS::TRANSF){
+		curr = transforms;
 	}
 }
 void lpcontroller::scale_state(std::shared_ptr<level> &the_level, std::string &line){
 	if((line.find(curr->end_tag) != -1 && line.size() != lvl_parser::end_tag.size()) || (line.find(curr->end_tag) == -1)){
-		
+		std::vector<double> trans_vector = parse_vector(line);
+		if(the_stack->top() == TAGS::TRANSF){
+			the_level->add_mesh_transform(oc, TRANSF::SCALE, trans_vector);
+		}
 	}
-	else{
-		
+	curr_tag = the_stack->top();
+		the_stack->pop();
+	if(curr_tag == TAGS::TRANSF){
+		curr = transforms;
 	}
 }

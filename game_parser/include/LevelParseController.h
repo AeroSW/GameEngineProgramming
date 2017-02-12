@@ -27,16 +27,15 @@ enum TAGS{
 	CLIP,
 	MESH, //	object's sub-tags
 	MAT,
-	TRANSL, //	transforms' sub-tags
-	ROTAT,
-	SCALE
+	TRA, //	transforms' sub-tags
+	ROT,
+	SCA
 };
 
 class lpcontroller{
 	private:
 		std::stack<TAGS> * the_stack;
-		TAG curr_tag; // current state
-		TAG prev_tag; // previous state
+		TAGS curr_tag; // current state
 		// camera objects
 		cam_parser * cam;
 		target_parser * target;
@@ -64,16 +63,12 @@ class lpcontroller{
 		// objects objects
 		objects_parser * objects;
 		// transforms objects
-		transforms_parser * tranforms;
+		transforms_parser * transforms;
 		trans_parser * trans;
 		rotat_parser * rotat;
 		scale_parser * scale;
 		
 		tag_parser * curr;
-		
-		uint32 mc; // Max Cameras
-		uint32 ml; // Max Lights
-		uint32 mo; // Max Objects
 		uint32 cc; // Camera Counter
 		uint32 lc; // Light Counter
 		uint32 oc; // Object Counter
@@ -106,6 +101,6 @@ class lpcontroller{
 		~lpcontroller();
 		
 		std::shared_ptr<level> parse_lvl(const std::string &file);
-}
+};
 
 #endif

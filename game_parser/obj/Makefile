@@ -1,6 +1,6 @@
 CC	= g++
 
-INCLUDES= -I../include
+INCLUDES= -I../include -I../../level_objects/include -I../../game_engine/include -I../../game_engine/include/level
 SOURCES	= ../src
 
 CFLAGS	= -c -std=c++11 $(INCLUDES)

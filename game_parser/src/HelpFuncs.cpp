@@ -1,4 +1,5 @@
 #include "HelpFuncs.h"
+#include <sstream>
 
 std::string trim_ws(const std::string &str){
 	std::string sub_str(str);
@@ -49,4 +50,15 @@ std::string parse_by_tags(std::ifstream &file, std::string &line, std::string &b
 		return sub_line; // Return the contents of this line.
 	}
 	return line;
+}
+
+std::vector<double> parse_vector(const std::string &vect_str){
+	static char delim = ',';
+	std::stringstream ss;
+	ss.str(vect_str);
+	std::string buffer;
+	std::vector<double> value;
+	while (std::getline(ss, buffer, delim)) {
+        value.push_back(std::stod(buffer));
+    }
 }
