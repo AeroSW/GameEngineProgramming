@@ -7,48 +7,170 @@
 
 #include "Level.h"
 
-level::level(std::string &n){
-	name = n;
-}
+level::level(std::string &n):
+name(n){}
+
 level::level(const level &l):
-		name(l.name), cam_coords(l.cam_coords),
-		cam_dir(l.cam_dir), objects(l.objects){
-}
+name(l.name),cameras(l.cameras),lights(l.lights),meshes(l.meshes){}
+
 level::~level(){}
 
-void level::add_obj(std::shared_ptr<object> &obj){
-	objects.push_back(obj);
+void level::add_cam(){
+	std::shared_ptr<camera> cam(new camera());
+	cameras.push_back(cam);
 }
-void level::add_obj(std::string &url, std::vector<transform> &transforms){
-	std::shared_ptr<object> obj(new object);
-	obj->transforms = transforms;
-	obj->url = url;
-	objects.push_back(obj);
+void level::add_cam(std::string &name){
+	std::shared_ptr<camera> cam(new camera(name));
+	cameras.push_back(cam);
 }
-void level::add_objs(std::vector<std::shared_ptr<object> > objs){
-	objects.insert(objects.end(), objs.begin(), objs.end());
-}
-
-void level::clean(){
-	objects.clear();
+void level::add_cam(const camera &cam){
+	std::shared_ptr<camera> c(new camera(cam));
+	cameras.push_back(c);
 }
 
-void level::get_name(std::string &dest){
-	dest = name;
+void level::add_light(){
+	std::shared_ptr<light> l(new light());
+	lights.push_back(l);
 }
-void level::get_object(uint32 index, object &dest){
-	&dest = objects[index];
+void level::add_light(std::string &name){
+	std::shared_ptr<light> l(new light(name));
+	lights.push_back(l);
 }
-void level::get_cam_coords(std::vector<double> &dest){
-	dest = cam_coords;
-}
-void level::get_cam_direction(std::vector<double> &dest){
-	dest = cam_dir;
+void level::add_light(std::string &name, std::vector<double> &loc){
+	std::shared_ptr<light> l(new light(name, loc));
+	lights.push_back(l);
 }
 
-void  level::rmv_obj(uint32 index){
-	objects.erase(objects.begin() + index);
+void level::add_mesh(){
+	std::shared_ptr<mesh> m(new mesh());
+	meshes.push_back(m);
 }
-void level::set_name(std::string &new_name){
-	name = new_name;
+void level::add_mesh(std::string &name){
+	std::shared_ptr<mesh> m(new mesh(name));
+	meshes.push_back(m);
+}
+void level::add_mesh(std::string &name, std::string &mesh_path){
+	std::shared_ptr<mesh> m(new mesh(name, mesh_path));
+	meshes.push_back(m);
+}
+void level::add_mesh(std::string &name, std::string &mesh_path, std::string &mat_path){
+	std::shared_ptr<mesh> m(new mesh(name, mesh_path, mat_path));
+	meshes.push_back(m);
+}
+void level::add_mesh(const mesh &m__){
+	std::shared_ptr<mesh> m(new mesh(m__));
+	meshes.push_back(m);
+}
+
+void level::set_name(std::string &n){
+	name = n;
+}
+void level::set_cam_name(uint32 index, std::string &n){
+	if(index < cameras.size()){
+		cameras[index]->set_name(n);
+	}
+	else{
+		// Raise exception
+	}
+}
+void level::set_light_name(uint32 index, std::string &n){
+	if(index < lights.size()){
+		lights[index]->set_name(n);
+	}
+	else{
+		// Raise exception
+	}
+}
+void level::set_mesh_name(uint32 index, std::string &n){
+	if(index < meshes.size()){
+		meshes[index]->set_name(n);
+	}
+	else{
+		// Raise exception
+	}
+}
+
+std::vector<std::shared_ptr<camera> > * level::get_cams(){
+	return &cameras;
+}
+std::vector<std::shared_ptr<light> > * level::get_lights(){
+	return &lights;
+}
+std::vector<std::shared_ptr<mesh> > * level::get_meshes(){
+	return &meshes;
+}
+
+void level::set_cam_clip(uint32 index, std::vector<double> &clip){
+	if(index < cameras.size()){
+		cameras[index]->set_clip(clip);
+	}
+	else{
+		// Raise Exception.
+	}
+}
+void level::set_cam_loc(uint32 index, std::vector<double> &location){
+		if(index < cameras.size()){
+		cameras[index]->set_loc(location);
+	}
+	else{
+		// Raise Exception.
+	}
+}
+void level::set_cam_target(uint32 index, std::vector<double> &target){
+	if(index < cameras.size()){
+		cameras[index]->set_target(target);
+	}
+	else{
+		// Raise Exception.
+	}
+}
+
+void level::set_light_color(uint32 index, std::vector<double> &color){
+	if(index < lights.size()){
+		lights[index]->set_color(color);
+	}
+	else{
+		// Raise Exception.
+	}
+}
+void level::set_light_loc(uint32 index, std::vector<double> &location){
+	if(index < lights.size()){
+		lights[index]->set_loc(location);
+	}
+	else{
+		// Raise Exception.
+	}
+}
+
+void level::add_mesh_transform(uint32 index, TRANSF t, std::vector<double> &transform_vector){
+	if(index < meshes.size()){
+		meshes[index]->add_transform(t, transform_vector);
+	}
+	else{
+		// Raise Exception.
+	}
+}
+void level::rmv_mesh_transform(uint32 index, uint32 transform_index){
+	if(index < meshes.size()){
+		meshes[index]->rmv_transform(transform_index);
+	}
+	else{
+		// Raise Exception.
+	}
+}
+void level::set_mesh_matpath(uint32 index, std::string &path){
+	if(index < meshes.size()){
+		meshes[index]->set_matpath(path);
+	}
+	else{
+		// Raise Exception.
+	}
+}
+void level::set_mesh_path(uint32 index, std::string &path){
+	if(index < meshes.size()){
+		meshes[index]->set_meshpath(path);
+	}
+	else{
+		// Raise Exception.
+	}
 }

@@ -1,10 +1,9 @@
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
-#include "Object.h"
 #include <vector>
 
-struct camera : public object{
+struct camera{
 	public:
 		camera();
 		camera(std::string &name);
@@ -21,6 +20,7 @@ struct camera : public object{
 		void set_target(std::vector<double> &ntarg);
 		
 	private:
+		std::string name;
 		std::vector<double> clip;
 		std::vector<double> loc;
 		std::vector<double> target;

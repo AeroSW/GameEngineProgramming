@@ -28,7 +28,7 @@ class level{
 		
 		// ADD OBJECTS
 		void add_cam(); // Camera Constructors
-		void add_cam(std::string name);
+		void add_cam(std::string &name);
 		void add_cam(const camera &cam);
 		
 		void add_light(); // Light Constructors
@@ -39,7 +39,7 @@ class level{
 		void add_mesh(std::string &name);
 		void add_mesh(std::string &name, std::string &mesh_path);
 		void add_mesh(std::string &name, std::string &mesh_path, std::string &mat_path);
-		void add_mesh(const mesh &mesh);
+		void add_mesh(const mesh &m__);
 		
 		void set_name(std::string &n);
 		void set_cam_name(uint32 index, std::string &n);

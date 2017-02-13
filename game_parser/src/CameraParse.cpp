@@ -16,3 +16,21 @@ std::string target_parser::parse_tag(std::ifstream &file, std::string &line){
 std::string clip_parser::parse_tag(std::ifstream &file, std::string &line){
 	return parse_by_tags(file, line, beg_tag, end_tag);
 }
+std::string cam_parser::get_beg_tag(){
+	return beg_tag;
+}
+std::string cam_parser::get_end_tag(){
+	return end_tag;
+}
+std::string clip_parser::get_beg_tag(){
+	return beg_tag;
+}
+std::string clip_parser::get_end_tag(){
+	return end_tag;
+}
+std::string target_parser::get_beg_tag(){
+	return beg_tag;
+}
+std::string target_parser::get_end_tag(){
+	return end_tag;
+}

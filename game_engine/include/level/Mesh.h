@@ -1,7 +1,6 @@
 #ifndef MESH_H_
 #define MESH_H_
 
-#include "Object.h"
 #include <vector>
 #include <memory>
 
@@ -17,7 +16,7 @@ struct transform{
 	std::vector<double> coords;
 };
 
-struct mesh : public object{
+struct mesh{
 	public:
 		mesh();
 		mesh(std::string &name);
@@ -40,6 +39,7 @@ struct mesh : public object{
 		void set_meshpath(std::string &mesh);
 		
 	private:
+		std::string name;
 		std::string mesh_loc;
 		std::string mat_loc;
 		std::vector<std::shared_ptr<transform> > * transforms;
