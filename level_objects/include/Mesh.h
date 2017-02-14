@@ -1,7 +1,6 @@
 #ifndef MESH_H_
 #define MESH_H_
 
-#include "Object.h"
 #include <vector>
 #include <memory>
 

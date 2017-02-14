@@ -1,7 +1,6 @@
 #ifndef LIGHT_H_
 #define LIGHT_H_
 
-#include "Object.h"
 #include <vector>
 
 struct light{
