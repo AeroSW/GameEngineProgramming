@@ -1,13 +1,13 @@
 CC		= g++
 
-INCLUDES= -I../include
+INCLUDES= -I../../include -I../../level -I../../xml_parser
 
 CFLAGS	= -std=c++11 -c $(INCLUDES)
 
 default	: all
 
 all		:
-	$(CC) $(CFLAGS) ../src/*.cpp
+	$(CC) $(CFLAGS) ../../src/level/*.cpp
 	
 clean	:
-	$(RM) *.o
+	$(RM) ./*.o

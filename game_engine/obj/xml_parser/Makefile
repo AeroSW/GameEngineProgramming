@@ -1,7 +1,7 @@
 CC	= g++
 
-INCLUDES= -I../include
-SOURCES	= ../src
+INCLUDES= -I../../include -I../../include/level -I../../include/xml_parser
+SOURCES	= ../../src/xml_parser
 
 CFLAGS	= -c -std=c++11 $(INCLUDES)
 
@@ -10,4 +10,4 @@ all	:
 	$(CC) $(CFLAGS) $(SOURCES)/*.cpp
 
 clean:
-	rm *.o
+	rm ./*.o
