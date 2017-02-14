@@ -1,8 +1,17 @@
 #include "Camera.h"
 #include <cmath>
+#include <iostream>
 
 camera::camera():
-clip(2), loc(3,0), target(3,0){
+clip(2,0), loc(3,0), target(3,0){
+	/*for(int i = 0; i < 2; i++){
+		clip.push_back(0);
+	}
+	for(int i = 0; i < 3; i++){
+		loc.push_back(0);
+		if(i < 2) target.push_back(0);
+		else target.push_back(-100);
+	}*/
 	name = std::string("CAMERA"); // Give name a default value
 	clip[0] = 10.0; // Set Close Clip Range
 	clip[1] = 100.0; // Set Far Clip Range
@@ -10,11 +19,11 @@ clip(2), loc(3,0), target(3,0){
 }
 
 camera::camera(std::string &n):
-clip(2), loc(3,0), target(3,0){
-	name = std::string(n);
-	clip[0] = 10.0; // Set Close Clip Range
-	clip[1] = 100.0; // Set Far Clip Range
-	target[2] = -100.0; // Change Z-Axis for the target
+clip(2,0), loc(3,0), target(3,0){
+	//name = std::string(n);
+	//clip[0] = 10.0; // Set Close Clip Range
+	//clip[1] = 100.0; // Set Far Clip Range
+	//target[2] = -100.0; // Change Z-Axis for the target
 }
 
 camera::camera(const camera &cam):

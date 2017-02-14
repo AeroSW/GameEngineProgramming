@@ -4,7 +4,7 @@
 #include "Object.h"
 #include <vector>
 
-struct light : public object{
+struct light{
 	public:
 		light();
 		light(std::string &name);
@@ -20,6 +20,7 @@ struct light : public object{
 		void set_loc(std::vector<double> &l);
 		
 	private:
+		std::string name;
 		std::vector<double> color;
 		std::vector<double> location;
 };

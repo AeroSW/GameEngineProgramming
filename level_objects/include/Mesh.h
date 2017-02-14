@@ -13,11 +13,12 @@ enum TRANSF{
 
 struct transform{
 	transform();
+	transform(const transform &transf);
 	TRANSF type;
 	std::vector<double> coords;
 };
 
-struct mesh : public object{
+struct mesh{
 	public:
 		mesh();
 		mesh(std::string &name);
@@ -40,9 +41,10 @@ struct mesh : public object{
 		void set_meshpath(std::string &mesh);
 		
 	private:
+		std::string name;
 		std::string mesh_loc;
 		std::string mat_loc;
-		std::vector<std::shared_ptr<transform> > * transforms;
+		std::vector<std::shared_ptr<transform> > transforms;
 };
 
 #endif
