@@ -64,6 +64,11 @@ class level{
 		void rmv_mesh_transform(uint32 index, uint32 transform_index);
 		void set_mesh_matpath(uint32 index, std::string &path);
 		void set_mesh_path(uint32 index, std::string &path);
+		
+		// Num Functions
+		uint32 cam_count();
+		uint32 light_count();
+		uint32 mesh_count();
 };
 
 #endif /* LEVEL_H_ */

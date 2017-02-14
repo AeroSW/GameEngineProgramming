@@ -1,6 +1,7 @@
 #ifndef MESH_H_
 #define MESH_H_
 
+#include "Object.h"
 #include <vector>
 #include <memory>
 
@@ -12,6 +13,7 @@ enum TRANSF{
 
 struct transform{
 	transform();
+	transform(const transform &transf);
 	TRANSF type;
 	std::vector<double> coords;
 };
@@ -42,7 +44,7 @@ struct mesh{
 		std::string name;
 		std::string mesh_loc;
 		std::string mat_loc;
-		std::vector<std::shared_ptr<transform> > * transforms;
+		std::vector<std::shared_ptr<transform> > transforms;
 };
 
 #endif
