@@ -2,31 +2,30 @@
 transform::transform():
 coords(3,0.0){}
 
+transform::transform(const transform &transf):
+coords(transf.coords){
+	type = transf.type;
+}
 
 mesh::mesh():
 mesh_loc(""),mat_loc(""){
 	name = std::string("MESH");
-	transforms = new std::vector<std::shared_ptr<transform> >();
 }
 mesh::mesh(std::string &n):
 mesh_loc(""),mat_loc(""){
 	name = std::string(n);
-	transforms = new std::vector<std::shared_ptr<transform> >();
 }
 mesh::mesh(std::string &n, std::string &path):
 mesh_loc(path),mat_loc(""){
 	name = std::string(n);
-	transforms = new std::vector<std::shared_ptr<transform> >();
 }
 mesh::mesh(std::string &n, std::string &path, std::string &mat):
 mesh_loc(path),mat_loc(mat){
 	name = std::string(n);
-	transforms = new std::vector<std::shared_ptr<transform> >();
 }
 mesh::mesh(const mesh &m):
 mesh_loc(m.mesh_loc),mat_loc(mat_loc), transforms(m.transforms){
 	name = std::string(m.name);
-	transforms = new std::vector<std::shared_ptr<transform> >();
 }
 
 std::string mesh::get_name(){
@@ -39,7 +38,7 @@ std::string mesh::get_meshpath(){
 	return mesh_loc;
 }
 std::vector<std::shared_ptr<transform> > * mesh::get_transforms(){
-	return transforms;
+	return &transforms;
 }
 
 void mesh::add_transform(TRANSF t, std::vector<double> &transform_vector){
@@ -48,26 +47,26 @@ void mesh::add_transform(TRANSF t, std::vector<double> &transform_vector){
 	sp->coords[0] = transform_vector[0];
 	sp->coords[1] = transform_vector[1];
 	sp->coords[2] = transform_vector[2];
-	transforms->push_back(sp);
+	transforms.push_back(sp);
 }
 void mesh::add_transform(transform &transf){
-	std::shared_ptr<transform> sp(&transf);
-	transforms->push_back(sp);
+	std::shared_ptr<transform> sp(new transform(transf));
+	transforms.push_back(sp);
 }
 void mesh::add_transform(transform * transf){
-	std::shared_ptr<transform> sp(transf);
-	transforms->push_back(sp);
+	std::shared_ptr<transform> sp(new transform(*transf));
+	transforms.push_back(sp);
 }
 void mesh::add_transform(std::shared_ptr<transform> &transf){
-	transforms->push_back(transf);
+	transforms.push_back(transf);
 }
 
 void mesh::rmv_transform(unsigned int index){
-	if(index >= transforms->size()){
+	if(index >= transforms.size()){
 		// raise exception
 	}
 	else{
-		transforms->erase(transforms->begin()+index);
+		transforms.erase(transforms.begin()+index);
 	}
 }
 

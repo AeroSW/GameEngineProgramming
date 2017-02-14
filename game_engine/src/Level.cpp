@@ -109,7 +109,7 @@ void level::set_cam_clip(uint32 index, std::vector<double> &clip){
 	}
 }
 void level::set_cam_loc(uint32 index, std::vector<double> &location){
-		if(index < cameras.size()){
+	if(index < cameras.size()){
 		cameras[index]->set_loc(location);
 	}
 	else{
@@ -173,4 +173,14 @@ void level::set_mesh_path(uint32 index, std::string &path){
 	else{
 		// Raise Exception.
 	}
+}
+
+uint32 level::cam_count(){
+	return cameras.size();
+}
+uint32 level::light_count(){
+	return lights.size();
+}
+uint32 level::mesh_count(){
+	return meshes.size();
 }
