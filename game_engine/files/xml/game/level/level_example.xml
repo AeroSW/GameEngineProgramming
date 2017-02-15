@@ -1,5 +1,7 @@
 <level>
 	<name> Level 1 </name>
+	<mesh> ../../../mesh </mesh>
+	<mat> ../../../material </mat>
 	<cameras>
 		<num>1</num>
 		<camera>
@@ -25,7 +27,7 @@
 			<mat> ../resrc/cube1.material </mat>
 			<transforms>
 				<trans> 1.0,1.0,1.0 </trans>
-				<rotat> 5.0,5.0,5.0 </rotat>
+				<rotat> 2.68,5.0,5.0,5.0 </rotat>
 				<scale> 5.0,5.0,5.0 </scale>
 			</transforms>
 		</object>
@@ -34,9 +36,9 @@
 			<mesh> ../mesh/cylinder.mesh </mesh>
 			<mat> ../resrc/cylinder.material </mat>
 			<transforms>
-				<rotat> 5.0,5.0,5.0 </rotat>
+				<rotat> 0.45,5.0,5.0,5.0 </rotat>
 				<trans> 5.0,5.0,5.0 </trans>
-				<rotat> 5.0,5.0,5.0 </rotat>
+				<rotat> 0.5,5.0,5.0,5.0 </rotat>
 			</transforms>
 		</object>
 	</objects>
