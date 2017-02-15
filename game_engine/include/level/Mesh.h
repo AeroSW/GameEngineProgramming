@@ -12,6 +12,7 @@ enum TRANSF{
 
 struct transform{
 	transform();
+	transform(std::vector<double> &transf);
 	transform(const transform &transf);
 	TRANSF type;
 	std::vector<double> coords;
@@ -26,8 +27,8 @@ struct mesh{
 		mesh(const mesh &m);
 		
 		std::string get_name();
-		std::string get_matpath();
-		std::string get_meshpath();
+		std::string get_mat();
+		std::string get_mesh();
 		std::vector<std::shared_ptr<transform> > * get_transforms();
 		
 		void add_transform(TRANSF t, std::vector<double> &transform_vector);
@@ -41,8 +42,8 @@ struct mesh{
 		
 	private:
 		std::string name;
-		std::string mesh_loc;
-		std::string mat_loc;
+		std::string mesh_filename;
+		std::string mat_filename;
 		std::vector<std::shared_ptr<transform> > transforms;
 };
 

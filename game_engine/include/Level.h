@@ -16,6 +16,8 @@
 
 class level{
 	private:
+		std::string mesh_loc;
+		std::string mat_loc;
 		std::vector<std::shared_ptr<camera> > cameras;
 		std::vector<std::shared_ptr<light> > lights;
 		std::vector<std::shared_ptr<mesh> > meshes;
@@ -69,6 +71,23 @@ class level{
 		uint32 cam_count();
 		uint32 light_count();
 		uint32 mesh_count();
+		
+		// Retreive Member Name Fuctions
+		std::string get_name();
+		std::string get_mesh_loc();
+		std::string get_mat_loc();
+		std::string get_cam_name(uint32 index=0);
+		std::string get_light_name(uint32 index=0);
+		std::string get_mesh_name(uint32 index=0);
+		
+		// Get Cam Members
+		std::vector<double> * get_cam_clip(uint32 index=0);
+		std::vector<double> * get_cam_location(uint32 index=0);
+		std::vector<double> * get_cam_target(uint32 index=0);
+		
+		// Get Mesh Members
+		std::string get_mesh(uint32 index=0);
+		std::string get_mat(uint32 index=0);
 };
 
 #endif /* LEVEL_H_ */
