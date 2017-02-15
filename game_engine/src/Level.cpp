@@ -175,6 +175,7 @@ void level::set_mesh_path(uint32 index, std::string &path){
 	}
 }
 
+// Level Functions
 uint32 level::cam_count(){
 	return cameras.size();
 }
@@ -183,4 +184,43 @@ uint32 level::light_count(){
 }
 uint32 level::mesh_count(){
 	return meshes.size();
+}
+std::string level::get_name(){
+	return name;
+}
+std::string level::get_mesh_loc(){
+	return mesh_loc;
+}
+std::string level::get_mat_loc(){
+	return mat_loc;
+}
+
+// Get Members' names
+std::string level::get_cam_name(uint32 index){
+	return cameras[index]->get_name();
+}
+std::string level::get_light_name(uint32 index){
+	return lights[index]->get_name();
+}
+std::string level::get_mesh_name(uint32 index){
+	return meshes[index]->get_name();
+}
+
+// Camera Functions
+std::vector<double> * level::get_cam_clip(uint32 index){
+	return cameras[index]->get_clip();
+}
+std::vector<double> * level::get_cam_location(uint32 index){
+	return cameras[index]->get_loc();
+}
+std::vector<double> * level::get_cam_target(uint32 index){
+	return cameras[index]->get_target();
+}
+
+// Mesh Functions
+std::string level::get_mesh(uint32 index){
+	return meshes[index]->get_mesh();
+}
+std::string level::get_mat(uint32 index){
+	return meshes[index]->get_mat();
 }

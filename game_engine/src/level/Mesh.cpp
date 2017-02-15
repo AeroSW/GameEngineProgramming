@@ -2,6 +2,9 @@
 transform::transform():
 coords(3,0.0){}
 
+transform::transform(std::vector<double> &transf):
+coords(transf){}
+
 transform::transform(const transform &transf):
 coords(transf.coords){
 	type = transf.type;
@@ -31,22 +34,19 @@ mesh_loc(m.mesh_loc),mat_loc(mat_loc), transforms(m.transforms){
 std::string mesh::get_name(){
 	return name;
 }
-std::string mesh::get_matpath(){
-	return mat_loc;
+std::string mesh::get_mat(){
+	return mat_filename;
 }
-std::string mesh::get_meshpath(){
-	return mesh_loc;
+std::string mesh::get_mesh(){
+	return mesh_filename;
 }
 std::vector<std::shared_ptr<transform> > * mesh::get_transforms(){
 	return &transforms;
 }
 
 void mesh::add_transform(TRANSF t, std::vector<double> &transform_vector){
-	std::shared_ptr<transform> sp(new transform());
+	std::shared_ptr<transform> sp(new transform(transform_vector));
 	sp->type = t;
-	sp->coords[0] = transform_vector[0];
-	sp->coords[1] = transform_vector[1];
-	sp->coords[2] = transform_vector[2];
 	transforms.push_back(sp);
 }
 void mesh::add_transform(transform &transf){
@@ -54,7 +54,7 @@ void mesh::add_transform(transform &transf){
 	transforms.push_back(sp);
 }
 void mesh::add_transform(transform * transf){
-	std::shared_ptr<transform> sp(new transform(*transf));
+	std::shared_ptr<transform> sp(transf);
 	transforms.push_back(sp);
 }
 void mesh::add_transform(std::shared_ptr<transform> &transf){
