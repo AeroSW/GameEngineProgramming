@@ -24,14 +24,14 @@ class render{
 		Ogre::Viewport * viewport;
 		manager * gmanager;
 
-		void * init();
+		void init(const std::string &xml_file);
 		uint32 win_handle; // window handler
 		Ogre::Real tslf; // time since last frame
 	protected:
 
 
 	public:
-		render(manager &manjr);
+		render(manager &manjr, const std::string &xml_file);
 		render(const render &ren);
 		virtual ~render();
 
@@ -58,7 +58,7 @@ class render{
 		 * Start and End Render Functions
 		 */
 		void start_render();
-		void end_render();
+	//	void end_render();
 
 		/*
 		 * get_curr_level_name
