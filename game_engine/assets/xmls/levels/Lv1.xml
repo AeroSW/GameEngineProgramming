@@ -1,0 +1,55 @@
+<game>
+	<name>Kenneth'sLevelOne</name>
+	<mesh> ./assets/meshes </mesh>
+	<mat> ./assets/materials </mat>
+	<scene>
+		<name>DeadlyRing</name>
+		<cameras>
+			<camera>
+				<name>Eine Kamera</name>
+				<loc>0.0,0.0,-12.0</loc>
+				<target>0.0,0.0,0.0</target>
+				<clip>0.5,100.0</clip>
+			</camera>
+		</cameras>
+		<lights>
+			<light>
+				<name>Rotlicht</name>
+				<type>directed</type>
+				<loc>-5.0,0.0,-12.0</loc>
+				<target>0.0,0.0,0.0</target>
+				<color>0.8,0.0,0.0</color>
+			</light>
+			<light>
+				<name>Blaues Licht</name>
+				<type>directed</type>
+				<loc>5.0,0.0,-12.0</loc>
+				<target>0.0,0.0,0.0</target>
+				<color>0.0,0.0,0.8</color>
+			</light>
+		</lights>
+		<meshes>
+			<mesh>Chest_Lid.mesh</mesh>
+			<mesh>Chest_Base.mesh</mesh>
+			<mesh>Death_Ring.mesh</mesh>
+		</meshes>
+		<graph>
+			<root>
+				<node>
+					<mesh>Chest_Lid.mesh</mesh>
+					<transform>
+						<rotate>90.0,0.0,0.0,1.0</rotate>
+						<trans>1.0,0.0,0.53</trans>
+						<scale>0.9375,1.0,1.0</scale>
+					</transform>
+				</node>
+				<node>
+					<mesh>Chest_Base.mesh</mesh>
+				</node>
+				<node>
+					<mesh>Death_Ring.mesh</mesh>
+				</node>
+			</root>
+		</graph>
+	</scene>
+</game>
