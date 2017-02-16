@@ -12,10 +12,8 @@ SRC	= ../src
 default	: all
 all	:
 	$(CC) $(CFLAGS) $(SRC)/*.cpp
-	cd ./level && $(MAKE)
 	cd ./xml_parser && $(MAKE)
 	
 clean	:
 	$(RM) ./*.o
-	cd ./level && $(MAKE) clean
 	cd ./xml_parser && $(MAKE) clean
