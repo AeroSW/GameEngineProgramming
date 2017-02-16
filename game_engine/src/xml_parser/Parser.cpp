@@ -31,8 +31,36 @@ std::shared_ptr<level> parse_level(std::string file){
 	return lvl;
 }*/
 
+void parse_scene_cameras(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement * cameras_tree){
+	for(uint32 c = 0, tinyxml2::XMLElement * cam = cameras_tree->FirstChildElement("camera"); cam != nullptr; c++, cam = cam->NextSiblingElement("camera")){
+		// Retreive the camera's name
+		tinyxml2::XMLElement * cam_name_tag = cam->FirstChildElement("name");
+		std::string cam_name(cam_name_tag->GetText());
+		the_scene->add_camera(cam_name);
+		// Grab element tags.
+		tinyxml2::XMLElement * loc_tag = cam->FirstChildElement("loc");
+		tinyxml2::XMLElement * tar_tag = cam->FirstChildElement("target");
+		tinyxml2::XMLElement * clip_tag = cam->FirstChildElement("clip");
+		// Pull and trim the strings.
+		std::string loc_str(loc_tag.GetText());
+		trim(loc_str);
+		std::string tar_str(tar_tag.GetText());
+		trim(tar_str);
+		std::string clip_str(clip_tag.GetText());
+		trim(clip_str);
+		// Convert Values to Vectors of Floats
+		std::vector<float> loc = parse_fvector(loc_str);
+		std::vector<float> tar = parse_fvector(tar_str);
+		std::vector<float> clip = parse_fvector(clip_str);
+		// Set vectors in scene
+		the_scene->set_camera_clip(c, clip);
+		the_scene->set_camera_location(c, loc);
+		the_scene->set_camera_target(c, tar);
+		cam->DeleteChildren(); // Delete and prevent memory leaks
+	}
+}
 
-std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > parse_lvl(std::string xml, Ogre::Root * root){
+std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > parse_lvl(const std::string &xml, Ogre::Root * root){
 	std::shared_ptr<resource> my_rsrc(new resource());
 	
 	// Create the TinyXMLDocument
@@ -54,14 +82,21 @@ std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > 
 	tinyxml2::XMLElement * material_location_tag = game_tree->FirstChildElement("mat");
 	my_rsrc->add_resource_loc(mesh_location_tag->GetText());
 	my_rsrc->add_resource_loc(material_location_tag->GetText());
-	
-	
-	
-	
-	
-	
-	
-	std::shared_ptr<scene> my_scene(new scene());
+	// It is now time to slowly start parsing the scene.
+	// I have a function which will handle the graph
+	// specifically in a top-down recursive fashion.
+	tinyxml2::XMLElement * scene_tree = game_tree->FirstChildElement("scene");
+	tinyxml2::XMLElement * scene_name_tag = scene_tree->FirstChildElement("name");
+	std::string scene_name(scene_name_tag->GetText());
+	// Create the scene
+	std::shared_ptr<scene> my_scene(new scene(scene_name, root));
+	// Parse its elements
+	tinyxml2::XMLElement * cams_tree = scene_tree->FirstChildElement("cameras");
+	parse_scene_cameras(my_scene, cams_tree); // Cameras
+	cams_tree->DeleteChildren();
+	// Parse entities
+	tinyxml2::XMLElement * meshes_tree = scene_tree->FirstChildElement("meshes");
+	// parsing meshes tag
 }
 
 
