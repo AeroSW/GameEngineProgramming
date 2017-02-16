@@ -1,7 +1,24 @@
 <game>
-	<name>Kenneth'sLevelOne</name>
-	<mesh> ./assets/meshes </mesh>
-	<mat> ./assets/materials </mat>
+	<name>Kenneth's Game</name>
+	<resources>
+		<group>
+			<name>MyLevel1</name>
+			<loc>./assets/meshes</loc>
+			<loc>./assets/materials</loc>
+			<resource>
+				<type>Mesh</type>
+				<file>Chest_Lid.mesh</file>
+			</resource>
+			<resource>
+				<type>Mesh</type>
+				<file>Chest_Base.mesh</file>
+			</resource>
+			<resource>
+				<type>Mesh</type>
+				<file>Death_Ring.mesh</file>
+			</resource>
+		</group>
+	</resources>
 	<scene>
 		<name>DeadlyRing</name>
 		<cameras>
@@ -28,26 +45,41 @@
 				<color>0.0,0.0,0.8</color>
 			</light>
 		</lights>
-		<meshes>
-			<mesh>Chest_Lid.mesh</mesh>
-			<mesh>Chest_Base.mesh</mesh>
-			<mesh>Death_Ring.mesh</mesh>
-		</meshes>
+		<entities>
+			<entity>
+				<name>Chest Lid</name>
+				<mesh>Chest_Lid.mesh</mesh>
+				<mat>Chest</mat>
+			</entity>
+			<entity>
+				<name>Chest Base</name>
+				<mesh>Chest_Base.mesh</mesh>
+				<mat>Chest</mat>
+			</entity>
+			<entity>
+				<name>Death Ring</name>
+				<mesh>Death_Ring.mesh</mesh>
+				<mat>Death</mat>
+			</entity>
+		</entities>
 		<graph>
 			<root>
 				<node>
-					<mesh>Chest_Lid.mesh</mesh>
-					<transform>
+					<name>Lid</name>
+					<object>Chest Lid</object>
+					<transforms>
 						<rotate>90.0,0.0,0.0,1.0</rotate>
-						<trans>1.0,0.0,0.53</trans>
+						<translate>1.0,0.0,0.53</translate>
 						<scale>0.9375,1.0,1.0</scale>
-					</transform>
+					</transforms>
 				</node>
 				<node>
-					<mesh>Chest_Base.mesh</mesh>
+					<name>Base</name>
+					<object>Chest Base</object>
 				</node>
 				<node>
-					<mesh>Death_Ring.mesh</mesh>
+					<name>Ring</name>
+					<object>Death Ring</object>
 				</node>
 			</root>
 		</graph>
