@@ -44,6 +44,8 @@ class level{
 		void add_mesh(const mesh &m__);
 		
 		void set_name(std::string &n);
+		void set_mesh(std::string &n);
+		void set_mat(std::string &n);
 		void set_cam_name(uint32 index, std::string &n);
 		void set_light_name(uint32 index, std::string &n);
 		void set_mesh_name(uint32 index, std::string &n);

@@ -45,7 +45,14 @@ std::shared_ptr<level> parse_level(std::string file){
 	std::string l_name(lvl_name->GetText());
 	trim(l_name);
 	lvl->set_name(l_name);
-	
+	tinyxml2::XMLElement * lvl_mesh_loc = lvl_tree->FirstChildElement("mesh");
+	std::string mpath(lvl_mesh_loc.GetText());
+	trim(mpath);
+	lvl->set_mesh(mpath);
+	tinyxml2::XMLElement * lvl_mat_path = lvl_tree->FirstChildElement("mat");
+	std::string mater(lvl_mat_path.GetText());
+	trim(mater);
+	lvl->set_mat(mater);
 	// Cam Section
 	{
 		tinyxml2::XMLElement * cams_tree = lvl_tree->FirstChildElement("cameras");
