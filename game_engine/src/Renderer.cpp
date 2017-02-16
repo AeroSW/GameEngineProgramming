@@ -1,52 +1,51 @@
-void renderer::init(const std::string &xml_file){
-	root = nullptr;
-	window = nullptr;
-	scene = nullptr;
-	
+#include <utility>
+#include <iostream>
+
+#include "Renderer.h"
+#include "Parser.h"
+
+void renderer::init(const std::string &xml_file):
+root(OGRE_NEW Ogre::Root("","")){
 	root = OGRE_NEW Ogre::Root("","");
 	root->loadPlugin("RenderSystem_GL");
 	
-	Ogre::RenderSystem * render_system = root->getRenderSystemByName("OpenGL Rendering Subsystem");
-	if(!render_system){
-		// Raise an exception
-	}
+	std::shared_ptr<Ogre::RenderSystem> render_system(root->getRenderSystemByName("OpenGL Rendering Subsystem"));
 	
-	root->setRenderSystem(render_system);
+	root->setRenderSystem(render_system.get());
 	
 	render_system->setConfigOption("Full Screen", "No");
 	render_system->setConfigOption("Video Mode", "800 x 600 @ 32-bit colour");
 	
-	window = root->initialize(true, "Game Engine Programming");
-	scene = root->createSceneManager(Ogre::ST_GENERIC, "Default Scene Manager");
+	window.reset(root->initialize(true, "Kenneth's Game Engine"));
 	window->getCustomAttribute("WINDOW", &win_handle);
 	
-	// This is where my code should start.
-	resrc = new resource(file); // Builds game levels.
-	std::vector<double> loc = resrc->get_cam_loc(); // Get details about camera
-	std::vector<double> tar = resrc->get_cam_target();
-	std::vector<double> clip = resrc->get_cam_clip();
-	std::string cam_name = rsrc->get_cam_name();
-	cam = scene->createCamera(cam_name);
-	cam->setPosition(loc[0],loc[1],loc[2]);
-	cam->lookAt(tar[0],tar[1],tar[2]);
-	
+	std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > game = parse_lvl(xml_file, root);
+	my_rsrc_manager = std::get<0>(game);
+	my_scene_manager = std::get<1>(game);
+}
+
+void renderer::set_camera(){
+//	std::vector<std::string> groups = my_rsrc_manager->getResourceGroups();
+//	my_rsrc_manager->initialize_group(groups[0]);
+//	my_rsrc_manager->load_group(groups[0]);
+	std::shared_ptr<Ogre::Camera> curr_cam = my_scene_manager->get_active_cam();
+	viewport.reset(window->addViewPort(curr_cam.get(), 1, 0, 0, 1, 1));
+	viewport->setBackgroundColour(Ogre::ColorVector(0.0,0.0,0.0));
+	float length = Ogre::Real(viewport->getActualWidth());
+	float height = Ogre::Real(viewport->getActualHeight());
+	float aspect_ratio = length / height;
+	curr_cam->setAspectRatio(aspect_ratio);
 }
 
 renderer::renderer(manager * m, const std::string &xml_file){
-	gmanager = m;
+	my_game_manager = m;
 	init(xml_file);
+	set_camera();
 }
 
 renderer::~renderer(){
-	gmanager = nullptr;
-	scene->clearScene();
-	scene->destroyAllCameras();
 	window->removeAllViewports();
 	window->destroy();
-	window = nullptr;
-	
-	delete root;
-	root = nullptr;
 }
 
 uint32 renderer::get_win_handle(){
@@ -68,11 +67,6 @@ Ogre::SceneManager * renderer::get_scene(){
 void renderer::start_render(){
 	root->startRendering();
 }
-std::string renderer::get_curr_level_name(){
-	return resrc->curr_lvl_name();
-}
-bool renderer::add_scene(const std::string &xml_scene_file){
-	if(resrc->add_scene(const std::string &xml_scene_filename))
-		return true;
-	return false;
+std::string renderer::get_scene_name(){
+	return my_scene_manager->get_name();
 }

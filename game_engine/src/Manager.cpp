@@ -37,24 +37,6 @@ uint32 manager::get_render_win_handler(){
 	}
 	return 0;
 }
-
-std::string manager::get_curr_level_name(){
-	if(renderer != nullptr){
-		return renderer->get_curr_level_name();
-	}
-	throw 1;
-}
-
-bool manager::add_scene(const std::string &xml_filename){
-	if(renderer != nullptr){
-		if(renderer->add_scene(xml_filename)){
-			return true;
-		}
-		return false;
-	}
-	throw 1;
-}
-
 /*
  * Private Methods.
  */

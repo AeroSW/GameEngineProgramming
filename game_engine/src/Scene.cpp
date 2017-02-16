@@ -24,8 +24,8 @@ std::string scene::get_name(){
 	return my_manager->getName();
 }
 
-int scene::get_active_cam(){
-	return active_cam;
+std::shared_ptr<Ogre::Camera> scene::get_active_cam(){
+	return my_cameras[active_cam];
 }
 
 bool scene::next_cam(){

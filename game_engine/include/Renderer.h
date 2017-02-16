@@ -9,20 +9,26 @@
 #define RENDERER_H_
 
 #include <string>
-#include "Ogre.h"
+#include <memory>
+#include <vector>
+
+#include "Resource.h"
+#include "Scene.h"
 #include "UnsignedTypes.h"
+
+#include "Ogre.h"
 
 class manager;
 
 class render{
 	private:
-		Ogre::Root * root;
-		Ogre::RenderWindow * window;
-		Ogre::ResourceGroupManager * resource_group;
-		Ogre::SceneManager * scene;
-		Ogre::Camera * cam;
-		Ogre::Viewport * viewport;
-		manager * gmanager;
+		std::shared_ptr<Ogre::Root> root;
+		std::shared_ptr<Ogre::RenderWindow> window;
+		std::shared_ptr<Ogre::Viewport> viewport;
+		
+		std::shared_ptr<resource> my_rsrc_manager;
+		std::shared_ptr<scene> my_scene_manager;
+		std::shared_ptr<manager> my_game_manager;
 
 		void init(const std::string &xml_file);
 		uint32 win_handle; // window handler

@@ -220,10 +220,12 @@ void parse_resource_group(std::shared_ptr<resource> my_rsrc, tinyxml2::XMLElemen
 			trim(file);
 			my_rsrc->declare_resource(file, type, name);
 		}
+		my_rsrc->initialize_group(name);
+		my_rsrc->load_group(name);
 	}
 }
 
-std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > parse_lvl(const std::string &xml, Ogre::Root * root){
+std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > parse_lvl(const std::string &xml, std::shared_ptr<Ogre::Root> &root){
 	std::shared_ptr<resource> my_rsrc(new resource());
 	
 	// Create the TinyXMLDocument

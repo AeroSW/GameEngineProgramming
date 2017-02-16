@@ -31,7 +31,7 @@ class scene{
 		
 		// My Functions
 		std::string get_name();
-		int get_active_cam();
+		std::shared_ptr<Ogre::Camera> get_active_cam();
 		bool next_cam();
 		bool prev_cam();
 		bool set_cam(uint32 index);
