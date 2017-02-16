@@ -1,14 +1,9 @@
 #include "Parser.h"
-#include "Camera.h"
 #include <iostream>
 
 #include <vector>
-#include <sstream>
-#include <cstddef>
-#include <stack>
 
 #include "Functions.h"
-#include "Ogre.h"
 
 typedef unsigned int uint32;
 
@@ -60,6 +55,174 @@ void parse_scene_cameras(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement 
 	}
 }
 
+void parse_scene_entities(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement * entities_tree){
+	for(uint32 c = 0, tinyxml2::XMLElement * entity_tag = entities_tree->FirstChildElement("entity"); entity_tag != nullptr; c++, entity_tag = entity_tag->NextSiblingElement("entity")){
+		tinyxml2::XMLElement * name_tag = entity_tag->FirstChildElement("name");
+		std::string name(name_tag->GetText());
+		trim(name);
+		tinyxml2::XMLElement * mesh_tag = entity_tag->FirstChildElement("mesh");
+		std::string mesh(mesh_tag->GetText());
+		trim(mesh);
+		the_scene->add_entity(name, mesh);
+		tinyxml2::XMLElement * mat_tag = entity_tag->FirstChildElement("mat");
+		if(mat_tag != nullptr){
+			std::string mat(mat_tag->GetText());
+			trim(mat);
+			the_scene->set_material_name(c, mat);
+		}
+		entity_tag->DeleteChildren();
+	}
+}
+
+void parse_scene_lights(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement * lights_tree){
+	for(uint32 c = 0, tinyxml2::XMLElement * light_tag = lights_tree->FirstChildElement("light"); light_tag != nullptr; light_tag = light_tag->NextSiblingElement("light"), c++){
+		tinyxml2::XMLElement * name_tag = light_tag->FirstChildElement("name");
+		tinyxml2::XMLElement * type_tag = light_tag->FirstChildElement("type");
+		std::string name(name_tag->GetText());
+		trim(name);
+		if(type_tag != nullptr){
+			std::string type(type_tag->GetText());
+			trim(type);
+			the_scene->add_light(name, type);
+		}
+		else{
+			the_scene->add_light(name);
+		}
+		tinyxml2::XMLElement * loc_tag = light_tag->FirstChildElement("loc");
+		std::string loc_str(loc_tag->GetText());
+		trim(loc_str);
+		std::vector<float> loc = parse_fvector(loc_str);
+		the_scene->set_light_location(c, loc);
+		tinyxml2::XMLElement * tar_tag = light_tag->FirstChildElement("target");
+		if(tar_tag != nullptr){
+			std::string tar_str(tar_tag->GetText());
+			trim(tar_str);
+			std::vector<float> tar = parse_fvector(tar_str);
+			the_scene->set_light_target(c, tar);
+		}
+		tinyxml2::XMLElement * col_tag = light_tag->FirstChildElement("color");
+		if(col_tag != nullptr){
+			std::string col_str(col_tag->GetText());
+			trim(col_str);
+			std::vector<float> col = parse_fvector(col_str);
+			the_scene->set_light_color(c, col);
+		}
+		else{
+			std::vector<float> color;
+			for(uint32 cc = 0; cc < 3; cc++){
+				color.push_back(1.0);
+			}
+			the_scene->set_light_color(c, color);
+		}
+		light_tag->DeleteChildren();
+	}
+}
+
+std::string recur_scene(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement * curr_node){
+	tinyxml2::XMLElement * name_tag = curr_node->FirstChildElement("name");
+	std::string name(name_tag->GetText());
+	trim(name);
+	the_scene->add_node(name);
+	tinyxml2::XMLElement * child = curr_node->FirstChildElement("node");
+	if(child == nullptr){
+		tinyxml2::XMLElement * object_tag = curr_node->FirstChildElement("object");
+		if(object_tag == nullptr){
+			throw "Object tag does not exist in leaf node\n";
+		}
+		std::string object_name(object_tag->GetText());
+		the_scene->attach_node_object(name, object_name);
+	}
+	else{
+		for(; child != nullptr; child = child->NextSiblingElement("node")){
+			std::string cname = recur_scene(the_scene, child);
+			trim(cname);
+			the_scene->add_node_child(name, cname);
+		}
+	}
+	tinyxml2::XMLElement * transforms_tree = curr_node->FirstChildElement("transforms");
+	if(transforms_tree != nullptr){
+		for(tinyxml2::XMLElement * transform_tag = transforms_tree->FirstChildElement(); transform_tag != nullptr; transform_tag = transform_tag->NextSiblingTag()){
+			std::string type(transform_tag->Value());
+			trim(type);
+			if(type.compare("rotate")){
+				std::string t_str(transform_tag->GetText());
+				trim(t_str);
+				std::vector<float> t_vect = parse_fvector(t_str);
+				TRANSFORM t = TRANSFORM::ROTATE;
+				the_scene->add_node_transform(name, t, t_vect);
+			}
+			else if(type.compare("translate")){
+				std::string t_str(transform_tag->GetText());
+				trim(t_str);
+				std::vector<float> t_vect = parse_fvector(t_str);
+				TRANSFORM t = TRANSFORM::TRANSLATE;
+				the_scene->add_node_transform(name, t, t_vect);
+			}
+			else if(type.compare("scale")){
+				std::string t_str(transform_tag->GetText());
+				trim(t_str);
+				std::vector<float> t_vect = parse_fvector(t_str);
+				TRANSFORM t = TRANSFORM::SCALE;
+				the_scene->add_node_transform(name, t, t_vect);
+			}
+		}
+		transforms_tree->DeleteChildren();
+	}
+	return name;
+}
+
+void parse_scene_graph(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement * graph_tree){
+	uint32 rt_index = 0; // It will always be 0
+	tinyxml2::XMLElement * root_tag = graph_tree->FirstChildElement("root");
+	for(tinyxml2::XMLElement * root_child = root_tag->FirstChildElement("node"); root_child != nullptr; root_child = root_child->NextSiblingElement("node")){
+		std::string name = recur_scene(the_scene, root_child);
+		the_scene->add_node_child(rt_index, name);
+	}
+	root_tag->DeleteChildren();
+}
+
+void parse_scene(std::shared_ptr<scene> my_scene, tinyxml2::XMLElement * scene_tree){
+	// Parse its elements
+	tinyxml2::XMLElement * cams_tree = scene_tree->FirstChildElement("cameras");
+	parse_scene_cameras(my_scene, cams_tree); // Cameras
+	cams_tree->DeleteChildren();
+	// Parse entities
+	tinyxml2::XMLElement * entities_tree = scene_tree->FirstChildElement("entities");
+	// parsing entities tag
+	parse_scene_entities(my_scene, entities_tree);
+	entities_tree->DeleteChildren();
+	// Parsing Lights
+	tinyxml2::XMLElement * lights_tree = scene_tree->FirstChildElement("lights");
+	parse_scene_lights(my_scene, lights_tree);
+	lights_tree->DeleteChildren();
+	// Parse Graph
+	tinyxml2::XMLElement * graph_tree = scene->FirstChildElement("graph");
+	parse_scene_graph(my_scene, graph_tree);
+	graph_tree->DeleteChildren();
+}
+
+void parse_resource_group(std::shared_ptr<resource> my_rsrc, tinyxml2::XMLElement * rsrcs_tree){
+	for(tinyxml2::XMLElement * group_tree = rsrcs_tree->FirstChildElement("group"); group_tree != nullptr; group_tree = group_tree->NextSiblingElement("group")){
+		tinyxml2::XMLElement * name_tag = group_tree->FirstChildElement("name");
+		std::string name(name_tag->GetText());
+		trim(name);
+		for(tinyxml2::XMLElement * loc_tag = group_tree->FirstChildElement("loc"); loc_tag != nullptr; loc_tag = loc_tag->NextSiblingElement("loc")){
+			std::string loc(loc_tag->GetText());
+			trim(loc);
+			my_rsrc->add_resource_location(loc, name);
+		}
+		for(tinyxml2::XMLElement * rsrc_tree = group_tree->FirstChildElement("resource"); rsrc_tree != nullptr; rsrc_tree = rsrc_tree->NextSiblingElement("resource")){
+			tinyxml2::XMLElement * type_tag = rsrc_tree->GetFirstChildElement("type");
+			tinyxml2::XMLElement * file_tag = rsrc_tree->GetFirstChildElement("file");
+			std::string type(type_tag->GetText());
+			std::string file(file_tag->GetText());
+			trim(type);
+			trim(file);
+			my_rsrc->declare_resource(file, type, name);
+		}
+	}
+}
+
 std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > parse_lvl(const std::string &xml, Ogre::Root * root){
 	std::shared_ptr<resource> my_rsrc(new resource());
 	
@@ -77,11 +240,8 @@ std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > 
 	tinyxml2::XMLElement * game_name_tag = game_tree->FirstChildElement("name");
 	std::string game_name(game_name_tag->GetText());
 	trim(game_name); // Trim whitespace off
-	// Grab Mesh and Material locations
-	tinyxml2::XMLElement * mesh_location_tag = game_tree->FirstChildElement("mesh");
-	tinyxml2::XMLElement * material_location_tag = game_tree->FirstChildElement("mat");
-	my_rsrc->add_resource_loc(mesh_location_tag->GetText());
-	my_rsrc->add_resource_loc(material_location_tag->GetText());
+	tinyxml2::XMLElement * rsrcs_tree = game_tree->FirstChildElement("resources");
+	parse_resource_group(my_rsrc, rsrcs_tree);
 	// It is now time to slowly start parsing the scene.
 	// I have a function which will handle the graph
 	// specifically in a top-down recursive fashion.
@@ -90,149 +250,10 @@ std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > 
 	std::string scene_name(scene_name_tag->GetText());
 	// Create the scene
 	std::shared_ptr<scene> my_scene(new scene(scene_name, root));
-	// Parse its elements
-	tinyxml2::XMLElement * cams_tree = scene_tree->FirstChildElement("cameras");
-	parse_scene_cameras(my_scene, cams_tree); // Cameras
-	cams_tree->DeleteChildren();
-	// Parse entities
-	tinyxml2::XMLElement * meshes_tree = scene_tree->FirstChildElement("meshes");
-	// parsing meshes tag
-}
-
-
-
-std::shared_ptr<level> parse_level_orig(std::string file){
-	std::string dummy("Dummy Name");
-	std::shared_ptr<level> lvl(new level(dummy));
-	tinyxml2::XMLDocument doc;
-	tinyxml2::XMLError val = doc.LoadFile(file.c_str());
-	if(val != tinyxml2::XML_SUCCESS){
-		std::cout << "something went wrong" << std::endl;
-		doc.PrintError();
-		std::exit(1);
-	}
-	tinyxml2::XMLElement * lvl_tree = doc.FirstChildElement("level"); // Get the level tree
-	tinyxml2::XMLElement * lvl_name = lvl_tree->FirstChildElement("name");
-	std::string l_name(lvl_name->GetText());
-	trim(l_name);
-	lvl->set_name(l_name);
-	tinyxml2::XMLElement * lvl_mesh_loc = lvl_tree->FirstChildElement("mesh");
-	std::string mpath(lvl_mesh_loc.GetText());
-	trim(mpath);
-	lvl->set_mesh(mpath);
-	tinyxml2::XMLElement * lvl_mat_path = lvl_tree->FirstChildElement("mat");
-	std::string mater(lvl_mat_path.GetText());
-	trim(mater);
-	lvl->set_mat(mater);
-	// Cam Section
-	{
-		tinyxml2::XMLElement * cams_tree = lvl_tree->FirstChildElement("cameras");
-		tinyxml2::XMLElement * num_cams = cams_tree->FirstChildElement("num");
-		std::string cnum_str(num_cams->GetText());
-		trim(cnum_str);
-		uint32 cnum = std::stoul(cnum_str); // Grab the number of cameras as an unsigned integer
-		tinyxml2::XMLElement * cam_tree = cams_tree->FirstChildElement("camera");
-		for(uint32 c = 0; c < cnum && cam_tree != nullptr; c++, cam_tree = cam_tree->NextSiblingElement("camera")){
-			lvl->add_cam();
-			tinyxml2::XMLElement * cam_name = cam_tree->FirstChildElement("name"); // Get the Camera's Name
-			std::string cname(cam_name->GetText());
-			trim(cname);
-			lvl->set_cam_name(c, cname);
-			tinyxml2::XMLElement * cam_loc = cam_tree->FirstChildElement("loc"); // Get the Camera's Location
-			std::string cloc_vector(cam_loc->GetText());
-			trim(cloc_vector);
-			std::vector<double> loc = parse_vector(cloc_vector);
-			lvl->set_cam_loc(c, loc);
-			tinyxml2::XMLElement * cam_clip = cam_tree->FirstChildElement("clip"); // Get the Camera's Clip
-			std::string cclip_vector(cam_clip->GetText());
-			trim(cclip_vector);
-			std::vector<double> clip = parse_vector(cclip_vector);
-			lvl->set_cam_clip(c, clip);
-			tinyxml2::XMLElement * cam_target = cam_tree->FirstChildElement("target"); // Get the Camera's Target
-			std::string ctarget_vect(cam_target->GetText());
-			trim(ctarget_vect);
-			std::vector<double> target = parse_vector(ctarget_vect);
-			lvl->set_cam_target(c, target);
-			cam_tree->DeleteChildren();
-		}
-		cams_tree->DeleteChildren();
-	}
-	std::cout << "Finished Parsing Cameras" << std::endl;
-	// Light Section
-	{
-		tinyxml2::XMLElement * lights_tree = lvl_tree->FirstChildElement("lights");
-		tinyxml2::XMLElement * num_lights = lights_tree->FirstChildElement("num");
-		std::string lnum_str(num_lights->GetText());
-		trim(lnum_str);
-		uint32 lnum = std::stoul(lnum_str); // Grab the number of cameras as an unsigned integer
-		tinyxml2::XMLElement * light_tree = lights_tree->FirstChildElement("light");
-		for(uint32 c = 0; c < lnum && light_tree != nullptr; c++, light_tree = light_tree->NextSiblingElement("light")){
-			lvl->add_light();
-			tinyxml2::XMLElement * light_name = light_tree->FirstChildElement("name");
-			std::string lname = light_name->GetText();
-			trim(lname);
-			lvl->set_light_name(c, lname);
-			tinyxml2::XMLElement * light_loc = light_tree->FirstChildElement("loc");
-			std::string lloc_vect = light_loc->GetText();
-			trim(lloc_vect);
-			std::vector<double> loc = parse_vector(lloc_vect);
-			lvl->set_light_loc(c, loc);
-			tinyxml2::XMLElement * light_color = light_tree->FirstChildElement("color");
-			std::string lcolor_vect = light_color->GetText();
-			trim(lcolor_vect);
-			std::vector<double> color = parse_vector(lcolor_vect);
-			lvl->set_light_color(c, color);
-			light_tree->DeleteChildren();
-		}
-		lights_tree->DeleteChildren();
-	}
-	std::cout << "Finished Parsing Lights" << std::endl;
-	// Object Section
-	{
-		tinyxml2::XMLElement * meshes_tree = lvl_tree->FirstChildElement("objects");
-		tinyxml2::XMLElement * num_meshes = meshes_tree->FirstChildElement("num");
-		std::string nmesh_str(num_meshes->GetText());
-		trim(nmesh_str);
-		uint32 nmesh = std::stoul(nmesh_str);
-		tinyxml2::XMLElement * mesh_tree = meshes_tree->FirstChildElement("object");
-		for(uint32 c = 0; c < nmesh && mesh_tree != nullptr; c++, mesh_tree = mesh_tree->NextSiblingElement("object")){
-			lvl->add_mesh();
-			tinyxml2::XMLElement * mesh_name = mesh_tree->FirstChildElement("name");
-			std::string mname(mesh_name->GetText());
-			trim(mname);
-			lvl->set_mesh_name(c, mname);
-			tinyxml2::XMLElement * mesh_path = mesh_tree->FirstChildElement("mesh");
-			std::string mepath(mesh_path->GetText());
-			trim(mepath);
-			lvl->set_mesh_path(c, mepath);
-			tinyxml2::XMLElement * mat_path = mesh_tree->FirstChildElement("mat");
-			std::string mapath(mat_path->GetText());
-			trim(mapath);
-			lvl->set_mesh_matpath(c, mapath);
-			tinyxml2::XMLElement * transforms_tree = mesh_tree->FirstChildElement("transforms");
-			for(tinyxml2::XMLElement * child = transforms_tree->FirstChildElement(); child != nullptr; child = child->NextSiblingElement()){
-				std::string child_val(child->Value());
-				std::string vect(child->GetText());
-				trim(vect);
-				std::vector<double> child_vect = parse_vector(vect);
-				TRANSF tr = TRANSF::TRANS;
-				if(child_val.find("rotat") != -1){
-					tr = TRANSF::ROTAT;
-				}
-				else if(child_val.find("trans") != -1){
-					tr = TRANSF::TRANS;
-				}
-				else if(child_val.find("scale") != -1){
-					tr = TRANSF::SCALE;
-				}
-				lvl->add_mesh_transform(c, tr, child_vect);
-			}
-			transforms_tree->DeleteChildren();
-			mesh_tree->DeleteChildren();
-		}
-		meshes_tree->DeleteChildren();
-	}
-	std::cout << "Finished Parsing Meshes" << std::endl;
-	//doc.DeleteChildren();
-	return lvl;
+	parse_scene(my_scene, scene_tree);
+	scene_tree->DeleteChildren();
+	game_tree->DeleteChildren();
+	doc.DeleteChildren();
+	std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > game(new std::pair(my_resrc, my_scene));
+	return game;
 }
