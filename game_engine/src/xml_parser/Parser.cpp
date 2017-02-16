@@ -8,6 +8,7 @@
 #include <stack>
 
 #include "Functions.h"
+#include "Ogre.h"
 
 typedef unsigned int uint32;
 
@@ -29,8 +30,43 @@ std::shared_ptr<level> parse_level(std::string file){
 	std::cout << str << std::endl;
 	return lvl;
 }*/
-std::shared_ptr<level> parse_level(std::string file){
-	std::stack<std::string> the_stack;
+
+
+std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > parse_lvl(std::string xml, Ogre::Root * root){
+	std::shared_ptr<resource> my_rsrc(new resource());
+	
+	// Create the TinyXMLDocument
+	tinyxml2::XMLDocument doc;
+	// Load the xml parameter using doc
+	tinyxml2::XMLError flag = doc.LoadFile(xml.c_str());
+	if(val != tinyxml2::XML_SUCCESS){
+		doc.PrintError();
+		std::exit(1);
+	}
+	// Grab the <game> tag
+	tinyxml2::XMLElement * game_tree = doc.FirstChildElement("game");
+	// Get the game's name
+	tinyxml2::XMLElement * game_name_tag = game_tree->FirstChildElement("name");
+	std::string game_name(game_name_tag->GetText());
+	trim(game_name); // Trim whitespace off
+	// Grab Mesh and Material locations
+	tinyxml2::XMLElement * mesh_location_tag = game_tree->FirstChildElement("mesh");
+	tinyxml2::XMLElement * material_location_tag = game_tree->FirstChildElement("mat");
+	my_rsrc->add_resource_loc(mesh_location_tag->GetText());
+	my_rsrc->add_resource_loc(material_location_tag->GetText());
+	
+	
+	
+	
+	
+	
+	
+	std::shared_ptr<scene> my_scene(new scene());
+}
+
+
+
+std::shared_ptr<level> parse_level_orig(std::string file){
 	std::string dummy("Dummy Name");
 	std::shared_ptr<level> lvl(new level(dummy));
 	tinyxml2::XMLDocument doc;
