@@ -12,9 +12,9 @@ manager::~manager(){
 	renderer = nullptr;
 }
 
-manager* manager::get_manager(){
-	static manager game_manager;
-	return &game_manager;
+manager* manager::get_manager(const std::string &xml_file){
+	static manager * game_manager = new manager(xml_file);
+	return game_manager;
 }
 
 uint32 manager::get_win_height(){
@@ -40,8 +40,8 @@ uint32 manager::get_render_win_handler(){
 /*
  * Private Methods.
  */
-manager::manager(){
-	init();
+manager::manager(const std::string &xml_file){
+	init(xml_file);
 	renderer->start_render();
 }
 void manager::init(){

@@ -7,8 +7,5 @@
 #include <string>
 #include <sstream>
 
-static inline void ltrim(std::string &s);
-static inline void rtrim(std::string &s);
-static inline void trim(std::string &s);
 std::vector<double> parse_vector(const std::string &vect_str);
 std::vector<float> parse_fvector(const std::string &vect_str);

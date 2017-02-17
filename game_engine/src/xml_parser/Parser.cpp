@@ -3,6 +3,11 @@
 
 #include <vector>
 
+#include <algorithm> 
+#include <functional> 
+#include <cctype>
+#include <locale>
+
 #include "Functions.h"
 
 typedef unsigned int uint32;
@@ -26,8 +31,25 @@ std::shared_ptr<level> parse_level(std::string file){
 	return lvl;
 }*/
 
+static inline void ltrim(std::string &s) {
+	s.erase(s.begin(), std::find_if(s.begin(), s.end(),
+			std::not1(std::ptr_fun<int, int>(std::isspace))));
+}
+
+// trim from end (in place)
+static inline void rtrim(std::string &s) {
+	s.erase(std::find_if(s.rbegin(), s.rend(),
+			std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+}
+
+static inline void trim(std::string &s) {
+	ltrim(s);
+	rtrim(s);
+}
+
 void parse_scene_cameras(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement * cameras_tree){
-	for(uint32 c = 0, tinyxml2::XMLElement * cam = cameras_tree->FirstChildElement("camera"); cam != nullptr; c++, cam = cam->NextSiblingElement("camera")){
+	tinyxml2::XMLElement * cam = cameras_tree->FirstChildElement("camera");
+	for(uint32 c = 0; cam != nullptr; c++, cam = cam->NextSiblingElement("camera")){
 		// Retreive the camera's name
 		tinyxml2::XMLElement * cam_name_tag = cam->FirstChildElement("name");
 		std::string cam_name(cam_name_tag->GetText());
@@ -37,11 +59,11 @@ void parse_scene_cameras(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement 
 		tinyxml2::XMLElement * tar_tag = cam->FirstChildElement("target");
 		tinyxml2::XMLElement * clip_tag = cam->FirstChildElement("clip");
 		// Pull and trim the strings.
-		std::string loc_str(loc_tag.GetText());
+		std::string loc_str(loc_tag->GetText());
 		trim(loc_str);
-		std::string tar_str(tar_tag.GetText());
+		std::string tar_str(tar_tag->GetText());
 		trim(tar_str);
-		std::string clip_str(clip_tag.GetText());
+		std::string clip_str(clip_tag->GetText());
 		trim(clip_str);
 		// Convert Values to Vectors of Floats
 		std::vector<float> loc = parse_fvector(loc_str);
@@ -56,7 +78,8 @@ void parse_scene_cameras(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement 
 }
 
 void parse_scene_entities(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement * entities_tree){
-	for(uint32 c = 0, tinyxml2::XMLElement * entity_tag = entities_tree->FirstChildElement("entity"); entity_tag != nullptr; c++, entity_tag = entity_tag->NextSiblingElement("entity")){
+	tinyxml2::XMLElement * entity_tag = entities_tree->FirstChildElement("entity");
+	for(uint32 c = 0; entity_tag != nullptr; c++, entity_tag = entity_tag->NextSiblingElement("entity")){
 		tinyxml2::XMLElement * name_tag = entity_tag->FirstChildElement("name");
 		std::string name(name_tag->GetText());
 		trim(name);
@@ -75,7 +98,8 @@ void parse_scene_entities(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement
 }
 
 void parse_scene_lights(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement * lights_tree){
-	for(uint32 c = 0, tinyxml2::XMLElement * light_tag = lights_tree->FirstChildElement("light"); light_tag != nullptr; light_tag = light_tag->NextSiblingElement("light"), c++){
+	tinyxml2::XMLElement * light_tag = lights_tree->FirstChildElement("light");
+	for(uint32 c = 0; light_tag != nullptr; light_tag = light_tag->NextSiblingElement("light"), c++){
 		tinyxml2::XMLElement * name_tag = light_tag->FirstChildElement("name");
 		tinyxml2::XMLElement * type_tag = light_tag->FirstChildElement("type");
 		std::string name(name_tag->GetText());
@@ -141,7 +165,7 @@ std::string recur_scene(std::shared_ptr<scene> the_scene, tinyxml2::XMLElement *
 	}
 	tinyxml2::XMLElement * transforms_tree = curr_node->FirstChildElement("transforms");
 	if(transforms_tree != nullptr){
-		for(tinyxml2::XMLElement * transform_tag = transforms_tree->FirstChildElement(); transform_tag != nullptr; transform_tag = transform_tag->NextSiblingTag()){
+		for(tinyxml2::XMLElement * transform_tag = transforms_tree->FirstChildElement(); transform_tag != nullptr; transform_tag = transform_tag->NextSiblingElement()){
 			std::string type(transform_tag->Value());
 			trim(type);
 			if(type.compare("rotate")){
@@ -196,7 +220,7 @@ void parse_scene(std::shared_ptr<scene> my_scene, tinyxml2::XMLElement * scene_t
 	parse_scene_lights(my_scene, lights_tree);
 	lights_tree->DeleteChildren();
 	// Parse Graph
-	tinyxml2::XMLElement * graph_tree = scene->FirstChildElement("graph");
+	tinyxml2::XMLElement * graph_tree = scene_tree->FirstChildElement("graph");
 	parse_scene_graph(my_scene, graph_tree);
 	graph_tree->DeleteChildren();
 }
@@ -209,11 +233,11 @@ void parse_resource_group(std::shared_ptr<resource> my_rsrc, tinyxml2::XMLElemen
 		for(tinyxml2::XMLElement * loc_tag = group_tree->FirstChildElement("loc"); loc_tag != nullptr; loc_tag = loc_tag->NextSiblingElement("loc")){
 			std::string loc(loc_tag->GetText());
 			trim(loc);
-			my_rsrc->add_resource_location(loc, name);
+			my_rsrc->add_resource_loc(loc, name);
 		}
 		for(tinyxml2::XMLElement * rsrc_tree = group_tree->FirstChildElement("resource"); rsrc_tree != nullptr; rsrc_tree = rsrc_tree->NextSiblingElement("resource")){
-			tinyxml2::XMLElement * type_tag = rsrc_tree->GetFirstChildElement("type");
-			tinyxml2::XMLElement * file_tag = rsrc_tree->GetFirstChildElement("file");
+			tinyxml2::XMLElement * type_tag = rsrc_tree->FirstChildElement("type");
+			tinyxml2::XMLElement * file_tag = rsrc_tree->FirstChildElement("file");
 			std::string type(type_tag->GetText());
 			std::string file(file_tag->GetText());
 			trim(type);
@@ -232,7 +256,7 @@ std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > 
 	tinyxml2::XMLDocument doc;
 	// Load the xml parameter using doc
 	tinyxml2::XMLError flag = doc.LoadFile(xml.c_str());
-	if(val != tinyxml2::XML_SUCCESS){
+	if(flag != tinyxml2::XML_SUCCESS){
 		doc.PrintError();
 		std::exit(1);
 	}
@@ -256,6 +280,6 @@ std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > 
 	scene_tree->DeleteChildren();
 	game_tree->DeleteChildren();
 	doc.DeleteChildren();
-	std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > game(new std::pair(my_resrc, my_scene));
+	std::shared_ptr<std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> > > game(new std::pair<std::shared_ptr<resource>, std::shared_ptr<scene> >(my_rsrc, my_scene));
 	return game;
 }
