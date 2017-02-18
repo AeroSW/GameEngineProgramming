@@ -7,15 +7,15 @@
 			<loc>./assets/materials</loc>
 			<resource>
 				<type>Mesh</type>
-				<file>Chest_Lid.mesh</file>
+				<file>Vlad.mesh</file>
 			</resource>
 			<resource>
 				<type>Mesh</type>
-				<file>Chest_Base.mesh</file>
+				<file>Box.mesh</file>
 			</resource>
 			<resource>
 				<type>Mesh</type>
-				<file>Death_Ring.mesh</file>
+				<file>Ring.mesh</file>
 			</resource>
 		</group>
 	</resources>
@@ -24,7 +24,7 @@
 		<cameras>
 			<camera>
 				<name>Eine Kamera</name>
-				<loc>0.0,6.0,-12.0</loc>
+				<loc>8.0,10.0,-12.0</loc>
 				<target>0.0,0.0,0.0</target>
 				<clip>0.5,100.0</clip>
 			</camera>
@@ -32,54 +32,179 @@
 		<lights>
 			<light>
 				<name>Rotlicht</name>
-				<type>directed</type>
-				<loc>-5.0,0.0,-12.0</loc>
+				<type>point</type>
 				<target>0.0,0.0,0.0</target>
-				<color>0.8,0.0,0.0</color>
+				<loc>-20,-20,-20</loc>
+				<color>1.0,1.0,1.0</color>
 			</light>
 			<light>
 				<name>Blaues Licht</name>
-				<type>directed</type>
-				<loc>5.0,0.0,-12.0</loc>
+				<type>point</type>
 				<target>0.0,0.0,0.0</target>
-				<color>0.0,0.0,0.8</color>
+				<loc>20,20,20</loc>
+				<color>1.0,1.0,1.0</color>
 			</light>
 		</lights>
 		<entities>
+			<group>MyLevel1</group>
 			<entity>
-				<name>Chest Lid</name>
-				<mesh>Chest_Lid.mesh</mesh>
-				<mat>Chest</mat>
+				<name>Vlad</name>
+				<mesh>Vlad.mesh</mesh>
+				<mat>Vlad</mat>
 			</entity>
 			<entity>
-				<name>Chest Base</name>
-				<mesh>Chest_Base.mesh</mesh>
-				<mat>Chest</mat>
+				<name>Box</name>
+				<mesh>Box.mesh</mesh>
+				<mat>Box</mat>
 			</entity>
 			<entity>
-				<name>Death Ring</name>
-				<mesh>Death_Ring.mesh</mesh>
-				<mat>Death</mat>
+				<name>Lord</name>
+				<mesh>Ring.mesh</mesh>
+				<mat>Ring</mat>
 			</entity>
 		</entities>
 		<graph>
 			<root>
 				<node>
-					<name>Lid</name>
-					<object>Chest Lid</object>
+					<name>Peak_Animation</name>
+					<node>
+						<name>Peak</name>
+						<object>Vlad</object>
+						<transforms>
+							<trans>0.0,-1.0,0.0</trans>
+							<scale>1.0,0.1,1.0</scale>
+						</transforms>
+					</node>
+					<animation>
+						<name>Peak_A</name>
+						<time>2.0</time>
+						<frame>
+							<time>0.0</time>
+							<transforms>
+								<rotat>0.0,0.0,1.0,0.0</rotat>
+							</transforms>
+						</frame>
+						<frame>
+							<time>0.2</time>
+							<transforms>
+								<rotat>36.0,0.0,1.0,0.0</rotat>
+							</transforms>
+						</frame>
+						<frame>
+							<time>0.4</time>
+							<transforms>
+								<rotat>72.0,0.0,1.0,0.0</rotat>
+							</transforms>
+						</frame>
+						<frame>
+							<time>0.6</time>
+							<transforms>
+								<rotat>108.0,0.0,1.0,0.0</rotat>
+							</transforms>
+						</frame>
+						<frame>
+							<time>0.8</time>
+							<transforms>
+								<rotat>144.0,0.0,1.0,0.0</rotat>
+							</transforms>
+						</frame>
+						<frame>
+							<time>1.0</time>
+							<transforms>
+								<rotat>180.0,0.0,1.0,0.0</rotat>
+							</transforms>
+						</frame>
+						<frame>
+							<time>1.2</time>
+							<transforms>
+								<rotat>216.0,0.0,1.0,0.0</rotat>
+							</transforms>
+						</frame>
+						<frame>
+							<time>1.4</time>
+							<transforms>
+								<rotat>252.0,0.0,1.0,0.0</rotat>
+							</transforms>
+						</frame>
+						<frame>
+							<time>1.6</time>
+							<transforms>
+								<rotat>288.0,0.0,1.0,0.0</rotat>
+							</transforms>
+						</frame>
+						<frame>
+							<time>1.8</time>
+							<transforms>
+								<rotat>324.0,0.0,1.0,0.0</rotat>
+							</transforms>
+						</frame>
+						<frame>
+							<time>2.0</time>
+							<transforms>
+								<rotat>360.0,0.0,1.0,0.0</rotat>
+							</transforms>
+						</frame>
+					</animation>
+				</node>
+				<node>
+					<name>Container</name>
+					<object>Box</object>
 					<transforms>
-						<rotate>90.0,0.0,0.0,1.0</rotate>
-						<translate>1.0,0.0,0.53</translate>
-						<scale>0.9375,1.0,1.0</scale>
+						<trans>0.0,-6.0,0.0</trans>
 					</transforms>
 				</node>
 				<node>
-					<name>Base</name>
-					<object>Chest Base</object>
-				</node>
-				<node>
-					<name>Ring</name>
-					<object>Death Ring</object>
+					<name>Ring_Animation</name>
+					<node>
+						<name>Ring</name>
+						<object>Lord</object>
+					</node>
+					<animation>
+						<name>Ring_A</name>
+						<time>3.5</time>
+						<frame>
+							<time>0.0</time>
+							<transforms>
+								<trans>0.0,0.0,0.0</trans>
+							</transforms>
+						</frame>
+						<frame>
+							<time>0.5</time>
+							<transforms>
+								<trans>0.0,5.0,0.0</trans>
+							</transforms>
+						</frame>
+						<frame>
+							<time>1.0</time>
+							<transforms>
+								<trans>0.0,10.0,0.0</trans>
+							</transforms>
+						</frame>
+						<frame>
+							<time>1.5</time>
+							<transforms>
+								<trans>0.0,5.0,0.0</trans>
+							</transforms>
+						</frame>
+						<frame>
+							<time>2.5</time>
+							<transforms>
+								<trans>0.0,-10.0,0.0</trans>
+							</transforms>
+						</frame>
+						<frame>
+							<time>3.0</time>
+							<transforms>
+								<trans>0.0,-3.0,0.0</trans>
+							</transforms>
+						</frame>
+						<frame>
+							<time>3.5</time>
+							<transforms>
+								<trans>0.0,0.0,0.0</trans>
+							</transforms>
+						</frame>
+					</animation>
 				</node>
 			</root>
 		</graph>
