@@ -1,0 +1,6 @@
+09:47:29: Creating resource group General
+09:47:29: Creating resource group Internal
+09:47:29: Creating resource group Autodetect
+09:47:29: Registering ResourceManager for type Mesh
+09:47:29: Registering ResourceManager for type Material
+09:47:29: Registering ResourceManager for type Skeleton

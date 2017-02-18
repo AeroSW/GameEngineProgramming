@@ -1,24 +1,24 @@
-01:22:17: Creating resource group General
-01:22:17: Creating resource group Internal
-01:22:17: Creating resource group Autodetect
-01:22:17: Registering ResourceManager for type Material
-01:22:17: Registering ResourceManager for type Skeleton
-01:22:17: Registering ResourceManager for type Mesh
-01:22:17: MeshSerializer writing mesh data to stream ...
-01:22:17: File header written.
-01:22:17: Writing mesh data...
-01:22:17: Writing submesh...
-01:22:17: Exporting submesh texture aliases...
-01:22:17: Submesh texture aliases exported.
-01:22:17: Submesh exported.
-01:22:17: Exporting bounds information....
-01:22:17: Bounds information exported.
-01:22:17: Exporting submesh name table...
-01:22:17: Submesh name table exported.
-01:22:17: Exporting edge lists...
-01:22:17: Edge lists exported
-01:22:17: Mesh data exported.
-01:22:17: MeshSerializer export successful.
-01:22:17: Unregistering ResourceManager for type Mesh
-01:22:17: Unregistering ResourceManager for type Skeleton
-01:22:17: Unregistering ResourceManager for type Material
+13:21:26: Creating resource group General
+13:21:26: Creating resource group Internal
+13:21:26: Creating resource group Autodetect
+13:21:26: Registering ResourceManager for type Material
+13:21:26: Registering ResourceManager for type Skeleton
+13:21:26: Registering ResourceManager for type Mesh
+13:21:26: MeshSerializer writing mesh data to stream ...
+13:21:26: File header written.
+13:21:26: Writing mesh data...
+13:21:26: Writing submesh...
+13:21:26: Exporting submesh texture aliases...
+13:21:26: Submesh texture aliases exported.
+13:21:26: Submesh exported.
+13:21:26: Exporting bounds information....
+13:21:26: Bounds information exported.
+13:21:26: Exporting submesh name table...
+13:21:26: Submesh name table exported.
+13:21:26: Exporting edge lists...
+13:21:26: Edge lists exported
+13:21:26: Mesh data exported.
+13:21:26: MeshSerializer export successful.
+13:21:26: Unregistering ResourceManager for type Mesh
+13:21:26: Unregistering ResourceManager for type Skeleton
+13:21:26: Unregistering ResourceManager for type Material

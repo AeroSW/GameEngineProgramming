@@ -1,0 +1,10 @@
+09:47:29: Creating resource group General
+09:47:29: Creating resource group Internal
+09:47:29: Creating resource group Autodetect
+09:47:29: Registering ResourceManager for type Material
+09:47:29: Registering ResourceManager for type Skeleton
+09:47:29: Registering ResourceManager for type Mesh
+09:47:29: OGRE EXCEPTION(6:FileNotFoundException): File ./XML-Files/Death_ring.mesh not found. in OgreMeshUpgrade at /home/uge/Documents/Projects/Class/4903_GE/ogre_src_v1-8-1/Tools/MeshUpgrader/src/main.cpp (line 979)
+09:47:29: Unregistering ResourceManager for type Mesh
+09:47:29: Unregistering ResourceManager for type Skeleton
+09:47:29: Unregistering ResourceManager for type Material
