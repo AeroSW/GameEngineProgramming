@@ -1,4 +1,5 @@
 // Functions.cpp
+#include "Functions.h"
 
 std::vector<double> parse_vector(const std::string &vect_str){
 	static char delim = ',';

@@ -6,6 +6,7 @@
  */
 
 #include "Manager.h"
+#include "Render.h"
 
 manager::~manager(){
 	delete renderer;
@@ -13,8 +14,8 @@ manager::~manager(){
 }
 
 manager* manager::get_manager(const std::string &xml_file){
-	static manager * game_manager = new manager(xml_file);
-	return game_manager;
+	static manager game_manager(xml_file);
+	return &game_manager;
 }
 
 uint32 manager::get_win_height(){
@@ -44,6 +45,6 @@ manager::manager(const std::string &xml_file){
 	init(xml_file);
 	renderer->start_render();
 }
-void manager::init(){
-	renderer = new render(this);
+void manager::init(const std::string &xml_file){
+	renderer = new render(this, xml_file);
 }
