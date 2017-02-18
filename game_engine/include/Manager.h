@@ -22,8 +22,8 @@ class manager{
 		 * Parameters:
 		 * 	None
 		 */
-		manager();
-		void init();
+		manager(const std::string &xml);
+		void init(const std::string &xml);
 
 	public:
 		/*

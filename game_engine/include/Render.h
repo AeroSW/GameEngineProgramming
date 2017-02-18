@@ -5,46 +5,54 @@
  *      Author: Kenneth Cornett
  */
 
-#ifndef RENDERER_H_
-#define RENDERER_H_
+#ifndef RENDER_H_
+#define RENDER_H_
 
 #include <string>
 #include <memory>
 #include <vector>
 
-#include "Resource.h"
-#include "Scene.h"
+//#include "Resource.h"
+//#include "Scene.h"
 #include "UnsignedTypes.h"
+
 
 #include "Ogre.h"
 
 class manager;
+class animation_listener;
 
 class render{
 	private:
-		std::shared_ptr<Ogre::Root> root;
-		std::shared_ptr<Ogre::RenderWindow> window;
-		std::shared_ptr<Ogre::Viewport> viewport;
+		Ogre::Root * root;
+		Ogre::RenderWindow * window;
+		Ogre::Viewport * viewport;
 		
-		std::shared_ptr<resource> my_rsrc_manager;
-		std::shared_ptr<scene> my_scene_manager;
-		std::shared_ptr<manager> my_game_manager;
-
+		Ogre::SceneManager * my_scene_manager;
+		manager * my_game_manager;
+		animation_listener * al;
+		
+		Ogre::Camera * camera;
+		
 		void init(const std::string &xml_file);
-		uint32 win_handle; // window handler
+		
+		
+		//void set_camera();
+		uint32 win_handler; // window handler
 		Ogre::Real tslf; // time since last frame
+		std::shared_ptr<std::vector<Ogre::AnimationState*> > animation_states;
 	protected:
 
 
 	public:
-		render(manager &manjr, const std::string &xml_file);
+		render(manager * manjr, const std::string &xml_file);
 		render(const render &ren);
 		virtual ~render();
 
 		uint32 get_win_handle();
 		uint32 get_win_length();
 		uint32 get_win_height();
-
+		void push_animation_state(Ogre::AnimationState * as);
 		/*
 		 * get_win
 		 * 	Parameters:
@@ -73,7 +81,7 @@ class render{
 		 * 	Returns:
 		 * 		Returns a string representation of the level's name.
 		 */
-		std::string get_curr_level_name();
+		std::string get_scene_name();
 
 		/*
 		 * add_scene
@@ -83,6 +91,7 @@ class render{
 		 * 				successfully loaded or not.
 		 */
 		bool add_scene(const std::string &xml_scene_file);
+		void loop_animations(float timestep);
 };
 
 #endif /* RENDERER_H_ */
