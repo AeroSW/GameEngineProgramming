@@ -1,0 +1,28 @@
+material Vlad
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.2 0.2 0.2 1.0
+			diffuse 1.0 1.0 0.8 1.0
+			
+			lighting on
+			shading gouraud
+		}
+	}
+}
+material Box
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.2 0.2 0.2 1.0
+			diffuse 1.0 0.5 1.0 1.0
+			
+			lighting on
+			shading gouraud
+		}
+	}
+}
