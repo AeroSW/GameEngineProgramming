@@ -16,3 +16,5 @@ kecornett42_hw1/
 *.zip
 
 game_engine/Ogre\.log
+
+*.log
