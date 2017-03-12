@@ -1,13 +1,17 @@
-CC	= g++
+AutomatedMakefile = am
+CC		= g++
 
-INCLUDES= -I../../include -I../../include/level -I../../include/xml_parser
-SOURCES	= ../../src/xml_parser
+MY_INC	= -I../../include -I../../include/xml_parser
+GL_INC	= -I/usr/local/include/OGRE -I/usr/include/boost
+INC_DIRS= $(MY_INC) $(GL_INC)
 
-CFLAGS	= -c -std=c++11 $(INCLUDES)
+SRC		= ../../src/xml_parser
+
+CFLAGS	= -c -std=c++11 $(INC_DIRS)
 
 default	: all
-all	:
-	$(CC) $(CFLAGS) $(SOURCES)/*.cpp
+all		:
+	$(CC) $(CFLAGS) $(SRC)/*.cpp
 
-clean:
-	rm ./*.o
+clean	:
+	$(RM) ./*.o

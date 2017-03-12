@@ -31,7 +31,7 @@ class scene{
 		
 		// My Functions
 		std::string get_name();
-		int get_active_cam();
+		std::shared_ptr<Ogre::Camera> get_active_cam();
 		bool next_cam();
 		bool prev_cam();
 		bool set_cam(uint32 index);
@@ -61,7 +61,8 @@ class scene{
 		void set_material_name(uint32 entity_index, const std::string &material_name);
 		
 		// Light Functions
-		void add_light(const std::string &light_name, Ogre::Light::LightTypes type=Ogre::Light::LightTypes::LT_POINT);
+		void add_light(const std::string &light_name);
+		void add_light(const std::string &light_name, const std::string &type_str);
 		void rmv_light(const std::string &light_name);
 		void rmv_light(uint32 light_index);
 		void rmv_all_lights();

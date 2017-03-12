@@ -6,14 +6,15 @@
  */
 
 #include "Manager.h"
+#include "Render.h"
 
 manager::~manager(){
 	delete renderer;
 	renderer = nullptr;
 }
 
-manager* manager::get_manager(){
-	static manager game_manager;
+manager* manager::get_manager(const std::string &xml_file){
+	static manager game_manager(xml_file);
 	return &game_manager;
 }
 
@@ -37,31 +38,13 @@ uint32 manager::get_render_win_handler(){
 	}
 	return 0;
 }
-
-std::string manager::get_curr_level_name(){
-	if(renderer != nullptr){
-		return renderer->get_curr_level_name();
-	}
-	throw 1;
-}
-
-bool manager::add_scene(const std::string &xml_filename){
-	if(renderer != nullptr){
-		if(renderer->add_scene(xml_filename)){
-			return true;
-		}
-		return false;
-	}
-	throw 1;
-}
-
 /*
  * Private Methods.
  */
-manager::manager(){
-	init();
+manager::manager(const std::string &xml_file){
+	init(xml_file);
 	renderer->start_render();
 }
-void manager::init(){
-	renderer = new render(this);
+void manager::init(const std::string &xml_file){
+	renderer = new render(this, xml_file);
 }

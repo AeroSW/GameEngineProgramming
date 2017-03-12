@@ -1,21 +1,19 @@
 AutomatedMakefile = am
-CC	= g++
+CC		= g++
 
-MY_INC	= -I../include -I../include/xml_parser -I../level
-GL_INC	= -I$(OGRE_PATH)/include -I$(BOOST_PATH) -I$(OGRE_PATH)/OgreMain/include
-INC	= $(GL_INC) $(MY_INC)
+MY_INC	= -I../include -I../include/xml_parser
+GL_INC	= -I/usr/local/include/OGRE -I/usr/include/boost
+INC_DIRS= $(MY_INC) $(GL_INC)
 
-CFLAGS	= -c -std=c++11 -g $(INC)
+CFLAGS	= -c -std=c++11 -g $(INC_DIRS)
 
-SRC	= ../src
+SRC		= ../src
 
 default	: all
-all	:
-	$(CC) $(CFLAGS) $(SRC)/*.cpp
-	cd ./level && $(MAKE)
+all		:
+	$(CC) $(CFLAGS) $(SRC)/Render.cpp $(SRC)/Manager.cpp $(SRC)/AnimationListener.cpp $(SRC)/Functions.cpp $(SRC)/Game.cpp
 	cd ./xml_parser && $(MAKE)
 	
 clean	:
 	$(RM) ./*.o
-	cd ./level && $(MAKE) clean
 	cd ./xml_parser && $(MAKE) clean

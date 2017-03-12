@@ -9221,7 +9221,7 @@
         </vertexbuffer>
     </sharedgeometry>
     <submeshes>
-        <submesh use32bitindexes="False" usesharedvertices="true" operationtype="triangle_list" material="_missing_material_">
+        <submesh use32bitindexes="False" usesharedvertices="true" operationtype="triangle_list">
             <faces count="1152">
                 <face v3="2" v2="1" v1="0"/>
                 <face v3="3" v2="2" v1="0"/>
@@ -10378,8 +10378,4 @@
             </faces>
         </submesh>
     </submeshes>
-    <submeshnames>
-        <submesh index="0" name="_missing_material_">
-        </submesh>
-    </submeshnames>
 </mesh>

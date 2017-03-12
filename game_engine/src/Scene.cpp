@@ -24,8 +24,8 @@ std::string scene::get_name(){
 	return my_manager->getName();
 }
 
-int scene::get_active_cam(){
-	return active_cam;
+std::shared_ptr<Ogre::Camera> scene::get_active_cam(){
+	return my_cameras[active_cam];
 }
 
 bool scene::next_cam(){
@@ -172,8 +172,18 @@ void scene::set_material_name(uint32 index, const std::string &mat){
 
 
 // Light Functions
-void scene::add_light(const std::string &light_name, Ogre::Light::LightTypes type){
-	std::shared_ptr<Ogre::Light> light(my_manager->createLight());
+void scene::add_light(const std::string &name){
+	std::shared_ptr<Ogre::Light> light(my_manager->createLight(name));
+}
+void scene::add_light(const std::string &light_name, const std::string &type_str){
+	std::shared_ptr<Ogre::Light> light(my_manager->createLight(light_name));
+	Ogre::Light::LightTypes type = Ogre::Light::LightTypes::LT_POINT;
+	if(type_str.compare("directional") == 0){
+		type = Ogre::Light::LightTypes::LT_DIRECTIONAL;
+	}
+	else if(type_str.compare("spotlight") == 0){
+		type = Ogre::Light::LightTypes::LT_SPOTLIGHT;
+	}
 	light->setType(type);
 	my_lights.push_back(light);
 }
@@ -287,6 +297,7 @@ void scene::rmv_all_nodes(){
 }
 
 void scene::add_node_child(const std::string &node_name, const std::string &child_name){
+	std::cout << "attach_node_object(const string&, const string&)" << std::endl;
 	if(node_name.compare(child_name) != 0){
 		int p_index = -1;
 		for(uint32 c = 0; c < my_nodes.size(); c++){
@@ -294,28 +305,17 @@ void scene::add_node_child(const std::string &node_name, const std::string &chil
 				p_index = c;
 			}
 		}
-		if(p_index < 0){
-			throw 1;
-		}
 		int c_index = -1;
 		for(uint32 c = 0; c < my_nodes.size(); c++){
 			if(my_nodes[c]->getName().compare(child_name) == 0){
 				c_index = c;
 			}
 		}
-		if(c_index < 0){
-			throw 2;
-		}
 		my_nodes[p_index]->addChild(my_nodes[c_index].get());
-	}
-	else{
-		throw 3;
 	}
 }
 void scene::add_node_child(const std::string &node_name, uint32 child_index){
-	if(child_index > my_nodes.size()){
-		throw 2;
-	}
+	std::cout << "attach_node_object(const string&, uint32)" << std::endl;
 	if(node_name.compare(my_nodes[child_index]->getName()) != 0){
 		int p_index = -1;
 		for(uint32 c = 0; c < my_nodes.size(); c++){
@@ -323,19 +323,11 @@ void scene::add_node_child(const std::string &node_name, uint32 child_index){
 				p_index = c;
 			}
 		}
-		if(p_index < 0){
-			throw 1;
-		}
 		my_nodes[p_index]->addChild(my_nodes[child_index].get());
-	}
-	else{
-		throw 3;
 	}
 }
 void scene::add_node_child(uint32 node_index, const std::string &child_name){
-	if(node_index > my_nodes.size()){
-		throw 1;
-	}
+	std::cout << "attach_node_child(uint32, const string&)" << std::endl;
 	if(child_name.compare(my_nodes[node_index]->getName()) != 0){
 		int c_index = -1;
 		for(uint32 c = 0; c < my_nodes.size(); c++){
@@ -343,69 +335,28 @@ void scene::add_node_child(uint32 node_index, const std::string &child_name){
 				c_index = c;
 			}
 		}
-		if(c_index < 0){
-			throw 2;
-		}
 		my_nodes[node_index]->addChild(my_nodes[c_index].get());
-	}
-	else{
-		throw 3;
 	}
 }
 void scene::add_node_child(uint32 node_index, uint32 child_index){
+	std::cout << "attach_node_object(uint32, uint32)" << std::endl;
 	if(node_index > my_nodes.size()){
 		throw 1;
 	}
-	if(child_index > my_nodes.size()){
-		throw 2;
-	}
 	if(my_nodes[child_index]->getName().compare(my_nodes[node_index]->getName()) != 0){
 		my_nodes[node_index]->addChild(my_nodes[child_index].get());
-	}
-	else{
-		throw 3;
 	}
 }
 
 void scene::attach_node_object(const std::string &node_name, const std::string &entity_name){
 	int n_index = -1;
+	std::cout << "attach_node_object(const string&, const string&)" << std::endl;
+	std::cout << "NODE:  " << node_name << std::endl;
+	std::cout << "ETITY: " << entity_name << std::endl;
 	for(uint32 c = 0; c < my_nodes.size(); c++){
 		if(my_nodes[c]->getName().compare(node_name) == 0){
 			n_index = c;
 		}
-	}
-	if(n_index < 0){
-		throw 4;
-	}
-	int e_index = -1;
-	for(uint32 c = 0; c < my_nodes.size(); c++){
-		if(my_entities[c]->getName().compare(entity_name) == 0){
-			e_index = c;
-		}
-	}
-	if(e_index < 0){
-		throw 5;
-	}
-	my_nodes[n_index]->attachObject(my_entities[e_index].get());
-}
-void scene::attach_node_object(const std::string &node_name, uint32 entity_index){
-	if(entity_index > my_entities.size()){
-		throw 5;
-	}
-	int n_index = -1;
-	for(uint32 c = 0; c < my_nodes.size(); c++){
-		if(my_nodes[c]->getName().compare(node_name) == 0){
-			n_index = c;
-		}
-	}
-	if(n_index < 0){
-		throw 4;
-	}
-	my_nodes[n_index]->attachObject(my_entities[entity_index].get());
-}
-void scene::attach_node_object(uint32 node_index, const std::string &entity_name){
-	if(node_index > my_nodes.size()){
-		throw 4;
 	}
 	int e_index = -1;
 	for(uint32 c = 0; c < my_entities.size(); c++){
@@ -413,18 +364,30 @@ void scene::attach_node_object(uint32 node_index, const std::string &entity_name
 			e_index = c;
 		}
 	}
-	if(e_index < 0){
-		throw 5;
+	my_nodes[n_index]->attachObject(my_entities[e_index].get());
+}
+void scene::attach_node_object(const std::string &node_name, uint32 entity_index){
+	int n_index = -1;
+	std::cout << "Attach_Node_Object(const string&, uint)" << std::endl;
+	for(uint32 c = 0; c < my_nodes.size(); c++){
+		if(my_nodes[c]->getName().compare(node_name) == 0){
+			n_index = c;
+		}
+	}
+	my_nodes[n_index]->attachObject(my_entities[entity_index].get());
+}
+void scene::attach_node_object(uint32 node_index, const std::string &entity_name){
+	std::cout << "Attach_Node_Object(uint, const string&)" << std::endl;
+	int e_index = -1;
+	for(uint32 c = 0; c < my_entities.size(); c++){
+		if(my_entities[c]->getName().compare(entity_name) == 0){
+			e_index = c;
+		}
 	}
 	my_nodes[node_index]->attachObject(my_entities[e_index].get());
 }
 void scene::attach_node_object(uint32 node_index, uint32 entity_index){
-	if(entity_index > my_entities.size()){
-		throw 5;
-	}
-	if(node_index > my_nodes.size()){
-		throw 4;
-	}
+	std::cout << "Hello World" << std::endl;
 	my_nodes[node_index]->attachObject(my_entities[entity_index].get());
 }
 

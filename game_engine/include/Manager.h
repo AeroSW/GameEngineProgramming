@@ -22,8 +22,8 @@ class manager{
 		 * Parameters:
 		 * 	None
 		 */
-		manager();
-		void init();
+		manager(const std::string &xml);
+		void init(const std::string &xml);
 
 	public:
 		/*
@@ -37,7 +37,7 @@ class manager{
 		 * 	Returns:
 		 * 		Reference to manager object
 		 */
-		static manager* get_manager();
+		static manager* get_manager(const std::string &xml_file);
 		/*
 		 * get_win_length
 		 * 	Parameters:
