@@ -20,3 +20,7 @@ game_engine/Ogre\.log
 *.log
 
 3D-Objects/
+
+game_engine/src/parsers/Parser\.cpp
+
+game_engine/include/parsers/Parser\.h
