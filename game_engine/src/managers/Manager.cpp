@@ -7,6 +7,7 @@
 
 #include "Manager.h"
 #include "Render.h"
+#include "Logger.h"
 
 manager::~manager(){
 	delete renderer;

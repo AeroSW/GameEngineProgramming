@@ -1,6 +1,7 @@
 #include <utility>
 #include <iostream>
 
+#include "Asserts.h"
 #include "Render.h"
 #include "Parser.h"
 #include "Manager.h"
@@ -18,20 +19,27 @@ void render::init(const std::string &xml_file){
 	root = nullptr;
 	window = nullptr;
 	my_scene_manager = nullptr;
-	
-	root = OGRE_NEW Ogre::Root("","");
-	root->loadPlugin("RenderSystem_GL");
-	
-	Ogre::RenderSystem * render_system = root->getRenderSystemByName("OpenGL Rendering Subsystem");
-	
-	root->setRenderSystem(render_system);
-	
-	render_system->setConfigOption("Full Screen", "No");
-	render_system->setConfigOption("Video Mode", "800 x 600 @ 32-bit colour");
-	
-	window = root->initialise(true, "Kenneth's Game Engine");
-	window->getCustomAttribute("WINDOW", &win_handler);
-	
+	try{
+		root = OGRE_NEW Ogre::Root("","");
+		root->loadPlugin("RenderSystem_GL");
+		
+		Ogre::RenderSystem * render_system = root->getRenderSystemByName("OpenGL Rendering Subsystem");
+		
+		if(render_system == nullptr){
+			ASSERT_CRITICAL(false);
+		}
+		
+		root->setRenderSystem(render_system);
+		
+		render_system->setConfigOption("Full Screen", "No");
+		render_system->setConfigOption("Video Mode", "800 x 600 @ 32-bit colour");
+		
+		window = root->initialise(true, "Kenneth's Game Engine");
+		window->getCustomAttribute("WINDOW", &win_handler);
+	}
+	catch(Ogre::Exception &e){
+		ASSERT_CRITICAL(false);
+	}
 	std::string scene_title = parse_scene_name(xml_file);
 	std::cout << "Creating Scene Manager" << std::endl;
 	my_scene_manager = root->createSceneManager(Ogre::ST_GENERIC, scene_title);
@@ -54,30 +62,7 @@ void render::init(const std::string &xml_file){
 	float aspect_ratio = actual_width/actual_height;
 	camera->setAspectRatio(aspect_ratio);
 }
-/*
-void render::set_camera(){
-	std::cout << "<><><><><><><><><><><><><><><><><><><><><><><><><><><><>" << std::endl;
-	std::cout << "<><><><><><><><><><><><><><><><><><><><><><><><><><><><>" << std::endl;
-	std::vector<std::string> groups = my_rsrc_manager->get_groups();
-	//my_rsrc_manager->initialize_group(groups[0]);
-	//my_rsrc_manager->load_group(groups[0]);
-	std::shared_ptr<Ogre::ResourceGroupManager> rgm = my_rsrc_manager->get_manager();
-	
-	std::cout << std::endl << std::endl;
-	std::cout << ">>>>>>>    " << rgm->isResourceGroupInitialised(groups[0]) << std::endl;
-	std::cout << "_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_" << std::endl;
-	std::cout << ">>>>>>>    " << rgm->isResourceGroupLoaded(groups[0]) << std::endl;
-	std::cout << std::endl << std::endl;
-	
-	std::shared_ptr<Ogre::Camera> curr_cam = my_scene_manager->get_active_cam();
-	viewport.reset(window->addViewport(curr_cam.get(), 1, 0, 0, 1, 1));
-	viewport->setBackgroundColour(Ogre::ColourValue(0.0,0.0,0.0));
-	float length = Ogre::Real(viewport->getActualWidth());
-	float height = Ogre::Real(viewport->getActualHeight());
-	float aspect_ratio = length / height;
-	curr_cam->setAspectRatio(aspect_ratio);
-}
-*/
+
 render::render(manager * m, const std::string &xml_file):
 animation_states(new std::vector<Ogre::AnimationState*>()){
 	my_game_manager = m;
