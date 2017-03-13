@@ -95,7 +95,7 @@ void scene::apply_translation(const std::string &node, std::vector<float> &trans
 	my_renderer->move_node(node, translation);
 }
 // Animations
-void scene::create_animation(const std::string &node, const std::string &animation, float time, const unsigned int &track_num){
+void scene::create_animation(const std::string &node, const std::string &animation, float time, const unsigned short &track_num){
 	my_renderer->add_animation(node, animation, time, track_num);
 }
 void scene::add_frame(const std::string &animation, const unsigned short &track_num, float time, std::vector<transform> &transforms){
