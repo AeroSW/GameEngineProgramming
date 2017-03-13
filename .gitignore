@@ -26,3 +26,5 @@ game_engine/src/parsers/Parser\.cpp
 game_engine/include/parsers/Parser\.h
 
 *.o
+
+game_engine/src/managers/recup_dir\.1/
