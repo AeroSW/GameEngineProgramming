@@ -2,7 +2,6 @@
 #define LEVELPARSER_H
 
 #include "Scene.h"
-#include "ParserException.h"
 #include "tinyxml2.h"
 
 #include <string>

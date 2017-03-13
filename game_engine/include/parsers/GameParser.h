@@ -5,10 +5,9 @@
 #ifndef GAMEPARSER_H
 #define GAMEPARSER_H
 
-#include "ParserException.h"
-
 #include "tinyxml2.h"
 
+#include <vector>
 #include <string>
 
 class gameparser{
