@@ -24,3 +24,5 @@ game_engine/Ogre\.log
 game_engine/src/parsers/Parser\.cpp
 
 game_engine/include/parsers/Parser\.h
+
+*.o
