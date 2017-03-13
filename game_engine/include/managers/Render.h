@@ -45,6 +45,7 @@ class render{
 		uint32 win_handler; // window handler
 		Ogre::Real tslf; // time since last frame
 		std::shared_ptr<std::vector<Ogre::AnimationState*> > animation_states;
+		void hard_resource_group_check(uint32 line_number);
 	protected:
 
 
