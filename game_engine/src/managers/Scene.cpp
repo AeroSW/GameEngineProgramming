@@ -1,436 +1,103 @@
 #include "Scene.h"
+#include "SceneException.h"
+#include "Render.h"
 
-scene::scene(const std::string &scene_name, const std::shared_ptr<Ogre::Root> &root, Ogre::SceneType type):
-my_manager(root->createSceneManager(type, scene_name)){
-	active_cam = -1;
-	std::shared_ptr<Ogre::SceneNode> rnode(my_manager->getRootSceneNode());
-	my_nodes.push_back(rnode);
+scene::scene(render * renderer){
+	my_renderer = renderer;
 }
-
+scene::scene(render * renderer, std::vector<std::string> lvls):
+level_files(lvls){
+	my_renderer = renderer;
+}
+scene::scene(render * renderer, const std::string &game_file){
+	my_renderer = renderer;
+	gameparser gparser(game_file);
+	my_renderer->set_window_name(gparser.get_name());
+	level_files = gparser.get_levels();
+}
+scene::scene(const scene &s):
+level_files(s.level_files){
+	my_renderer = s.my_renderer;
+}
 scene::~scene(){
-	my_cameras.clear();
-	my_entities.clear();
-	my_lights.clear();
-	my_nodes.clear();
-	my_manager->destroyAllCameras();
-	my_manager->destroyAllLights();
-	my_manager->destroyAllEntities();
-	for(std::shared_ptr<Ogre::SceneNode> sn : my_nodes){
-		my_manager->destroySceneNode(sn->getName());
-	}
+	my_renderer = nullptr;
 }
 
-std::string scene::get_name(){
-	return my_manager->getName();
+void scene::log(const std::string &msg){
+	string new_msg = "Scene:\t" + msg;
+	my_renderer->log_scene(new_msg);
 }
 
-std::shared_ptr<Ogre::Camera> scene::get_active_cam(){
-	return my_cameras[active_cam];
+void scene::add_rsrc_location(const std::string &location, const std::string &group){
+	my_renderer->add_resource_location(location, group);
 }
-
-bool scene::next_cam(){
-	if(active_cam > -1 && my_cameras.size()-1 > active_cam){
-		active_cam++;
-		return true;
-	}
-	return false;
+void scene::declare_rsrc(const std::string &file, const std::string &type, const std::string &group){
+	my_renderer->declare_resource(file, type, group);
 }
-bool scene::prev_cam(){
-	if(active_cam > 0){
-		active_cam--;
-		return true;
-	}
-	return false;
-}
-bool scene::set_cam(uint32 index){
-	if(0 <= index && index < my_cameras.size()){
-		active_cam = index;
-		return true;
-	}
-	return false;
-}
-
-
-// Camera Functions Below
-void scene::add_camera(const std::string &camera_name){
-	std::shared_ptr<Ogre::Camera> cam(my_manager->createCamera(camera_name));
-	my_cameras.push_back(cam);
-}
-void scene::rmv_camera(const std::string &camera_name){
-	for(uint32 c = 0; c < my_cameras.size(); c++){
-		if(my_cameras[c]->getName().compare(camera_name) == 0){
-			my_cameras.erase(my_cameras.begin()+c);
-			my_manager->destroyCamera(camera_name);
-			return;
-		}
-	}
-}
-void scene::rmv_camera(uint32 camera_index){
-	if(camera_index < my_cameras.size()){
-		std::string cam_name(my_cameras[camera_index]->getName());
-		my_cameras.erase(my_cameras.begin()+camera_index);
-		my_manager->destroyCamera(cam_name);
-	}
-	else{
-		// throw exception.
-	}
-}
-void scene::rmv_all_cameras(){
-	my_cameras.clear();
-	my_manager->destroyAllCameras();
-}
-
-void scene::set_camera_clip(const std::string &cam_name, const std::vector<float> &clip){
-	for(uint32 c = 0; c < my_cameras.size(); c++){
-		if(my_cameras[c]->getName().compare(cam_name) == 0){
-			my_cameras[c]->setNearClipDistance(clip[0]);
-			my_cameras[c]->setFarClipDistance(clip[0]);
-			return;
-		}
-	}
-}
-void scene::set_camera_clip(uint32 index, const std::vector<float> &clip){
-	if(index < my_cameras.size()){
-		my_cameras[index]->setNearClipDistance(clip[0]);
-		my_cameras[index]->setFarClipDistance(clip[1]);
-		return;
-	}
-}
-
-void scene::set_camera_location(const std::string &name, const std::vector<float> &loc){
-	for(uint32 c = 0; c < my_cameras.size(); c++){
-		if(my_cameras[c]->getName().compare(name) == 0){
-			my_cameras[c]->setPosition(Ogre::Vector3(loc[0],loc[1],loc[2]));
-			return;
-		}
-	}
-}
-void scene::set_camera_location(uint32 index, const std::vector<float> &loc){
-	if(index < my_cameras.size()){
-		my_cameras[index]->setPosition(Ogre::Vector3(loc[0],loc[1],loc[2]));
-		return;
-	}
-}
-
-void scene::set_camera_target(const std::string &name, const std::vector<float> &target){
-	for(uint32 c = 0; c < my_cameras.size(); c++){
-		if(my_cameras[c]->getName().compare(name) == 0){
-			my_cameras[c]->lookAt(Ogre::Vector3(target[0],target[1],target[2]));
-			return;
-		}
-	}
-}
-void scene::set_camera_target(uint32 index, const std::vector<float> &target){
-	if(index < my_cameras.size()){
-		my_cameras[index]->lookAt(Ogre::Vector3(target[0],target[1],target[2]));
-		return;
-	}
-}
-
 
 // Entity Functions
-void scene::add_entity(const std::string &entity_name, const std::string &mesh_file){
-	std::shared_ptr<Ogre::Entity> ent(my_manager->createEntity(entity_name, mesh_file));
-	my_entities.push_back(ent);
+void scene::add_entity(const std::string &entity, const std::string &mesh, const std::string &group){
+	my_renderer->add_entity(entity, mesh, group);
 }
-void scene::rmv_entity(const std::string &entity_name){
-	for(uint32 c = 0; c < my_entities.size(); c++){
-		if(my_entities[c]->getName().compare(entity_name) == 0){
-			my_entities.erase(my_entities.begin()+c);
-			my_manager->destroyEntity(entity_name);
-			return;
-		}
-	}
+void scene::add_material(const std::string &entity, const std::string &material, const std::string &group){
+	my_renderer->add_material(entity, material, group);
 }
-void scene::rmv_entity(uint32 index){
-	if(my_entities.size() > index){
-		std::string ent(my_entities[index]->getName());
-		my_entities.erase(my_entities.begin()+index);
-		my_manager->destroyEntity(ent);
-		return;
-	}
-}
-void scene::rmv_all_entities(){
-	my_entities.clear();
-	my_manager->destroyAllEntities();
+bool scene::has_group(const std::string &group){
+	return my_renderer->has_group(group);
 }
 
-void scene::set_material_name(const std::string &name, const std::string &mat){
-	for(uint32 c = 0; c < my_entities.size(); c++){
-		if(my_entities[c]->getName().compare(name) == 0){
-			my_entities[c]->setMaterialName(mat);
-			return;
-		}
-	}
+// Camera Functions
+void scene::create_camera(const std::string camera){
+	my_renderer->add_camera(camera);
 }
-void scene::set_material_name(uint32 index, const std::string &mat){
-	if(my_entities.size() > index){
-		my_entities[index]->setMaterialName(mat);
-		return;
-	}
+void scene::apply_camera(std::vector<float> &loc, std::vector<float> &target, std::vector<float> &clip){
+	my_renderer->adjust_camera(loc, target, clip);
 }
-
 
 // Light Functions
-void scene::add_light(const std::string &name){
-	std::shared_ptr<Ogre::Light> light(my_manager->createLight(name));
+void scene::create_light(const std::string &light){
+	my_renderer->add_light(light);
 }
-void scene::add_light(const std::string &light_name, const std::string &type_str){
-	std::shared_ptr<Ogre::Light> light(my_manager->createLight(light_name));
-	Ogre::Light::LightTypes type = Ogre::Light::LightTypes::LT_POINT;
-	if(type_str.compare("directional") == 0){
-		type = Ogre::Light::LightTypes::LT_DIRECTIONAL;
-	}
-	else if(type_str.compare("spotlight") == 0){
-		type = Ogre::Light::LightTypes::LT_SPOTLIGHT;
-	}
-	light->setType(type);
-	my_lights.push_back(light);
+void scene::set_light_type(const std::string &light, const std::string &type){
+	my_renderer->set_light_type(light, type);
 }
-void scene::rmv_light(const std::string &light_name){
-	for(uint32 c = 0; c < my_lights.size(); c++){
-		if(my_lights[c]->getName().compare(light_name) == 0){
-			my_lights.erase(my_lights.begin() + c);
-			my_manager->destroyLight(light_name);
-			return;
-		}
-	}
+void scene::set_light_location(const std::string &light, std::vector<float> &location){
+	my_renderer->set_light_location(light, location);
 }
-void scene::rmv_light(uint32 light_index){
-	if(my_lights.size() > light_index){
-		std::string lname(my_lights[light_index]->getName());
-		my_lights.erase(my_lights.begin() + light_index);
-		my_manager->destroyLight(lname);
-		return;
-	}
+void scene::set_light_target(const std::string &light, std::vector<float> &target){
+	my_renderer->set_light_target(light, target);
 }
-void scene::rmv_all_lights(){
-	my_lights.clear();
-	my_manager->destroyAllLights();
+void scene::set_light_color(const std::string &light, std::vector<float> &color){
+	my_renderer->set_light_colour(light, color);
 }
 
-void scene::set_light_color(const std::string &light_name, const std::vector<float> &color_vector){
-	for(uint32 c = 0; c < my_lights.size(); c++){
-		if(my_lights[c]->getName().compare(light_name) == 0){
-			my_lights[c]->setDiffuseColour(color_vector[0],color_vector[1],color_vector[2]);
-			return;
-		}
-	}
+// Scene Graph Functions
+void scene::add_root_child(const std::string &child){
+	my_renderer->add_root_child(child);
 }
-void scene::set_light_color(uint32 light_index, const std::vector<float> &color_vector){
-	if(my_lights.size() > light_index){
-		my_lights[light_index]->setDiffuseColour(color_vector[0],color_vector[1],color_vector[2]);
-		return;
-	}
+void scene::create_node(const std::string &name){
+	my_renderer->add_node(name);
 }
-
-void scene::set_light_location(const std::string &light_name, const std::vector<float> &location_vector){
-	for(uint32 c = 0; c < my_lights.size(); c++){
-		if(my_lights[c]->getName().compare(light_name) == 0){
-			my_lights[c]->setPosition(location_vector[0],location_vector[1],location_vector[2]);
-			return;
-		}
-	}
+void scene::add_child(const std::string &parent, const std::string &child){
+	my_renderer->add_child(parent, child);
 }
-void scene::set_light_location(uint32 light_index, const std::vector<float> &location_vector){
-	if(my_lights.size() > light_index){
-		my_lights[light_index]->setPosition(location_vector[0],location_vector[1],location_vector[2]);
-		return;
-	}
+void scene::attach_object(const std::string &node, const std::string &entity){
+	my_renderer->attach_object(node, entity);
 }
-
-void scene::set_light_target(const std::string &light_name, const std::vector<float> &target){
-	for(uint32 c = 0; c < my_lights.size(); c++){
-		if(my_lights[c]->getName().compare(light_name) == 0){
-			my_lights[c]->setDirection(target[0],target[1],target[2]);
-			return;
-		}
-	}
+// Transformations
+void scene::apply_rotation(const std::string &node, axis w, float angle){
+	my_renderer->rotate_node(node, w, angle); // Will probably split this up and create seperate rotation functions in render.h and render.cpp
 }
-void scene::set_light_target(uint32 light_index, const std::vector<float> &target){
-	if(my_lights.size() > light_index){
-		my_lights[light_index]->setDirection(target[0],target[1],target[2]);
-		return;
-	}
+void scene::apply_scale(const std::string &node, std::vector<float> &scaling){
+	my_renderer->scale_node(node, scaling);
 }
-
-void scene::set_light_type(const std::string &light_name, Ogre::Light::LightTypes type){
-	for(uint32 c = 0; c < my_lights.size(); c++){
-		if(my_lights[c]->getName().compare(light_name) == 0){
-			my_lights[c]->setType(type);
-			return;
-		}
-	}
+void scene::apply_translation(const std::string &node, std::vector<float> &translation){
+	my_renderer->move_node(node, translation);
 }
-void scene::set_light_type(uint32 light_index, Ogre::Light::LightTypes type){
-	if(my_lights.size() > light_index){
-		my_lights[light_index]->setType(type);
-		return;
-	}
+// Animations
+void scene::create_animation(const std::string &node, const std::string &animation, float time, const unsigned int &track_num){
+	my_renderer->add_animation(node, animation, time, track_num);
 }
-
-
-// Node Functions
-void scene::add_node(const std::string &node_name){
-	std::shared_ptr<Ogre::SceneNode> node(my_manager->createSceneNode(node_name));
-	my_nodes.push_back(node);
-}
-void scene::rmv_node(const std::string &node_name){
-	for(uint32 c = 0; c < my_nodes.size(); c++){
-		if(my_nodes[c]->getName().compare(node_name) == 0){
-			my_nodes.erase(my_nodes.begin() + c);
-			my_manager->destroySceneNode(node_name);
-			return;
-		}
-	}
-}
-void scene::rmv_node(uint32 node_index){
-	if(my_nodes.size() > node_index){
-		std::string sname(my_nodes[node_index]->getName());
-		my_nodes.erase(my_nodes.begin() + node_index);
-		my_manager->destroySceneNode(sname);
-		return;
-	}
-}
-void scene::rmv_all_nodes(){
-	// To be implemented
-}
-
-void scene::add_node_child(const std::string &node_name, const std::string &child_name){
-	std::cout << "attach_node_object(const string&, const string&)" << std::endl;
-	if(node_name.compare(child_name) != 0){
-		int p_index = -1;
-		for(uint32 c = 0; c < my_nodes.size(); c++){
-			if(my_nodes[c]->getName().compare(node_name) == 0){
-				p_index = c;
-			}
-		}
-		int c_index = -1;
-		for(uint32 c = 0; c < my_nodes.size(); c++){
-			if(my_nodes[c]->getName().compare(child_name) == 0){
-				c_index = c;
-			}
-		}
-		my_nodes[p_index]->addChild(my_nodes[c_index].get());
-	}
-}
-void scene::add_node_child(const std::string &node_name, uint32 child_index){
-	std::cout << "attach_node_object(const string&, uint32)" << std::endl;
-	if(node_name.compare(my_nodes[child_index]->getName()) != 0){
-		int p_index = -1;
-		for(uint32 c = 0; c < my_nodes.size(); c++){
-			if(my_nodes[c]->getName().compare(node_name) == 0){
-				p_index = c;
-			}
-		}
-		my_nodes[p_index]->addChild(my_nodes[child_index].get());
-	}
-}
-void scene::add_node_child(uint32 node_index, const std::string &child_name){
-	std::cout << "attach_node_child(uint32, const string&)" << std::endl;
-	if(child_name.compare(my_nodes[node_index]->getName()) != 0){
-		int c_index = -1;
-		for(uint32 c = 0; c < my_nodes.size(); c++){
-			if(my_nodes[c]->getName().compare(child_name) == 0){
-				c_index = c;
-			}
-		}
-		my_nodes[node_index]->addChild(my_nodes[c_index].get());
-	}
-}
-void scene::add_node_child(uint32 node_index, uint32 child_index){
-	std::cout << "attach_node_object(uint32, uint32)" << std::endl;
-	if(node_index > my_nodes.size()){
-		throw 1;
-	}
-	if(my_nodes[child_index]->getName().compare(my_nodes[node_index]->getName()) != 0){
-		my_nodes[node_index]->addChild(my_nodes[child_index].get());
-	}
-}
-
-void scene::attach_node_object(const std::string &node_name, const std::string &entity_name){
-	int n_index = -1;
-	std::cout << "attach_node_object(const string&, const string&)" << std::endl;
-	std::cout << "NODE:  " << node_name << std::endl;
-	std::cout << "ETITY: " << entity_name << std::endl;
-	for(uint32 c = 0; c < my_nodes.size(); c++){
-		if(my_nodes[c]->getName().compare(node_name) == 0){
-			n_index = c;
-		}
-	}
-	int e_index = -1;
-	for(uint32 c = 0; c < my_entities.size(); c++){
-		if(my_entities[c]->getName().compare(entity_name) == 0){
-			e_index = c;
-		}
-	}
-	my_nodes[n_index]->attachObject(my_entities[e_index].get());
-}
-void scene::attach_node_object(const std::string &node_name, uint32 entity_index){
-	int n_index = -1;
-	std::cout << "Attach_Node_Object(const string&, uint)" << std::endl;
-	for(uint32 c = 0; c < my_nodes.size(); c++){
-		if(my_nodes[c]->getName().compare(node_name) == 0){
-			n_index = c;
-		}
-	}
-	my_nodes[n_index]->attachObject(my_entities[entity_index].get());
-}
-void scene::attach_node_object(uint32 node_index, const std::string &entity_name){
-	std::cout << "Attach_Node_Object(uint, const string&)" << std::endl;
-	int e_index = -1;
-	for(uint32 c = 0; c < my_entities.size(); c++){
-		if(my_entities[c]->getName().compare(entity_name) == 0){
-			e_index = c;
-		}
-	}
-	my_nodes[node_index]->attachObject(my_entities[e_index].get());
-}
-void scene::attach_node_object(uint32 node_index, uint32 entity_index){
-	std::cout << "Hello World" << std::endl;
-	my_nodes[node_index]->attachObject(my_entities[entity_index].get());
-}
-
-void scene::add_node_transform(const std::string &node_name, TRANSFORM type, const std::vector<float> &t_vector){
-	for(uint32 c = 0; c < my_nodes.size(); c++){
-		if(my_nodes[c]->getName().compare(node_name) == 0){
-			if(type == TRANSFORM::ROTATE && t_vector.size() == 4){
-				rotate_node(c, t_vector);
-			}
-			else if(type == TRANSFORM::SCALE && t_vector.size() == 3){
-				scale_node(c, t_vector);
-			}
-			else if(type == TRANSFORM::TRANSLATE && t_vector.size() == 3){
-				translate_node(c, t_vector);
-			}
-			return;
-		}
-	}
-}
-void scene::add_node_transform(uint32 node_index, TRANSFORM type, const std::vector<float> &t_vector){
-	if(node_index < my_nodes.size()){
-		if(type == TRANSFORM::ROTATE && t_vector.size() == 4){
-			rotate_node(node_index, t_vector);
-		}
-		else if(type == TRANSFORM::SCALE && t_vector.size() == 3){
-			scale_node(node_index, t_vector);
-		}
-		else if(type == TRANSFORM::TRANSLATE && t_vector.size() == 3){
-			translate_node(node_index, t_vector);
-		}
-		return;
-	}
-}
-
-// Private Functions
-void scene::rotate_node(uint32 index, std::vector<float> rotation){
-	Ogre::Vector3 pivot(rotation[1], rotation[2], rotation[3]);
-	Ogre::Quaternion q(Ogre::Degree(rotation[0]), pivot);
-	my_nodes[index]->rotate(q);
-}
-void scene::scale_node(uint32 index, std::vector<float> scaler){
-	my_nodes[index]->scale(scaler[0],scaler[1],scaler[2]);
-}
-void scene::translate_node(uint32 index, std::vector<float> translation){
-	my_nodes[index]->translate(translation[0],translation[1],translation[2]);
+void scene::add_frame(const std::string &animation, const unsigned short &track_num, float time, std::vector<transform> &transforms){
+	my_renderer->add_frame(animation, track_num, time, transforms);
 }
