@@ -199,7 +199,7 @@ void levelparser::parse_light(scene * manager, const std::string &group_name, co
 		manager->set_light_type(obj_name, type);
 	}
 	catch(scene_error &e){
-		throw parse_error_l("Could not set light type.", 201);
+		throw parse_error_l(e.what(), 201);
 	}
 	tinyxml2::XMLElement * loc_elem = object->FirstChildElement("loc");
 	tinyxml2::XMLElement * tar_elem = object->FirstChildElement("target");
