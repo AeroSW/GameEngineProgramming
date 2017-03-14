@@ -201,12 +201,82 @@ void render::set_light_colour(const std::string &light_name, std::vector<float> 
 	ogre_light->setDiffuseColour(colour[0]/10, colour[1]/10, colour[2]/10);
 	ogre_light->setSpecularColour(colour[0], colour[1], colour[2]);
 }
-void render::add_root_child(const std::string &child){}
-void render::add_node(const std::string &node_name){}
-void render::add_child(const std::string &parent, const std::string &child){}
-void render::attach_object(const std::string &node, const std::string &entity){}
-void render::rotate_node(const std::string &node, axis w, float angle){}
-void render::scale_node(const std::string &node, std::vector<float> &scaling){}
-void render::move_node(const std::string &node, std::vector<float> movement){}
-void render::add_animation(const std::string &node, const std::string &anim_name, const float time, const uint16 track_num){}
-void render::add_frame(const std::string &anim_name, const uint16 &track_num, const float time, std::vector<transform> &transforms){}
+void render::add_root_child(const std::string &child){
+	if(!ogre_scene->hasSceneNode(child)) throw render_error();
+	Ogre::SceneNode * root = ogre_scene->getRootSceneNode();
+	Ogre::SceneNode * node = ogre_scene->getSceneNode(child);
+	root->addChild(node);
+}
+void render::add_node(const std::string &node_name){
+	if(!ogre_scene->hasSceneNode(node_name))
+		ogre_scene->createSceneNode(node_name);
+}
+void render::add_child(const std::string &parent, const std::string &child){
+	if(!ogre_scene->hasSceneNode(parent)) throw render_error();
+	if(!ogre_scene->hasSceneNode(child)) throw render_error();
+	Ogre::SceneNode * parent_node = ogre_scene->getSceneNode(parent);
+	Ogre::SceneNode * child_node = ogre_scene->getSceneNode(child);
+	parent_node->addChild(child_node);
+}
+void render::attach_object(const std::string &node, const std::string &object){
+	bool found_flag = false;
+	if(!ogre_scene->hasSceneNode(node)) throw render_error();
+	if(!found_flag && ogre_scene->hasEntity(object)) found_flag = true;
+	if(!found_flag && ogre_scene->hasCamera(object)) found_flag = true;
+	if(!found_flag && ogre_scene->hasLight(object)) found_flag = true;
+	if(!found_flag) throw render_error();
+	Ogre::SceneNode * ogre_node = ogre_scene->getSceneNode(node);
+	Ogre::hasMovableObject * ogre_object = ogre_scene->getMovableObject(entity);
+	ogre_node->attachObject(ogre_object);
+}
+void render::rotate_node(const std::string &node, axis w, float angle){
+	if(!ogre_scene->hasSceneNode(node)) throw render_error();
+	Ogre::SceneNode * ogre_node = ogre_scene->getSceneNode(node);
+	Ogre::Vector3 ogre_vector;
+	switch(w){
+		case(axis::X):
+			ogre_vector = Ogre::Vector3(1,0,0);
+			break;
+		case(axis::Y):
+			ogre_vector = Ogre::Vector3(0,1,0);
+			break;
+		case(axis::Z):
+			ogre_vector = Ogre::Vector3(0,0,1);
+			break;
+	}
+	Ogre::Quaternion ogre_quat(Ogre::Degree(angle), ogre_vector);
+	try{
+		ogre_node->rotate(ogre_quat);
+	}
+	catch(Ogre::Exception &e){
+		AssertLog(false);
+	}
+}
+void render::scale_node(const std::string &node, std::vector<float> &scaling){
+	if(!ogre_scene->hasSceneNode(node)) throw render_error();
+	Ogre::SceneNode * ogre_node = ogre_scene->getSceneNode(node);
+	ogre_node->scale(scaling[0], scaling[1], scaling[2]);
+}
+void render::move_node(const std::string &node, std::vector<float> movement){
+	if(!ogre_scene->hasSceneNode(node)) throw render_error();
+	Ogre::SceneNode * ogre_node = ogre_scene->getSceneNode(node);
+	ogre_node->translate(movement[0], movement[1], movement[2]);
+}
+void render::add_animation(const std::string &node, const std::string &anim_name, const float time, const uint16 track_num){
+	if(!ogre_scene->hasSceneNode(node)) throw render_error();
+	if(!ogre_scene->hasAnimation(anim_name)){
+		Ogre::Animation * ogre_animation = ogre_scene->createAnimation(anim_name, time);
+		if(!levels[curr_level].has_node_track(node, track_num)){
+			Ogre::SceneNode * ogre_node = ogre_scene->getSceneNode(node);
+			ogre_animation->createNodeTrack(track_num, ogre_node);
+			levels[curr_level].add_node_track(node, track_num);
+		}
+	}
+}
+void render::add_frame(const std::string &anim_name, const uint16 &track_num, const float time, std::vector<transform> &transforms){
+	if(!ogre_scene->hasAnimation(anim_name)) throw render_error();
+	Ogre::Animation * ogre_animation = ogre_scene->getAnimation(anim_name);
+	if(!ogre_animation->hasNodeTrack(track_num)) throw render_error();
+	Ogre::NodeAnimationTrack * ogre_atracker = ogre_animation->getNodeAnimationTrack(track_num);
+	
+}
