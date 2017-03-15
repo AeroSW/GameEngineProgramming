@@ -79,6 +79,7 @@ class manager{
 		 * 		or not.
 		 */
 		bool add_scene(const std::string &xml_filename);
+		scene * get_scene();
 };
 
 #endif /* MANAGER_H_ */
