@@ -49,7 +49,7 @@ void levelparser::parse_paths(scene * manager){
 			for(tinyxml2::XMLElement * location = group->FirstChildElement("loc"); location != nullptr; location = location->NextSiblingElement("loc")){
 				std::string loc(location->GetText());
 				trim(loc);
-				manager->add_rsrc_location(loc, name);
+				manager->add_resrc_location(loc, name);
 				manager->log("Resource location " + loc + " added.");
 			}
 			manager->log("Finished adding resource locations.");
@@ -179,7 +179,6 @@ void levelparser::parse_entity(scene * manager, const std::string &group_name, c
 }
 
 void levelparser::parse_camera(scene * manager, const std::string &group_name, const std::string &obj_name, tinyxml2::XMLElement * object){
-	manager->create_camera(obj_name);
 	tinyxml2::XMLElement * loc_elem = object->FirstChildElement("loc");
 	if(loc_elem == nullptr) throw parse_error_l("Camera location needed.", 174);
 	tinyxml2::XMLElement * tar_elem = object->FirstChildElement("target");
@@ -195,7 +194,7 @@ void levelparser::parse_camera(scene * manager, const std::string &group_name, c
 	std::vector<float> loc = parse_fvector(loc_str);
 	std::vector<float> tar = parse_fvector(tar_str);
 	std::vector<float> clip = parse_fvector(clip_str);
-	manager->apply_camera(loc, tar, clip);
+	manager->create_camera(obj_name, loc, tar, clip);
 }
 
 void levelparser::parse_light(scene * manager, const std::string &group_name, const std::string &obj_name, tinyxml2::XMLElement * object){
