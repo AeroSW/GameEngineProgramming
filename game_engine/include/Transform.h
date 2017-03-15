@@ -21,6 +21,8 @@ struct transform{
 	transform(transform_type t, std::vector<float> vals);
 	transform(const transform &t);
 	virtual ~transform();
+	
+	transform& operator=(const transform &tran);
 };
 
 #endif
