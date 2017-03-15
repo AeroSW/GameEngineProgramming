@@ -23,8 +23,11 @@ class levelparser{
 		void apply_animations(scene * scene_manager, tinyxml2::XMLElement * curr_node, const std::string &node_name);
 	
 	public:
+		std::string file_name;
+		
 		levelparser();
 		levelparser(const std::string &doc_name);
+		levelparser(const levelparser &lp);
 		virtual ~levelparser();
 		
 		virtual void load_level(const std::string &doc_name);
@@ -33,6 +36,8 @@ class levelparser{
 		virtual void parse_scene(scene * scene_manager);
 		
 		virtual std::string get_name();
+		
+		levelparser& operator=(const levelparser &lp);
 };
 
 #endif
