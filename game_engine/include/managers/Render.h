@@ -15,10 +15,12 @@
 //#include "Resource.h"
 //#include "Scene.h"
 #include "UnsignedTypes.h"
+#include "GameParser.h"
 
 
 #include "Ogre.h"
 
+class level;
 class manager;
 class animation_listener;
 
@@ -102,8 +104,8 @@ class render{
 		void loop_animations(float timestep);
 		
 		// Scene Functions
+		void log(const std::string &msg);
 		bool has_group(const std::string &group);
-		void log_scene(const std::string &msg);
 		void add_resource_location(const std::string &location, const std::string &group);
 		void declare_resource(const std::string &file, const std::string &type, const std::string &group);
 		void add_entity(const std::string &entity, const std::string &mesh, const std::string &group);
