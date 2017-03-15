@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include "LevelParser.h"
+#include "UnsignedTypes.h"
 
 class manager;
 class scene;
