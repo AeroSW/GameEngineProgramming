@@ -5,18 +5,13 @@
 scene::scene(render * renderer){
 	my_renderer = renderer;
 }
-scene::scene(render * renderer, std::vector<std::string> lvls):
-level_files(lvls){
+scene::scene(render * renderer, std::vector<std::string> lvls){
 	my_renderer = renderer;
 }
 scene::scene(render * renderer, const std::string &game_file){
 	my_renderer = renderer;
-	gameparser gparser(game_file);
-	my_renderer->set_window_name(gparser.get_name());
-	level_files = gparser.get_levels();
 }
-scene::scene(const scene &s):
-level_files(s.level_files){
+scene::scene(const scene &s){
 	my_renderer = s.my_renderer;
 }
 scene::~scene(){
@@ -24,14 +19,14 @@ scene::~scene(){
 }
 
 void scene::log(const std::string &msg){
-	string new_msg = "Scene:\t" + msg;
-	my_renderer->log_scene(new_msg);
+	std::string new_msg = "Scene:\t" + msg;
+	my_renderer->log(new_msg);
 }
 
-void scene::add_rsrc_location(const std::string &location, const std::string &group){
+void scene::add_resrc_location(const std::string &location, const std::string &group){
 	my_renderer->add_resource_location(location, group);
 }
-void scene::declare_rsrc(const std::string &file, const std::string &type, const std::string &group){
+void scene::declare_resrc(const std::string &file, const std::string &type, const std::string &group){
 	my_renderer->declare_resource(file, type, group);
 }
 
@@ -47,11 +42,8 @@ bool scene::has_group(const std::string &group){
 }
 
 // Camera Functions
-void scene::create_camera(const std::string camera){
-	my_renderer->add_camera(camera);
-}
-void scene::apply_camera(std::vector<float> &loc, std::vector<float> &target, std::vector<float> &clip){
-	my_renderer->adjust_camera(loc, target, clip);
+void scene::create_camera(const std::string &camera, std::vector<float> &loc, std::vector<float> &target, std::vector<float> &clip){
+	my_renderer->add_camera(camera, loc, target, clip);
 }
 
 // Light Functions

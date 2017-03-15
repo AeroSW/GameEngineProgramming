@@ -9,6 +9,7 @@
 #include "UnsignedTypes.h"
 
 class render;
+class manager;
 
 class scene{
 	private:
@@ -23,7 +24,7 @@ class scene{
 		
 		void log(const std::string &msg); // Calls renderer's log function which then calls manager to log the message.
 		
-		void add_rsrc_location(const std::string &location, const std::string &group_name);
+		void add_resrc_location(const std::string &location, const std::string &group_name);
 		void declare_resrc(const std::string &file, const std::string &type, const std::string &group_name);
 		
 		// Entity Functions.
@@ -32,8 +33,7 @@ class scene{
 		bool has_group(const std::string &group);
 		
 		// Camera Functions.
-		void create_camera(const std::string &cam_name);
-		void apply_camera(std::vector<float> &loc, std::vector<float> &target, std::vector<float> &clip);
+		void create_camera(const std::string &cam_name, std::vector<float> &loc, std::vector<float> &target, std::vector<float> &clip);
 		
 		// Light Functions.
 		void create_light(const std::string &light_name);
