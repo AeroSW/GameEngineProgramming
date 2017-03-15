@@ -8,10 +8,18 @@
 #include "AnimationListener.h"
 
 void render::loop_animations(float timestep){
-	uint32 sze = animation_states->size();
+	std::vector<std::string> astate_names = levels[curr_level].animation_list;
+	uint32 sze = astate_names.size();
 	for(uint32 c = 0; c < sze; c++){
-		Ogre::AnimationState * a_state = (*animation_states)[c];
-		a_state->addTime(timestep);
+		Ogre::AnimationState * ogre_astate = ogre_scene->getAnimationState(astate_names[c]);
+		ogre_astate->addTime(timestep);
+	}
+}
+
+void render::build_levels(std::vector<std::string> &names){
+	for(std::string name : names){
+		level lvl(name, my_manager);
+		levels.push_back(lvl);
 	}
 }
 
@@ -28,7 +36,13 @@ void render::init(const std::string &xml_file){
 		if(render_system == nullptr){
 			ASSERT_CRITICAL(false);
 		}
-		
+		try{
+			std::vector<std::string> level_files = gp->get_levels();
+			build_levels(level_files);
+		}
+		catch(parse_error_g &e){
+			ASSERT_CRITICAL(false);
+		}
 		root->setRenderSystem(render_system);
 		
 		render_system->setConfigOption("Full Screen", "No");
@@ -65,12 +79,18 @@ void render::init(const std::string &xml_file){
 
 render::render(manager * m, const std::string &xml_file):
 animation_states(new std::vector<Ogre::AnimationState*>()){
-	my_game_manager = m;
-	init(xml_file);
+	my_manager = m;
+	try{
+		gp = new gameparser(xml_file);
+	}
+	catch(parse_error_g &e){
+		throw render_error(std::string(e.what()), 74);
+	}
+	init();
 	std::cout << "Number of Animation States:\t" << animation_states->size() << std::endl;
 	std::cout << "Animation 1's Length:\t" << (*animation_states)[0]->getLength() << std::endl;
 	std::cout << "Animation 1 is enabled:\t" << (*animation_states)[0]->getEnabled() << "is looping:\t" << (*animation_states)[0]->getLoop() << std::endl;
-	//set_camera();
+//	set_camera();
 	al = new animation_listener(this);
 	root->addFrameListener(al);
 }
@@ -83,7 +103,7 @@ render::~render(){
 	window->destroy();
 	my_scene_manager->clearScene();
 	my_scene_manager->destroyAllCameras();
-	my_game_manager = nullptr;
+	my_manager = nullptr;
 }
 
 void render::push_animation_state(Ogre::AnimationState * as){
@@ -108,7 +128,7 @@ bool render::has_group(const std::string &group){
 	return rgm->resourceGroupExists(group);
 }
 void render::log_scene(const std::string &msg){
-	my_game_manager->scene_log(msg);
+	my_manager->scene_log(msg);
 }
 void render::add_resource_location(const std::string &location, const std::string &group){
 	if(!rgm->resourceGroupExists(group)) throw render_error();
@@ -278,5 +298,34 @@ void render::add_frame(const std::string &anim_name, const uint16 &track_num, co
 	Ogre::Animation * ogre_animation = ogre_scene->getAnimation(anim_name);
 	if(!ogre_animation->hasNodeTrack(track_num)) throw render_error();
 	Ogre::NodeAnimationTrack * ogre_atracker = ogre_animation->getNodeAnimationTrack(track_num);
+	Ogre::TransformKeyFrame * ogre_frame = ogre_atracker->createNodeKeyFrame(time);
 	
+	uint num_transforms = transforms.size();
+	for(uint cx = 0; cx < num_transforms; cx++){
+		switch(transforms[cx].type){
+			case(transform_type::ROTATION):
+				Ogre::Vector3 ogre_vector(transforms[cx].values[1], transforms[cx].values[2], transforms[cx].values[3]);
+				Ogre::Quaternion ogre_quat(Ogre::Degree(transforms[cx].values[0]), ogre_vector);
+				ogre_frame->setRotation(ogre_quat);
+				break;
+			case(transform_type::SCALE):
+				Ogre::Vector3 ogre_vector(transforms[cx].values[0], transforms[cx].values[1], transforms[cx].values[2]);
+				ogre_frame->setScale(ogre_vector);
+				break;
+			case(transform_type::TRANSLATION):
+				Ogre::Vector3 ogre_vector(transforms[cx].values[0], transforms[cx].values[1], transforms[cx].values[2]);
+				ogre_frame->setTranslate(ogre_vector);
+				break;
+		}
+	}
+	Ogre::AnimationState * ogre_astate;
+	if(!ogre_scene->hasAnimationState(anim_name)){
+		ogre_astate = ogre_scene->createAnimationState(anim_name);
+		levels[curr_level].animation_list.push_back(anim_name);
+	}
+	else{
+		ogre_astate = ogre_scene->getAnimationState(anim_name);
+	}
+	ogre_astate->setEnabled(true);
+	ogre_astate->setLoop(true);
 }

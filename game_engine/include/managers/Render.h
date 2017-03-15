@@ -29,23 +29,26 @@ class render{
 		Ogre::Viewport * viewport;
 		Ogre::ResourceGroupManager * rgm;
 		Ogre::SceneManager * ogre_scene;
-		manager * my_game_manager;
+		
+		manager * my_manager;
 		animation_listener * al;
 		
-		std::vector<level> levels;
-		uint32 curr_level;
-		std::vector<std::string> cameras;
+		std::vector<level> levels; // The list of levels.  Keeps track of cameras, entities, and lights.  Animations etc.
+		uint32 curr_level; // 0-based
+		
+		gameparser * gp;
 		
 	//	Ogre::Camera * cam;
 		
-		void init(const std::string &xml_file);
+		void init();
 		
 		
 	//	void set_camera();
 		uint32 win_handler; // window handler
 		Ogre::Real tslf; // time since last frame
-		std::shared_ptr<std::vector<Ogre::AnimationState*> > animation_states;
-		void hard_resource_group_check(uint32 line_number);
+		
+		void build_levels(std::vector<std::string> &names);
+		
 	protected:
 
 
