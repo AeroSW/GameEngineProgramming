@@ -13,7 +13,6 @@ class render;
 class scene{
 	private:
 		render * my_renderer;
-		std::vector<std::string> level_files;
 		
 	public:
 		scene(render * renderer);
