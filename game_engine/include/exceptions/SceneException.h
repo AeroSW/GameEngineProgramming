@@ -7,7 +7,7 @@ class scene_error : game_error{
 	private:
 		const std::string name = "scene";
 	public:
-		scene_error(const std::string &what_msg, uint line_num);
+		scene_error(const std::string &what_msg, uint32 line_num);
 		virtual ~scene_error();
 		virtual const char * what();
 };

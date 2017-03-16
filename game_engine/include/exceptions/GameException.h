@@ -10,7 +10,7 @@ class game_error : public std::runtime_error{
 		uint32 line_number;
 		std::string class_name;
 	public:
-		game_error(const std::string &what_msg, const std::string class_name, uint32 line_number);
+		game_error(const std::string &what_msg, const std::string &class_name, uint32 line_number);
 		virtual ~game_error();
 		virtual const char * what();
 };

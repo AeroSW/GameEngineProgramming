@@ -9,6 +9,6 @@ runtime_error(what_msg){
 game_error::~game_error(){}
 
 const char* game_error::what(){
-	std::string full_msg = runtime_error::what() + " in class " + class_name + " at line " + line_num;
-	return full_msg.to_cstr();
+	std::string full_msg = std::string(runtime_error::what()) + " in class " + class_name + " at line " + std::to_string(line_number);
+	return full_msg.c_str();
 }
