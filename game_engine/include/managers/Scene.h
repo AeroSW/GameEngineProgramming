@@ -17,15 +17,19 @@ class scene{
 		
 	public:
 		scene(render * renderer);
-		scene(render * renderer, std::vector<std::string> lvls);
-		scene(render * renderer, const std::string &game_file);
 		scene(const scene &s);
 		~scene();
 		
+		bool has_manager(const std::string &manager_name);
+		void create_manager(const std::string &name);
+		void load(const std::string &name);
 		void log(const std::string &msg); // Calls renderer's log function which then calls manager to log the message.
+		void build(const std::string &name);
 		
 		void add_resrc_location(const std::string &location, const std::string &group_name);
 		void declare_resrc(const std::string &file, const std::string &type, const std::string &group_name);
+		void load_resources(std::vector<std::string> &resources);
+		void unload_resources(std::vector<std::string> &resources);
 		
 		// Entity Functions.
 		void add_entity(const std::string &obj_name, const std::string &mesh, const std::string &group_name);

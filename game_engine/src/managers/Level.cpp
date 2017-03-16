@@ -1,6 +1,7 @@
 #include "Level.h"
 #include "Scene.h"
 #include "Manager.h"
+#include "LevelException.h"
 
 level::level(const std::string &doc_name, manager * my_manager){
 	my_parser = new levelparser(doc_name);
@@ -20,10 +21,43 @@ level::~level(){
 }
 
 void level::construct_level(){
-	
+	if(!my_scene->has_manager(name)){
+		try{
+			my_parser->parse_paths(my_scene);
+			my_scene->load_resources(resources);
+			my_scene->create_manager(name);
+			my_scene->load(name);
+			my_parser->parse_scene(my_scene);
+		}
+		catch(game_error &e){
+			throw level_error(std::string(e.what()), 29);
+		}
+	}
+	else{
+		my_scene->load_resources(resources);
+		my_scene->load(name);
+	}
+	my_scene->build(name);
 }
 void level::destruct_level(){
-	
+	if(my_scene->has_manager(name))
+		my_scene->unload_resources(resources);
+}
+
+std::string level::get_camera(uint32 index){
+	return cameras[index];
+}
+uint32 level::num_cameras(){
+	return cameras.size();
+}
+std::string level::get_name(){
+	return name;
+}
+std::string level::get_resource(uint32 index){
+	return resources[index];
+}
+uint32 level::num_resources(){
+	return resources.size();
 }
 
 bool level::has_entity(const std::string &entity){

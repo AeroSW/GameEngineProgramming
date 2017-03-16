@@ -5,12 +5,6 @@
 scene::scene(render * renderer){
 	my_renderer = renderer;
 }
-scene::scene(render * renderer, std::vector<std::string> lvls){
-	my_renderer = renderer;
-}
-scene::scene(render * renderer, const std::string &game_file){
-	my_renderer = renderer;
-}
 scene::scene(const scene &s){
 	my_renderer = s.my_renderer;
 }
@@ -18,16 +12,40 @@ scene::~scene(){
 	my_renderer = nullptr;
 }
 
+// Manager Functions
 void scene::log(const std::string &msg){
 	std::string new_msg = "Scene:\t" + msg;
 	my_renderer->log(new_msg);
 }
+bool scene::has_manager(const std::string &my_name){
+	return my_renderer->has_scene_manager(my_name);
+}
+void scene::create_manager(const std::string &my_name){
+	my_renderer->create_scene_manager(my_name);
+}
+void scene::load(const std::string &my_name){
+	my_renderer->load_scene(my_name);
+}
+void scene::build(const std::string &my_name){
+	my_renderer->render_scene(my_name);
+}
 
+// ResourceGroup Functions
 void scene::add_resrc_location(const std::string &location, const std::string &group){
 	my_renderer->add_resource_location(location, group);
 }
 void scene::declare_resrc(const std::string &file, const std::string &type, const std::string &group){
 	my_renderer->declare_resource(file, type, group);
+}
+void scene::load_resources(std::vector<std::string> &resources){
+	for(std::string resource : resources){
+		my_renderer->load_resource(resource);
+	}
+}
+void scene::unload_resources(std::vector<std::string> &resources){
+	for(std::string resource : resources){
+		my_renderer->unload_resource(resource);
+	}
 }
 
 // Entity Functions

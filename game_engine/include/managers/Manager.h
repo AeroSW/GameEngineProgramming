@@ -9,20 +9,24 @@
 #define MANAGER_H_
 
 #include <string>
+#include "LogManager.h"
 #include "UnsignedTypes.h"
 
 class render;
+class scene;
+class logger;
 
 class manager{
 	private:
 		render* renderer;
-
+		scene * my_scene;
+		logger my_log;
 		/*
 		 * Constructor
 		 * Parameters:
 		 * 	None
 		 */
-		manager(const std::string &xml);
+		manager(const std::string &xml, const std::string &log_name);
 		void init(const std::string &xml);
 
 	public:
@@ -37,7 +41,7 @@ class manager{
 		 * 	Returns:
 		 * 		Reference to manager object
 		 */
-		static manager* get_manager(const std::string &xml_file);
+		static manager* get_manager(const std::string &xml_file, const std::string &log_name);
 		/*
 		 * get_win_length
 		 * 	Parameters:
@@ -80,6 +84,8 @@ class manager{
 		 */
 		bool add_scene(const std::string &xml_filename);
 		scene * get_scene();
+		void log(const std::string &comment);
+		void log(const std::string &comment, uint32 ln_number);
 };
 
 #endif /* MANAGER_H_ */

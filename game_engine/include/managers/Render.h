@@ -16,34 +16,39 @@
 //#include "Scene.h"
 #include "UnsignedTypes.h"
 #include "GameParser.h"
-
+#include "Transform.h"
 
 #include "Ogre.h"
 
 class level;
 class manager;
-class animation_listener;
+class renderlistener;
 
 class render{
 	private:
 		Ogre::Root * root;
 		Ogre::RenderWindow * window;
 		Ogre::Viewport * viewport;
+		float aspect_ratio;
+		
 		Ogre::ResourceGroupManager * rgm;
 		Ogre::SceneManager * ogre_scene;
 		
 		manager * my_manager;
-		animation_listener * al;
+		renderlistener * al;
 		
 		std::vector<level> levels; // The list of levels.  Keeps track of cameras, entities, and lights.  Animations etc.
 		uint32 curr_level; // 0-based
 		
 		gameparser * gp;
 		
-	//	Ogre::Camera * cam;
+		
+	//	Ogre::Camera * active_cam;
 		
 		void init();
 		
+		void destroy_levels();
+		void unload_level();
 		
 	//	void set_camera();
 		uint32 win_handler; // window handler
@@ -62,7 +67,7 @@ class render{
 		uint32 get_win_handle();
 		uint32 get_win_length();
 		uint32 get_win_height();
-		void push_animation_state(Ogre::AnimationState * as);
+	//	void push_animation_state(Ogre::AnimationState * as);
 		/*
 		 * get_win
 		 * 	Parameters:
@@ -103,11 +108,23 @@ class render{
 		bool add_scene(const std::string &xml_scene_file);
 		void loop_animations(float timestep);
 		
-		// Scene Functions
+		void load_level(uint lvl=1); // 1-based function call.
+		
 		void log(const std::string &msg);
-		bool has_group(const std::string &group);
+		
+		// Scene Functions
+		//	Manager Functions
+		bool has_scene_manager(const std::string &name);
+		void create_scene_manager(const std::string &name);
+		void load_scene(const std::string &name);
+		void render_scene(const std::string &name);
+		//	Resource Manipulation
+		void load_resource(const std::string &resource);
+		void unload_resource(const std::string &resource);
 		void add_resource_location(const std::string &location, const std::string &group);
 		void declare_resource(const std::string &file, const std::string &type, const std::string &group);
+		bool has_group(const std::string &group);
+		//	Generic Functions
 		void add_entity(const std::string &entity, const std::string &mesh, const std::string &group);
 		void add_material(const std::string &entity, const std::string &material, const std::string &group);
 		void add_camera(const std::string &cam_name, std::vector<float> &loc, std::vector<float> &target, std::vector<float> &clip);
