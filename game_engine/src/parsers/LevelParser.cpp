@@ -19,7 +19,7 @@ file_name(doc_name){
 levelparser::levelparser(const levelparser &lp):
 file_name(lp.file_name){
 	doc = new tinyxml2::XMLDocument();
-	tinyxml2::XMLError err = doc->loadFile(file_name.c_str());
+	tinyxml2::XMLError err = doc->LoadFile(file_name.c_str());
 	if(err != tinyxml2::XML_SUCCESS){
 		throw parse_error_l("Could not load XML file.", 15);
 	}
@@ -424,7 +424,7 @@ void levelparser::apply_animations(scene * manager, tinyxml2::XMLElement * curr_
 }
 levelparser& levelparser::operator=(const levelparser &lp){
 	file_name = lp.file_name;
-	tinyxml2::XMLError err = doc->loadFile(file_name.c_str());
+	tinyxml2::XMLError err = doc->LoadFile(file_name.c_str());
 	if(err != tinyxml2::XML_SUCCESS){
 		throw parse_error_l("Could not load XML file.", 15);
 	}
