@@ -3,11 +3,11 @@
 
 animationlistener::animationlistener(render * r):
 renderlistener(r){
-	//renderer = r;
-	//render_flag = true;
+//	renderer = r;
+//	render_flag = true;
 }
 animationlistener::~animationlistener(){
-	//renderer = nullptr;
+//	renderer = nullptr;
 }
 /*
 bool animationlistener::get_render_status(){
@@ -22,8 +22,8 @@ void animationlistener::stop_rendering(){
 */
 bool animationlistener::frameStarted(const Ogre::FrameEvent &event){
 	float timestep = event.timeSinceLastFrame;
-	renderer->loop_animations(timestep);
-	return render_flag;
+	my_renderer->loop_animations(timestep);
+	return status;
 }
 /*
 bool animationlistener::frameRenderingQueued(const Ogre::FrameEvent &event){}
