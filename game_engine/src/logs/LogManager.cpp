@@ -3,6 +3,7 @@
 // Date:	Feb 26, 2017
 
 #include "LogManager.h"
+#include <iomanip>
 
 logger::logger(const std::string &filename):
 log_stream(filename){}
@@ -11,17 +12,14 @@ logger::~logger(){
 	log_stream.close();
 }
 
-void logger::problem(const std::string filename_str, uint32 ln_number, const char* msg){
+void logger::problem(const std::string &what_msg, uint32 ln_number){
 	log_buffer << "====ASSERT-FAILURE====\n";
 	flush();
 	log_buffer << "TIME:\t" << timestamp() << "\n";
 	flush();
-	log_buffer << "FILENAME:\t" << filename_str << "\n";
-	flush();
 	log_buffer << "LINE #:\t" << std::to_string(ln_number) << "\n";
 	flush();
-	string message(msg);
-	log_buffer << "WHAT MSG:\n" << message << "\n";
+	log_buffer << "WHAT MSG:\n" << what_msg << "\n";
 	flush();
 	log_buffer << "==END-ASSERT-FAILURE==\n";
 	flush();

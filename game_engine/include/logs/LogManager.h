@@ -23,7 +23,7 @@ class logger{
 		logger(const std::string &log_name);
 		virtual ~logger();
 
-		void problem(const std::string &filename_str, uint32 ln_number, const char* msg);
+		void problem(const std::string &what_msg, uint32 ln_number);
 		void comment(const std::string &comment_str);
 };
 
