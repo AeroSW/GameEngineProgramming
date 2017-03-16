@@ -7,8 +7,13 @@ class render;
 
 class renderlistener : public Ogre::FrameListener{
 	private:
+		
+	protected:
 		render * my_renderer;
 		bool status;
+		
+		render * get_renderer();
+		
 	public:
 		renderlistener(render * renderer);
 		virtual ~renderlistener();
@@ -17,11 +22,9 @@ class renderlistener : public Ogre::FrameListener{
 		virtual bool frameRenderingQueue(const Ogre::FrameEvent &fe);
 		virtual bool frameEnded(const Ogre::FrameEvent &fe);
 		
-		void stop_rendering();
-		bool get_render_status();
+		virtual void stop_rendering();
+		virtual bool get_render_status();
 		
-	protected:
-		render * get_renderer();
-}
+};
 
 #endif
