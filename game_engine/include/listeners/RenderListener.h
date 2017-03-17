@@ -22,6 +22,7 @@ class renderlistener : public Ogre::FrameListener{
 		virtual bool frameRenderingQueue(const Ogre::FrameEvent &fe);
 		virtual bool frameEnded(const Ogre::FrameEvent &fe);
 		
+		virtual void start_rendering();
 		virtual void stop_rendering();
 		virtual bool get_render_status();
 		
