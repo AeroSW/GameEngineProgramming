@@ -19,6 +19,9 @@ bool renderlistener::frameRenderingQueue(const Ogre::FrameEvent &fe){
 bool renderlistener::frameEnded(const Ogre::FrameEvent &fe){
 	return status;
 }
+void renderlistener::start_rendering(){
+	status = true;
+}
 void renderlistener::stop_rendering(){
 	status = false;
 }
