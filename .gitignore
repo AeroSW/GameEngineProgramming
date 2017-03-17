@@ -32,3 +32,5 @@ game_engine/src/managers/recup_dir\.1/
 game_engine/Game
 
 OISDocumentation/
+
+*.html
