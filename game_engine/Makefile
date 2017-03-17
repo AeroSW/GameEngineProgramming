@@ -20,3 +20,6 @@ compile	:
 	
 install	:
 	$(CC) $(EFLAGS) $(EXE) $(LIBS)
+	
+clean	:
+	cd ./obj && $(MAKE) clean

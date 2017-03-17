@@ -5,6 +5,7 @@
 #include "tinyxml2.h"
 
 #include <string>
+class manager;
 
 class levelparser{
 	private:

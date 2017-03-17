@@ -41,7 +41,7 @@
 				<type>point</type>
 				<target>0.0,0.0,0.0</target>
 				<loc>20,20,20</loc>
-				<color>0.0,0.0,0.6</color>
+				<color>1.0,1.0,1.0</color>
 			</light>
 		</lights>
 		<entities>

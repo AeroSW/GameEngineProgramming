@@ -1,11 +1,13 @@
 #include "Level.h"
 #include "Scene.h"
-#include "Manager.h"
+#include "Render.h"
 #include "LevelException.h"
 
-level::level(const std::string &doc_name, manager * my_manager){
+#include <iostream> // Debug
+
+level::level(const std::string &doc_name, render * my_renderer){
 	my_parser = new levelparser(doc_name);
-	my_scene = my_manager->get_scene();
+	my_scene = (scene*)my_renderer->get_scene_manager();
 	name = my_parser->get_name();
 }
 
@@ -23,9 +25,9 @@ level::~level(){
 void level::construct_level(){
 	if(!my_scene->has_manager(name)){
 		try{
+			my_scene->create_manager(name);
 			my_parser->parse_paths(my_scene);
 			my_scene->load_resources(resources);
-			my_scene->create_manager(name);
 			my_scene->load(name);
 			my_parser->parse_scene(my_scene);
 		}
@@ -60,6 +62,14 @@ uint32 level::num_resources(){
 	return resources.size();
 }
 
+bool level::has_resource(const std::string &resource){
+	for(std::string r : resources){
+		if(r.compare(resource) == 0){
+			return true;
+		}
+	}
+	return false;
+}
 bool level::has_entity(const std::string &entity){
 	for(std::string e : entities){
 		if(e.compare(entity) == 0){
@@ -99,6 +109,9 @@ bool level::has_node_track(const std::string &node, const uint16 &track){
 	return false;
 }
 
+void level::add_resource(const std::string &resource){
+	resources.push_back(resource);
+}
 void level::add_entity(const std::string &entity){
 	entities.push_back(entity);
 }

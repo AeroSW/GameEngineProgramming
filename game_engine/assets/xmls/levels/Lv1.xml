@@ -1,4 +1,5 @@
-<level name="Level 1">
+<level>
+	<name>Level 1</name>
 	<resources>
 		<group name="MyLevel1">
 			<loc>./assets/meshes</loc>
@@ -16,14 +17,14 @@
 				<mat>Ring</mat>
 			</object>
 			<object name="Eine Kamera" type="camera">
-				<loc>0.0,0.0,-1.0</loc>
+				<loc>0.0,0.0,-10.0</loc>
 				<target>0.0,0.0,0.0</target>
 				<clip>0.5,100.0</clip>
 			</object>
 			<object name="Blaues Licht" type="light">
 				<type>point</type>
-				<loc>0,10,0</loc>
-				<color>0.0,0.0,0.8</color>
+				<loc>0,5.0,0</loc>
+				<color>0.0,0.5,1.0</color>
 			</object>
 		</objects>
 		<graph>
@@ -34,94 +35,77 @@
 							<node name="The Ring" object="Lord">
 								<transform type="scale">2.0,2.0,2.0</transform>
 							</node>
-							<animation name="Ring Animation" time="1.0">
-								<frame time="0.0">
-									<transform type="rotation" axis="y">0.0</transform>
-								</frame>
-								<frame time="0.1">
-									<transform type="rotation" axis="y">36.0</transform>
-								</frame>
-								<frame time="0.2">
-									<transform type="rotation" axis="y">72.0</transform>
-								</frame>
-								<frame time="0.3">
-									<transform type="rotation" axis="y">108.0</transform>
-								</frame>
-								<frame time="0.4">
-									<transform type="rotation" axis="y">144.0</transform>
-								</frame>
-								<frame time="0.5">
-									<transform type="rotation" axis="y">180.0</transform>
-								</frame>
-								<frame time="0.6">
-									<transform type="rotation" axis="y">216.0</transform>
-								</frame>
-								<frame time="0.7">
-									<transform type="rotation" axis="y">252.0</transform>
-								</frame>
-								<frame time="0.8">
-									<transform type="rotation" axis="y">288.0</transform>
-								</frame>
-								<frame time="0.9">
-									<transform type="rotation" axis="y">324.0</transform>
-								</frame>
-								<frame time="1.0">
-									<transform type="rotation" axis="y">360.0</transform>
-								</frame>
-							</animation>
 						</node>
 						<transform type="translation">5.0,0.0,0.0</transform>
 					</node>
-					<animation name="Ring Animation 2" time="5.0">
-						<frame time="0.0">
-							<transform type="rotation" axis="y">0.0</transform>
-						</frame>
-						<frame time="1.0">
-							<transform type="rotation" axis="y">72.0</transform>
-						</frame>
-						<frame time="2.0">
-							<transform type="rotation" axis="y">144.0</transform>
-						</frame>
-						<frame time="3.0">
-							<transform type="rotation" axis="y">216.0</transform>
-						</frame>
-						<frame time="4.0">
-							<transform type="rotation" axis="y">288.0</transform>
-						</frame>
-						<frame time="5.0">
-							<transform type="rotation" axis="y">360.0</transform>
-						</frame>
-					</animation>
 				</node>
 				<node name="Kamera Outer">
 					<node name="Kamera Middle">
 						<node name="Kamera Inner" object="Eine Kamera">
-							<transform type="translation">20.0,0.0,0.0</transform>
+							<transform type="translation">0,0,-20</transform>
 						</node>
-						<transform type="translation">0.0,8.0,0.0</transform>
 					</node>
 					<animation name="Kam Animation" time="10.0">
 						<frame time="0.0">
 							<transform type="rotation" axis="y">0.0</transform>
+							<transform type="translation">0,0,0</transform>
 						</frame>
 						<frame time="2.0">
 							<transform type="rotation" axis="y">-72.0</transform>
+							<transform type="translation">0,5,0</transform>
 						</frame>
 						<frame time="4.0">
 							<transform type="rotation" axis="y">-144.0</transform>
+							<transform type="translation">0,10,0</transform>
 						</frame>
 						<frame time="6.0">
 							<transform type="rotation" axis="y">-216.0</transform>
+							<transform type="translation">0,10,0</transform>
 						</frame>
 						<frame time="8.0">
 							<transform type="rotation" axis="y">-288.0</transform>
+							<transform type="translation">0,5,0</transform>
 						</frame>
 						<frame time="10.0">
 							<transform type="rotation" axis="y">-360.0</transform>
+							<transform type="translation">0,0,0</transform>
 						</frame>
 					</animation>
 				</node>
-				<node name="Blue Light" object="Blaues Licht"></node>
+				<node name="Light Container">
+					<node name="outer_light">
+						<node name="Blue Light" object="Blaues Licht"></node>
+					</node>
+					<animation name="Light Animation" time="8.0">
+						<frame time="0.0">
+							<transform type="translation">0,0,0</transform>
+						</frame>
+						<frame time="0.5">
+							<transform type="translation">0,0,7</transform>
+						</frame>
+						<frame time="1.0">
+							<transform type="translation">0,0,20</transform>
+						</frame>
+						<frame time="1.5">
+							<transform type="translation">0,0,7</transform>
+						</frame>
+						<frame time="2.0">
+							<transform type="translation">0,0,0</transform>
+						</frame>
+						<frame time="2.5">
+							<transform type="translation">0,0,-7</transform>
+						</frame>
+						<frame time="3.0">
+							<transform type="translation">0,0,-20</transform>
+						</frame>
+						<frame time="3.5">
+							<transform type="translation">0,0,-7</transform>
+						</frame>
+						<frame time="4.0">
+							<transform type="translation">0,0,0</transform>
+						</frame>
+					</animation>
+				</node>
 			</root>
 		</graph>
 	</scene>

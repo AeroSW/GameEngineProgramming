@@ -8,7 +8,7 @@ INC 	= ../../include/logs
 
 SRC	= ../../src/logs
 
-CFLAGS	= -c -std=c++11 $(INC_DIRS)
+CFLAGS	= -c -g -std=c++11 $(INC_DIRS)
 
 FILES	= LogManager.o
 

@@ -32,4 +32,9 @@ Game.o	: $(SRC)/Game.cpp
 	
 clean	:
 	$(RM) ./*.o
-	cd ./xml_parser && $(MAKE) clean
+	cd ./parsers && $(MAKE) clean
+	cd ./managers && $(MAKE) clean
+	cd ./logs && $(MAKE) clean
+	cd ./listeners && $(MAKE) clean
+	cd ./exceptions && $(MAKE) clean
+	

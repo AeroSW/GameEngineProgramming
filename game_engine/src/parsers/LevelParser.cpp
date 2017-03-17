@@ -3,6 +3,9 @@
 #include "ParseException.h"
 #include "SceneException.h"
 #include "Transform.h"
+#include "Manager.h"
+
+#include <iostream>
 
 levelparser::levelparser(){
 	doc = nullptr;
@@ -10,6 +13,7 @@ levelparser::levelparser(){
 }
 levelparser::levelparser(const std::string &doc_name):
 file_name(doc_name){
+	lvl_element = nullptr;
 	doc = new tinyxml2::XMLDocument();
 	tinyxml2::XMLError err = doc->LoadFile(doc_name.c_str());
 	if(err != tinyxml2::XML_SUCCESS){
@@ -23,6 +27,7 @@ file_name(lp.file_name){
 	if(err != tinyxml2::XML_SUCCESS){
 		throw parse_error_l("Could not load XML file.", 15);
 	}
+	lvl_element = lp.lvl_element;
 }
 
 levelparser::~levelparser(){
@@ -117,11 +122,18 @@ void levelparser::parse_scene(scene * manager){
 
 std::string levelparser::get_name(){
 	tinyxml2::XMLElement * lvl = get_lvl_element();
-	const char * name_attr = lvl->Attribute("name");
-	if(name_attr == nullptr){
-		throw parse_error_l("Level requires a name.", 112);
+	tinyxml2::XMLElement * name_elem = lvl->FirstChildElement("name");
+	if(name_elem == nullptr){
+		throw parse_error_l("Need name element.", 127);
 	}
-	std::string name(name_attr);
+	std::string name(name_elem->GetText());
+//	const char * name_attr = lvl->Attribute("name");
+//	my_manager->log(std::string(name_attr) + " retrieved.");
+//	if(name_attr == nullptr){
+//		throw parse_error_l("Level requires a name.", 112);
+//	}
+//	std::string name("HELLO LEVEL 1");
+//	std::string name(name_attr);
 	trim(name);
 	return name;
 }

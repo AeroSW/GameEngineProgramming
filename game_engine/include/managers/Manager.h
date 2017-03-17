@@ -9,7 +9,6 @@
 #define MANAGER_H_
 
 #include <string>
-#include "LogManager.h"
 #include "UnsignedTypes.h"
 
 class render;
@@ -20,7 +19,7 @@ class manager{
 	private:
 		render* renderer;
 		scene * my_scene;
-		logger my_log;
+		logger * my_log;
 		/*
 		 * Constructor
 		 * Parameters:
@@ -85,7 +84,8 @@ class manager{
 		bool add_scene(const std::string &xml_filename);
 		scene * get_scene();
 		void log(const std::string &comment);
-		void log(const std::string &comment, uint32 ln_number);
+		void log(const std::string &comment, uint32 ln_number, const char * msg);
+		scene * get_scene(render * mr);
 };
 
 #endif /* MANAGER_H_ */

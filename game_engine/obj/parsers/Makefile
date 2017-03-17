@@ -1,14 +1,14 @@
 AutomatedMakefile = am
 CC		= g++
 
-MY_INC	= -I../../include -I../../include/parsers -I../../managers -I../../exceptions
+MY_INC	= -I../../include -I../../include/parsers -I../../include/managers -I../../include/exceptions
 INC_DIRS= $(MY_INC)
 
 INC 	= ../../include/parsers
 
 SRC	= ../../src/parsers
 
-CFLAGS	= -c -std=c++11 $(INC_DIRS)
+CFLAGS	= -c -g -std=c++11 $(INC_DIRS)
 
 FILES	= LevelParser.o GameParser.o tinyxml2.o
 

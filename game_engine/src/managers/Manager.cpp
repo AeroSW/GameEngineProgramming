@@ -8,6 +8,7 @@
 #include "Manager.h"
 #include "Render.h"
 #include "Scene.h"
+#include "LogManager.h"
 
 manager::~manager(){
 	delete renderer;
@@ -40,24 +41,27 @@ uint32 manager::get_render_win_handler(){
 	return 0;
 }
 
-scene * manager::get_scene(){ // Could result in unknown behavior.
+scene * manager::get_scene(render * this_renderer){ // Could result in unknown behavior.
 	if(my_scene == nullptr){
-		my_scene = new scene(renderer);
+		my_scene = new scene(this_renderer);
 	}
 	return my_scene;
 }
 
 void manager::log(const std::string &comment){
-	my_log.comment(comment);
+	my_log->comment(comment);
 }
-void manager::log(const std::string &comment, uint ln_number){
-	my_log.problem(comment, ln_number);
+void manager::log(const std::string &comment, uint ln_number, const char * what_msg){
+	std::string msg(what_msg);
+	std::string new_comment = comment + ":\n" + msg;
+	my_log->problem(new_comment, ln_number);
 }
 /*
  * Private Methods.
  */
-manager::manager(const std::string &xml_file, const std::string &log_name):
-my_log(log_name){
+manager::manager(const std::string &xml_file, const std::string &log_name){
+	my_scene = nullptr;
+	my_log = new logger(log_name);
 	init(xml_file);
 	if(my_scene == nullptr){
 		my_scene = new scene(renderer);

@@ -8,7 +8,7 @@ INC 	= ../../include/exceptions
 
 SRC	= ../../src/exceptions
 
-CFLAGS	= -c -std=c++11 $(INC_DIRS)
+CFLAGS	= -c -g -std=c++11 $(INC_DIRS)
 
 FILES	= ParseException.o SceneException.o RenderException.o GameException.o LevelException.o
 

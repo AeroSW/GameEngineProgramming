@@ -6,7 +6,7 @@
 #include "LevelParser.h"
 #include "UnsignedTypes.h"
 
-class manager;
+class render;
 class scene;
 
 class level{
@@ -28,7 +28,7 @@ class level{
 	public:
 		std::vector<std::string> animation_list;
 		
-		level(const std::string &xml_doc, manager * my_manager);
+		level(const std::string &xml_doc, render * my_renderer);
 		level(const level &lvl);
 		virtual ~level();
 		

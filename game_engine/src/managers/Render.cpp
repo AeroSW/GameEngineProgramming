@@ -21,46 +21,71 @@ void render::loop_animations(float timestep){
 
 void render::build_levels(std::vector<std::string> &names){
 	for(std::string name : names){
-		level lvl(name, my_manager);
-		levels.push_back(lvl);
+		try{
+			level lvl(name, this);
+			my_manager->log(lvl.get_name() + " has been created.");
+			levels.push_back(lvl);
+		}
+		catch(game_error &e){
+			ASSERT_CRITICAL(false, e.what());
+		}
 	}
+}
+
+void * render::get_scene_manager(){
+	return my_manager->get_scene(this);
 }
 
 void render::init(){
 	root = nullptr;
 	window = nullptr;
 	ogre_scene = nullptr;
+	rgm = nullptr;
 	try{
 		root = OGRE_NEW Ogre::Root("","");
+		has_scene_manager("some name");
+		my_manager->log("Ogre::Root * root initialized.");
 		root->loadPlugin("RenderSystem_GL");
-		
+		my_manager->log("RenderSystem_GL is now loaded.");
+		rgm = Ogre::ResourceGroupManager::getSingletonPtr();
+		my_manager->log("ResourceGroupManager * rgm is now initialized.");
 		Ogre::RenderSystem * render_system = root->getRenderSystemByName("OpenGL Rendering Subsystem");
+		my_manager->log("RenderSystem is now generated.");
 		
 		if(render_system == nullptr){
-			ASSERT_CRITICAL(false);
+			ASSERT_CRITICAL(false, "Render System is null.");
 		}
+		
 		try{
 			std::vector<std::string> level_files = gp->get_levels();
+			my_manager->log("Level files parsed.");
 			build_levels(level_files);
+			my_manager->log("Levels are now built.");
 		}
 		catch(game_error &e){
-			ASSERT_CRITICAL(false);
+			ASSERT_CRITICAL(false, e.what());
 		}
 		root->setRenderSystem(render_system);
+		my_manager->log("Render system is has now been set.");
 		
 		render_system->setConfigOption("Full Screen", "No");
 		render_system->setConfigOption("Video Mode", "800 x 600 @ 32-bit colour");
 		
+		my_manager->log("Render system has been configured.");
+		
 		window = root->initialise(true, "Kenneth's Game Engine");
 		window->getCustomAttribute("WINDOW", &win_handler);
+		my_manager->log("Window has been created.");
 		viewport = window->addViewport(nullptr, 0, 0.0, 0.0, 1.0, 1.0);
 		viewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
+		my_manager->log("Viewport has been initialized.");
 		float actual_width = Ogre::Real(viewport->getActualWidth());
 		float actual_height = Ogre::Real(viewport->getActualHeight());
 		aspect_ratio = actual_width/actual_height;
+		my_manager->log("Aspect Ratio calculated.");
 	}
 	catch(Ogre::Exception &e){
-		ASSERT_CRITICAL(false);
+		ASSERT_CRITICAL(false, e.what());
 	}
 /*	std::string scene_title = parse_scene_name(xml_file);
 	std::cout << "Creating Scene Manager" << std::endl;
@@ -89,15 +114,19 @@ render::render(manager * m, const std::string &xml_file){
 	my_manager = m;
 	try{
 		gp = new gameparser(xml_file);
+		my_manager->log("Gameparser created.");
 	}
 	catch(game_error &e){
 		throw render_error(std::string(e.what()), 94);
 	}
 	init();
+	my_manager->log("Renderer is initialized.");
 	// Log init completion for render.
 //	set_camera();
 	al = new animationlistener(this);
+	my_manager->log("Animation listener is initialized.");
 	root->addFrameListener(al);
+	my_manager->log("Frame listener created.");
 }
 
 render::~render(){
@@ -142,7 +171,11 @@ uint32 render::get_win_height(){
 }
 
 void render::start_render(){
+	load_level(1);
 	root->startRendering();
+}
+void render::stop_render(){
+	al->stop_rendering();
 }
 
 void render::log(const std::string &msg){
@@ -166,12 +199,16 @@ void render::create_scene_manager(const std::string &name){
 		Ogre::SceneManager * ogre_scene = root->createSceneManager(Ogre::ST_GENERIC, name);
 	}
 }
-void render::load_level(uint lvl/*! 1-based */){
-	unload_level();
+void render::load_level(uint32 lvl/*! 1-based */){
+	static bool level_loaded = false;
+	if(level_loaded)
+		unload_level();
 	curr_level = lvl-1; // Gotta fix off by 1 errors.
 	levels[curr_level].construct_level();
+	level_loaded = true;
 }
 void render::unload_level(){	// Private Function
+	stop_render();
 	levels[curr_level].destruct_level();
 }
 void render::load_scene(const std::string &name){
@@ -184,18 +221,24 @@ void render::render_scene(const std::string &name){
 		load_scene(name);
 	}
 	Ogre::Camera * ogre_cam = ogre_scene->getCamera(first_cam);
+	my_manager->log(ogre_cam->getName() + " was loaded.");
 	viewport->setCamera(ogre_cam);
+	my_manager->log("Viewport now controls " + ogre_cam->getName());
 	ogre_cam->setAspectRatio(aspect_ratio);
+	my_manager->log("Aspect ratio adjusted for camera.");
+	al->start_rendering();
+	my_manager->log("Renderer called to start rendering.");
 }
 // Resource Group
 void render::load_resource(const std::string &resource){
 	if(!rgm->resourceGroupExists(resource)) throw render_error(resource + " resource group does not exist.",192);
-	if(!rgm->isResourceGroupInitialised(resource)){
+	std::cout << "\n\n\n\nResources: " << resource << "\n\n\n" << std::endl;
+//	if(!rgm->isResourceGroupInitialised(resource)){
 		rgm->initialiseResourceGroup(resource);
-	}
-	if(!rgm->isResourceGroupLoaded(resource)){
+//	}
+//	if(!rgm->isResourceGroupLoaded(resource)){
 		rgm->loadResourceGroup(resource);
-	}
+//	}
 }
 void render::unload_resource(const std::string &resource){
 	if(!rgm->resourceGroupExists(resource)) throw render_error(resource + " resource group does not exist.", 201);
@@ -206,6 +249,9 @@ void render::unload_resource(const std::string &resource){
 void render::add_resource_location(const std::string &location, const std::string &group){
 	if(!rgm->resourceLocationExists(location, group)){
 		rgm->addResourceLocation(location, "FileSystem", group);
+	}
+	if(!levels[curr_level].has_resource(group)){
+		levels[curr_level].add_resource(group);
 	}
 }
 void render::declare_resource(const std::string &file, const std::string &type, const std::string &group){
@@ -292,10 +338,20 @@ void render::set_light_target(const std::string &light_name, std::vector<float> 
 }
 void render::set_light_colour(const std::string &light_name, std::vector<float> &colour){
 	if(!ogre_scene->hasLight(light_name)) throw render_error(light_name + " does not exist.", 294);
-	if(colour.size() != 3 && colour.size() != 4) throw render_error("Colour vector is of incorrect size.", 295);
+	Ogre::ColourValue ogre_colour;
+	if(colour.size() == 3){
+		ogre_colour = Ogre::ColourValue(colour[0], colour[1], colour[2]);
+	}
+	else if(colour.size() == 4){
+		ogre_colour = Ogre::ColourValue(colour[0], colour[1], colour[2], colour[3]);
+	}
+	else{
+		throw render_error("Colour vector is incorrect size.", 348);
+	}
 	Ogre::Light * ogre_light = ogre_scene->getLight(light_name);
-	ogre_light->setDiffuseColour(colour[0]/10, colour[1]/10, colour[2]/10);
-	ogre_light->setSpecularColour(colour[0], colour[1], colour[2]);
+	
+	ogre_light->setDiffuseColour(ogre_colour);
+//	ogre_light->setSpecularColour(colour[0], colour[1], colour[2]);
 }
 void render::add_root_child(const std::string &child){
 	if(!ogre_scene->hasSceneNode(child)) throw render_error(child + " scene node does not exist.", 301);
@@ -317,19 +373,25 @@ void render::add_child(const std::string &parent, const std::string &child){
 void render::attach_object(const std::string &node, const std::string &object){
 	bool found_flag = false;
 	if(!ogre_scene->hasSceneNode(node)) throw render_error(node + " scene node does not exist.", 319);
+	std::cout << "\n\n\n\nObject:\t" << object << "\n";
+		std::cout << "Type:\t";
 	Ogre::MovableObject * ogre_object;
 	if(!found_flag && ogre_scene->hasEntity(object)){
+		std::cout << "Entity";
 		ogre_object = ogre_scene->getEntity(object);
 		found_flag = true;
 	}
 	if(!found_flag && ogre_scene->hasCamera(object)){
+		std::cout << "Camera";
 		ogre_object = ogre_scene->getCamera(object);
 		found_flag = true;
 	}
 	if(!found_flag && ogre_scene->hasLight(object)){
+		std::cout << "Light";
 		ogre_object = ogre_scene->getLight(object);
 		found_flag = true;
 	}
+	std::cout << "\n\n\n\n";
 	if(!found_flag) throw render_error(object + " could not be found.", 333);
 	Ogre::SceneNode * ogre_node = ogre_scene->getSceneNode(node);
 	ogre_node->attachObject(ogre_object);
@@ -354,7 +416,7 @@ void render::rotate_node(const std::string &node, axis w, float angle){
 		ogre_node->rotate(ogre_quat);
 	}
 	catch(Ogre::Exception &e){
-		ASSERT_LOG(false);
+		ASSERT_LOG(false, e.what());
 	}
 }
 void render::scale_node(const std::string &node, std::vector<float> &scaling){

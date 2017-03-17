@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "SceneException.h"
 #include "Render.h"
+#include <iostream>
 
 scene::scene(render * renderer){
 	my_renderer = renderer;

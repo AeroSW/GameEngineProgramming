@@ -5,7 +5,7 @@
 gameparser::gameparser(const std::string &doc_name){
 	doc = new tinyxml2::XMLDocument();
 	tinyxml2::XMLError flag = doc->LoadFile(doc_name.c_str());
-	
+	game_element = nullptr;
 	if(flag != tinyxml2::XML_SUCCESS){
 		throw parse_error_g("Could not load XML file.", 8);
 	}

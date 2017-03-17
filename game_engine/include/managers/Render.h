@@ -63,7 +63,9 @@ class render{
 		render(manager * manjr, const std::string &xml_file);
 		render(const render &ren);
 		virtual ~render();
-
+		
+		void * get_scene_manager();
+		
 		uint32 get_win_handle();
 		uint32 get_win_length();
 		uint32 get_win_height();
@@ -87,6 +89,7 @@ class render{
 		 * Start and End Render Functions
 		 */
 		void start_render();
+		void stop_render();
 	//	void end_render();
 
 		/*
