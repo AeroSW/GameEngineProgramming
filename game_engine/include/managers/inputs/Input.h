@@ -6,15 +6,19 @@
 #include "UnsignedTypes.h"
 
 #include <string>
+#include <memory>
 
 class manager;
 
 class input{
 	private:
-		
+		virtual void initialize();
+		static uint32 count;
 	
 	protected:
-		shared_ptr<OIS::InputManager> ois_manager;
+		input(manager * m);
+		
+		static OIS::InputManager * ois_manager;
 		
 		manager * my_manager;
 		
@@ -22,9 +26,11 @@ class input{
 		uint32 window_length;
 		
 	public:
-		virtual ~input(){}
+		virtual ~input();
 		
 		virtual std::string get_type() = 0;
+		virtual bool has() = 0;
+		virtual void poll() = 0;
 };
 
 #endif

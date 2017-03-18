@@ -9,11 +9,14 @@
 #define MANAGER_H_
 
 #include <string>
+#include <vector>
+
 #include "UnsignedTypes.h"
 
 class render;
 class scene;
 class logger;
+class input;
 
 class manager{
 	private:
@@ -27,6 +30,8 @@ class manager{
 		 */
 		manager(const std::string &xml, const std::string &log_name);
 		void init(const std::string &xml);
+		
+		std::vector<input*> input_managers;
 
 	public:
 		/*
@@ -86,6 +91,13 @@ class manager{
 		void log(const std::string &comment);
 		void log(const std::string &comment, uint32 ln_number, const char * msg);
 		scene * get_scene(render * mr);
+		
+		// Input Methods
+		void poll_inputs();
+		void key_pressed(const std::string &key);
+		void key_released(const std::string &key);
+		void mbutton_pressed(const std::string &mbutton);
+		void mbutton_released(const std::string &mbutton);
 };
 
 #endif /* MANAGER_H_ */

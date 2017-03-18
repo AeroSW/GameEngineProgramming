@@ -35,7 +35,8 @@ class render{
 		Ogre::SceneManager * ogre_scene;
 		
 		manager * my_manager;
-		renderlistener * al;
+		
+		std::vector<renderlistener*> listeners;
 		
 		std::vector<level> levels; // The list of levels.  Keeps track of cameras, entities, and lights.  Animations etc.
 		uint32 curr_level; // 0-based
@@ -109,11 +110,15 @@ class render{
 		 * 				successfully loaded or not.
 		 */
 		bool add_scene(const std::string &xml_scene_file);
-		void loop_animations(float timestep);
 		
 		void load_level(uint lvl=1); // 1-based function call.
 		
 		void log(const std::string &msg);
+		
+		// Listener Functions
+		//	Listener Grabber
+		void loop_animations(float timestep);
+		void check_input(float timestep);
 		
 		// Scene Functions
 		//	Manager Functions

@@ -12,7 +12,7 @@ class inputlistener : public renderlistener{
 		inputlistener(render * my_renderer);
 		virtual ~inputlistener();
 		
-		virtual bool frameStarted(const Ogre::FrameEvene &event);
+		virtual bool frameStarted(const Ogre::FrameEvent &event);
 };
 
 #endif

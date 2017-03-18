@@ -7,6 +7,7 @@
 #include "GameParser.h"
 #include "Manager.h"
 #include "AnimationListener.h"
+#include "InputListener.h"
 #include "RenderListener.h"
 #include "RenderException.h"
 
@@ -123,16 +124,22 @@ render::render(manager * m, const std::string &xml_file){
 	my_manager->log("Renderer is initialized.");
 	// Log init completion for render.
 //	set_camera();
-	al = new animationlistener(this);
+	listeners.push_back(new animationlistener(this));
+	listeners.push_back(new inputlistener(this));
 	my_manager->log("Animation listener is initialized.");
-	root->addFrameListener(al);
+//	root->addFrameListener(al);
+	for(renderlistener * r : listeners){
+		root->addFrameListener(r);
+	}
 	my_manager->log("Frame listener created.");
 }
 
 render::~render(){
-	al->stop_rendering();
-	delete al;
-	al = nullptr;
+	for(renderlistener * r : listeners){
+		r->stop_rendering();
+		delete r;
+	}
+	listeners.clear();
 	window->removeAllViewports();
 	window->destroy();
 	destroy_levels();
@@ -175,12 +182,25 @@ void render::start_render(){
 	root->startRendering();
 }
 void render::stop_render(){
-	al->stop_rendering();
+	for(renderlistener * r : listeners){
+		r->stop_rendering();
+	}
 }
 
 void render::log(const std::string &msg){
 	my_manager->log(msg);
 }
+
+/*
+ *
+ *	Input functions below.
+ *
+ */
+void render::check_input(float timestep){
+	my_manager->poll_inputs();
+}
+
+
 
 /*
  *	Scene Functions below.
@@ -226,7 +246,9 @@ void render::render_scene(const std::string &name){
 	my_manager->log("Viewport now controls " + ogre_cam->getName());
 	ogre_cam->setAspectRatio(aspect_ratio);
 	my_manager->log("Aspect ratio adjusted for camera.");
-	al->start_rendering();
+	for(renderlistener * r : listeners){
+		r->start_rendering();
+	}
 	my_manager->log("Renderer called to start rendering.");
 }
 // Resource Group

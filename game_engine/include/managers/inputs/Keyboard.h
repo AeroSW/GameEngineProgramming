@@ -5,9 +5,10 @@
 
 class keyboard : public input, public OIS::KeyListener{
 	private:
-		const static std::string type = "keyboard";
+		const std::string type = "keyboard";
 		std::string map_key(const OIS::KeyEvent &e);
-		shared_ptr<OIS::Keyboard> ois_keyboard;
+		OIS::Keyboard * ois_keyboard;
+		virtual void initialize();
 		
 	protected:
 		
@@ -15,7 +16,12 @@ class keyboard : public input, public OIS::KeyListener{
 		keyboard(manager * the_manager);
 		virtual ~keyboard();
 		
+		// input methods
 		virtual std::string get_type();
+		virtual bool has();
+		virtual void poll();
+		
+		// OIS Keyboard methods
 		virtual bool keyPressed(const OIS::KeyEvent &event);
 		virtual bool keyReleased(const OIS::KeyEvent &event);
 };

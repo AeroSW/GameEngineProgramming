@@ -1,21 +1,53 @@
+#include "Asserts.h"
 #include "Keyboard.h"
 #include "Manager.h"
+#include <vector>
+#include <sstream>
+#include <iostream>
+
+void keyboard::initialize(){
+	try{
+		if(ois_manager->getNumberOfDevices(OIS::OISKeyboard) > 0){
+			ois_keyboard = static_cast<OIS::Keyboard*>(ois_manager->createInputObject(OIS::OISKeyboard, true));
+			ois_keyboard->setEventCallback(this);
+		}
+	}
+	catch(...){
+		ASSERT_LOG(false, "Inputs will not be used.")
+	}
+}
 
 keyboard::keyboard(manager * m):
-ois_keyboard(new OIS::Keyboard()),
-ois_manager(new OIS::InputManager()){
+input(m){
 	my_manager = m;
+	initialize();
+	window_height = my_manager->get_win_height();
+	window_length = my_manager->get_win_length();
 }
 
 keyboard::~keyboard(){
 	my_manager = nullptr;
+	ois_keyboard = nullptr;
 }
 
 std::string keyboard::get_type(){
 	return type;
 }
 
+bool keyboard::has(){
+	if(ois_keyboard){
+		return true;
+	}
+	return false;
+}
+
+void keyboard::poll(){
+	std::cout << "Inside keyboard poll." << std::endl;
+	ois_keyboard->capture();
+}
+
 bool keyboard::keyPressed(const OIS::KeyEvent &event){
+	std::cout << "Key Pressed:\t" << std::endl;
 	std::string key_pressed = map_key(event);
 	if(key_pressed.compare("undefined") != 0){
 		my_manager->key_pressed(key_pressed);

@@ -1,8 +1,8 @@
 AutomatedMakefile = am
 CC		= g++
 
-MY_INC	= -I../../include -I../../include/parsers -I../../include/managers -I../../include/exceptions -I../../include/logs -I../../include/listeners
-GL_INC	= -I/usr/local/include/OGRE
+MY_INC	= -I../../include -I../../include/parsers -I../../include/managers -I../../include/exceptions -I../../include/logs -I../../include/listeners -I../../include/managers/inputs
+GL_INC	= -I/usr/local/include/OGRE -I/usr/include/ois
 
 INC_DIRS= $(MY_INC) $(GL_INC)
 
@@ -15,6 +15,7 @@ FILES	= Render.o Manager.o Scene.o Level.o
 
 default	: all
 all	: $(FILES)
+	cd ./inputs && $(MAKE)
 	
 Manager.o	: $(SRC)/Manager.cpp $(INC)/Manager.h
 	$(CC) $(CFLAGS) -o Manager.o $(SRC)/Manager.cpp
