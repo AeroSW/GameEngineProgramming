@@ -2,7 +2,7 @@ AutomatedMakefile = am
 CC		= g++
 
 MY_INC	= -I../../include -I../../include/parsers -I../../include/managers -I../../include/exceptions -I../../include/logs -I../../include/listeners -I../../include/managers/inputs
-GL_INC	= -I/usr/local/include/OGRE -I/usr/include/ois
+GL_INC	= -I/usr/include/OGRE -I/usr/local/include/OIS
 
 INC_DIRS= $(MY_INC) $(GL_INC)
 
