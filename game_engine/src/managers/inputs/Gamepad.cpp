@@ -20,21 +20,17 @@ void gamepad::initialize(){
 		ASSERT_LOG(false, e.what());
 	}
 	catch(...){
-		ASSERT_LOG(false, "Inputs will not be used.")
+		ASSERT_LOG(false, "Gamepad inputs will not be used.")
 	}
 }
 
-gamepad::gamepad(manager * m, int t):
+gamepad::gamepad(manager * m, int t/*, gamepad_t my_type*/):
 input(m){
 	ois_gamepad = nullptr;
 	m->log("Created base class");
 	my_manager = m;
-	my_manager->log("Manager pointer now points to ME!!!");
 	tol = std::labs(t);
-	std::string tol_str = "tol:\t" + std::to_string(tol);
-	my_manager->log(tol_str);
 	initialize();
-	my_manager->log("Gamepad initialized");
 	window_height = my_manager->get_win_height();
 	window_length = my_manager->get_win_length();
 }
@@ -60,11 +56,25 @@ void gamepad::poll(){
 }
 
 bool gamepad::buttonPressed(const OIS::JoyStickEvent &event, int button){
+	// Need to split up the types of gamepads.
+/*	switch(type){
+		case(gamepad_t::DUALSHOCK4):
+			my_manager->dualshock_press(button);
+			return true;
+		case(gamepad_t::XBOX1):
+			my_manager->xbox_press(button);
+			return true;
+	}*/
+//	return false;
+	return true;
+}
+
+bool gamepad::buttonReleased(const OIS::JoyStickEvent &event, int button){
 	// Gonna run some tests with the Gamepad buttons.
 	// I want to trace what button maps to what.
 	uint16 num_buttons = event.state.mButtons.size();
 	std::vector<int> buttons_id(num_buttons);
-	std::cout << "Gamepad Buttons:  " << num_buttons << "\n";
+	std::cout << "Gamepad\tButtonReleased\tNumButtons\t" << num_buttons << "\tValues\t";
 	for(uint16 cx = 0; cx < num_buttons; cx++){
 		std::cout << event.state.mButtons[cx];
 		if(cx != num_buttons - 1) std::cout << "\t";
@@ -73,22 +83,12 @@ bool gamepad::buttonPressed(const OIS::JoyStickEvent &event, int button){
 	return true;
 }
 
-bool gamepad::buttonReleased(const OIS::JoyStickEvent &event, int button){
-	return true;
-}
-
 bool gamepad::axisMoved(const OIS::JoyStickEvent &event, int axis){
 	uint16 num_axis = event.state.mAxes.size();
 	std::vector<int> axis_ids(num_axis);
-	std::cout << "Gamepad Axis.abs: " << num_axis << "\n";
+	std::cout << "Gamepad\tAxis\tNumAxis\t" << num_axis << "\tValues\t";
 	for(uint16 cx = 0; cx < num_axis; cx++){
 		std::cout << event.state.mAxes[cx].abs;
-		if(cx != num_axis - 1) std::cout << "\t";
-	}
-	std::cout << std::endl;
-	std::cout << "Gamepad Axis.rel: " << num_axis << "\n";
-	for(uint16 cx = 0; cx < num_axis; cx++){
-		std::cout << event.state.mAxes[cx].rel;
 		if(cx != num_axis - 1) std::cout << "\t";
 	}
 	std::cout << std::endl;

@@ -2,7 +2,12 @@
 #define GAMEPAD_H
 
 #include "Input.h"
-
+/*
+enum gamepad_t{
+	DUALSHOCK4=0,
+	XBOX1=1
+};
+*/
 class gamepad : public input, public OIS::JoyStickListener{
 	private:
 		const std::string type = "gamepad";
@@ -10,13 +15,14 @@ class gamepad : public input, public OIS::JoyStickListener{
 		virtual std::string map_button(const int &button);
 	//	virtual std::string map_axis(const int &axis);
 		virtual void initialize();
-	
+	//	gamepad_t type;
+		
 	protected:
 		OIS::JoyStick * ois_gamepad;
 		uint32 tol;
 		
 	public:
-		gamepad(manager * the_manager, int tol=10000);
+		gamepad(manager * the_manager, int tol=8000);
 		virtual ~gamepad();
 		
 		// input methods
