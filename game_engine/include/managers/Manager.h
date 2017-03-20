@@ -18,6 +18,12 @@ class scene;
 class logger;
 class input;
 
+// Determines which layout to use.
+enum gamepad_t{
+	DUALSHOCK4=0,
+	XBOX1=1
+};
+
 class manager{
 	private:
 		render* renderer;
@@ -28,64 +34,31 @@ class manager{
 		 * Parameters:
 		 * 	None
 		 */
-		manager(const std::string &xml, const std::string &log_name);
-		void init(const std::string &xml);
 		
 		std::vector<input*> input_managers;
-
+		
+		manager(const std::string &xml, const std::string &log_name, gamepad_t type);
+		void init_render(const std::string &xml);
+		void init_inputs(gamepad_t type);
+		struct gamepad_info{
+			gamepad_t type;
+			std::vector<bool> curr_buttons;
+			std::vector<float> axes;
+		} my_gamepad_info;
+		struct keyboard_flags{
+			bool shift;
+			bool ctrl;
+			bool alt;
+			bool toggle;
+		} my_keyboard_flags;
+	
 	public:
-		/*
-		 * Destructor
-		 */
 		virtual ~manager();
-		/*
-		 * get_manager
-		 * 	Parameters:
-		 * 		None
-		 * 	Returns:
-		 * 		Reference to manager object
-		 */
-		static manager* get_manager(const std::string &xml_file, const std::string &log_name);
-		/*
-		 * get_win_length
-		 * 	Parameters:
-		 * 		None
-		 * 	Returns:
-		 * 		Size of window along horizontal axis.
-		 */
+		static manager* get_manager(const std::string &xml_file, const std::string &log_name, gamepad_t type = gamepad_t::DUALSHOCK4);
 		uint32 get_win_length();
-		/*
-		 * get_win_height
-		 * 	Parameters:
-		 * 		None
-		 * 	Returns:
-		 * 		Size of window along vertical axis.
-		 */
 		uint32 get_win_height();
-		/*
-		 * get_render_win_handler
-		 * 	Parameters:
-		 * 		None
-		 * 	Returns:
-		 * 		Returns the window handler for the renderer.
-		 */
 		uint32 get_render_win_handler();
-		/*
-		 * get_curr_level_name
-		 * 	Parameters:
-		 * 		None
-		 * 	Returns:
-		 * 		Returns the name of the current level.
-		 */
 		std::string get_curr_level_name();
-		/*
-		 * add_scene
-		 * 	Parameters:
-		 * 		string filename for an xml file
-		 * 	Returns:
-		 * 		Returns a boolean value representing success
-		 * 		or not.
-		 */
 		bool add_scene(const std::string &xml_filename);
 		scene * get_scene();
 		void log(const std::string &comment);
