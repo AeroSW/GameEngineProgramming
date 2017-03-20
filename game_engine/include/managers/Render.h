@@ -101,6 +101,15 @@ class render{
 		void loop_animations(float timestep);
 		void check_input(float timestep);
 		
+		// Cam movement functions
+		void cam_x_move(float val);
+		void cam_y_move(float val);
+		void cam_z_move(float val);
+		void cam_x_rotation(float val);
+		void cam_y_rotation(float val);
+		void cam_z_rotation(float val);
+		
+		
 		// Scene Functions
 		//	Manager Functions
 		bool has_scene_manager(const std::string &name);
@@ -113,7 +122,7 @@ class render{
 		void add_resource_location(const std::string &location, const std::string &group);
 		void declare_resource(const std::string &file, const std::string &type, const std::string &group);
 		bool has_group(const std::string &group);
-		//	Generic Functions
+		//	Generic Scene Functions
 		void add_entity(const std::string &entity, const std::string &mesh, const std::string &group);
 		void add_material(const std::string &entity, const std::string &material, const std::string &group);
 		void add_camera(const std::string &cam_name, std::vector<float> &loc, std::vector<float> &target, std::vector<float> &clip);

@@ -74,17 +74,20 @@ void manager::poll_inputs(){
 	}
 }
 void manager::key_pressed(const std::string &key){ // On press, check which key was used.
+	std::cout << "Key:  " << key << std::endl;
 	if(key.compare("escape") == 0){ // If escape was pressed.
 		log("Escape pressed, exiting game.");
 		renderer->end_render(); // Then stop rendering the game, the user wants to exit.
 		return;
 	}
-	if(key.compare("lctrl") == 0|| key.compare("rctrl")){ // If a ctrl key was pressed
+	if(key.compare("lctrl") == 0 || key.compare("rctrl") == 0){ // If a ctrl key was pressed
 		my_keyboard_flags.ctrl = true; // Set the flag to true until it is released.
 		return;
 	}
 	if(my_keyboard_flags.ctrl){ // If the ctrl flag is true
-		if(key.compare("lshift") == 0 || key.compare("rshift") == 0)){ // Then check if shift was pressed.
+	//	std::cout << "Inside the ctrl flag conditional." << std::endl;
+		if(key.compare("lshift") == 0 || key.compare("rshift") == 0){ // Then check if shift was pressed.
+		//	std::cout << "Shift was pressed." << std::endl;
 			my_keyboard_flags.toggle = !my_keyboard_flags.toggle; // If so, then toggle the shift flag.
 			my_keyboard_flags.shift = !my_keyboard_flags.shift;
 			return;
@@ -94,12 +97,12 @@ void manager::key_pressed(const std::string &key){ // On press, check which key 
 		my_keyboard_flags.shift = true; // Set the flag to true.  It will be set to false on releae if toggle is false.
 	}
 	if(my_keyboard_flags.shift){ // If shift flag is true
-		if(key.compare("enter") == 0){ // Then if enter was pressed
+		if(key.compare("return") == 0){ // Then if enter was pressed
 			renderer->prev_level(); // Return to the previous level.
 			return;
 		}
 	}
-	if(key.compare("enter") == 0){ // If enter was pressed.
+	if(key.compare("return") == 0){ // If enter was pressed.
 		renderer->next_level(); // Next level.
 		return;
 	}
@@ -121,6 +124,157 @@ void manager::mbutton_pressed(const std::string &mbutton){
 void manager::mbutton_released(const std::string &mbutton){
 	std::cout << "Mouse Released:\t" << mbutton << std::endl;
 }
+
+/*
+ *	Gamepad Methods
+ */
+// Public
+bool manager::is_trigger(int index){
+	switch(my_gamepad_info.type){
+		case(gamepad_t::DUALSHOCK4):
+			if(index == 3 || index == 4){
+				return true;
+			}
+			return false;
+		case(gamepad_t::XBOX1):
+			if(index == 2 || index == 5){
+				return true;
+			}
+			return false;
+		default:
+			return false;
+	}
+}
+void manager::gamepad_move(float value, int index){
+	switch(my_gamepad_info.type){
+		case(gamepad_t::DUALSHOCK4):
+			dualshock_move(value, index);
+			break;
+		case(gamepad_t::XBOX1):
+			xbox_move(value, index);
+			break;
+		default:
+			return;
+	}
+}
+void manager::gamepad_trigger(float value, int index){
+	switch(my_gamepad_info.type){
+		case(gamepad_t::DUALSHOCK4):
+			dualshock_trigger(value, index);
+			break;
+		case(gamepad_t::XBOX1):
+			xbox_trigger(value, index);
+			break;
+		default:
+			return;
+	}
+}
+void manager::gamepad_pressed(std::vector<bool> buttons, int index){
+	switch(my_gamepad_info.type){
+		case(gamepad_t::DUALSHOCK4):
+			dualshock_pressed(buttons, index);
+			break;
+		case(gamepad_t::XBOX1):
+			xbox_pressed(buttons, index);
+			break;
+		default:
+			return;
+	}
+}
+// Private
+//  Dualshock Methods
+void manager::dualshock_move(float value, int index){
+	// Index 0 is Left and Right on left joystick for gamepad
+	// mapping that to X-Axis
+	// Index 1 is Up and Down on left joystick for gamepad
+	// mapping that to Y-Axis
+	// Index 2 is Left and Right on right joystick for gamepad
+	// mapping that to Y-Axis Local Rotation
+	// Index 5 is Up and Down on right joystick for gamepad
+	// mapping that to X-Axis Local Rotations
+	if(index == 0){
+		renderer->cam_x_move(value);
+	}
+	else if(index == 1){
+		renderer->cam_y_move(value);
+	}
+	else if(index == 2){
+		renderer->cam_y_rotation(value);
+	}
+	else if(index == 5){
+		renderer->cam_x_rotation(value);
+	}
+}
+void manager::dualshock_trigger(float value, int index){
+	if(my_gamepad_flags.rotation_toggle){
+		if(index == 4){ // Positive Rotation
+			renderer->cam_z_rotation(value);
+		}
+		else{
+			renderer->cam_z_rotation(-1 * value);
+		}
+	}
+	else{
+		if(index == 4){ // Positive Rotation
+			renderer->cam_z_move(value);
+		}
+		else{
+			renderer->cam_z_move(-1 * value);
+		}
+	}
+}
+void manager::dualshock_pressed(std::vector<bool> buttons, int index){
+	if(index == 5){
+		my_gamepad_flags.rotation_toggle = !my_gamepad_flags.rotation_toggle;
+	}
+}
+//  Xbox One Methods
+void manager::xbox_move(float value, int index){
+	// Index 0 is Left and Right on left joystick for gamepad
+	// mapping that to X-Axis
+	// Index 1 is Up and Down on left joystick for gamepad
+	// mapping that to Y-Axis
+	// Index 3 is Left and Right on right joystick for gamepad
+	// mapping that to Y-Axis Local Rotation
+	// Index 4 is Up and Down on right joystick for gamepad
+	// mapping that to X-Axis Local Rotations
+	if(index == 0){
+		renderer->cam_x_move(value);
+	}
+	else if(index == 1){
+		renderer->cam_y_move(value);
+	}
+	else if(index == 3){
+		renderer->cam_y_rotation(value);
+	}
+	else if(index == 4){
+		renderer->cam_x_rotation(value);
+	}
+}
+void manager::xbox_trigger(float value, int index){
+	if(my_gamepad_flags.rotation_toggle){
+		if(index == 5){ // Positive Rotation
+			renderer->cam_z_rotation(value);
+		}
+		else{
+			renderer->cam_z_rotation(-1 * value);
+		}
+	}
+	else{
+		if(index == 5){ // Positive Rotation
+			renderer->cam_z_move(value);
+		}
+		else{
+			renderer->cam_z_move(-1 * value);
+		}
+	}
+}
+void manager::xbox_pressed(std::vector<bool> buttons, int index){
+	if(index == 5){
+		my_gamepad_flags.rotation_toggle = !my_gamepad_flags.rotation_toggle;
+	}
+}
+
 /*
  * Private Methods.
  */

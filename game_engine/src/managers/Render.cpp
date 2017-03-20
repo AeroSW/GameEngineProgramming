@@ -222,6 +222,11 @@ void render::create_scene_manager(const std::string &name){
 		Ogre::SceneManager * ogre_scene = root->createSceneManager(Ogre::ST_GENERIC, name);
 	}
 }
+
+
+
+// LEVEL FUNCTIONS
+
 void render::load_level(uint32 lvl/*! 1-based */){
 	static bool level_loaded = false;
 	if(level_loaded)
@@ -238,6 +243,15 @@ void render::next_level(){
 	else{
 		my_manager->log("No more levels to load, exiting game.");
 		end_render();
+	}
+}
+void render::prev_level(){
+	if(curr_level > 0){
+		my_manager->log("Loading level " + std::to_string(curr_level));
+		load_level(curr_level); // Function is 1-based where curr_level is 0-based.
+	}
+	else{
+		log("Err: Could not load previous level, already at level 1.");
 	}
 }
 void render::unload_level(){	// Private Function
@@ -264,6 +278,43 @@ void render::render_scene(const std::string &name){
 	}
 	my_manager->log("Renderer called to start rendering.");
 }
+
+
+
+
+
+// CAMERA MANIPULATION FUNCTIONS
+void render::cam_x_move(float val){
+	Ogre::Camera * ogre_cam = viewport->getCamera();
+	val *= 0.05;
+	Ogre::Vector3 new_cam_loc(val, 0, 0);
+	ogre_cam->moveRelative(new_cam_loc);
+}
+void render::cam_y_move(float val){
+	Ogre::Camera * ogre_cam = viewport->getCamera();
+	val *= 0.05;
+	Ogre::Vector3 new_cam_loc(0, val, 0);
+	ogre_cam->moveRelative(new_cam_loc);
+}
+void render::cam_z_move(float val){
+	Ogre::Camera * ogre_cam = viewport->getCamera();
+	val *= 0.05;
+	Ogre::Vector3 new_cam_loc(0, 0, val);
+	ogre_cam->moveRelative(new_cam_loc);
+}
+void render::cam_x_rotation(float val){}
+void render::cam_y_rotation(float val){}
+void render::cam_z_rotation(float val){}
+
+
+
+
+
+
+// Ogre Resource Group Manager
+
+
+
 // Resource Group
 void render::load_resource(const std::string &resource){
 	if(!rgm->resourceGroupExists(resource)) throw render_error(resource + " resource group does not exist.",192);
@@ -298,6 +349,15 @@ void render::declare_resource(const std::string &file, const std::string &type, 
 bool render::has_group(const std::string &group){
 	return rgm->resourceGroupExists(group);
 }
+
+
+
+
+
+
+
+// Ogre Scene Manager
+
 // Entity
 void render::add_entity(const std::string &entity, const std::string &mesh, const std::string &group){
 	if(!rgm->resourceGroupExists(group)) throw render_error(group + " resource group does not exist.", 222);

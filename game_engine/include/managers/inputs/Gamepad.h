@@ -17,6 +17,9 @@ class gamepad : public input, public OIS::JoyStickListener{
 		virtual void initialize();
 	//	gamepad_t type;
 		
+		const int pos_max = 32767;
+		const int neg_max = -32768;
+		
 	protected:
 		OIS::JoyStick * ois_gamepad;
 		uint32 tol;
