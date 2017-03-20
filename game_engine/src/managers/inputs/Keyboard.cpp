@@ -13,7 +13,7 @@ void keyboard::initialize(){
 		}
 	}
 	catch(...){
-		ASSERT_LOG(false, "Inputs will not be used.")
+		ASSERT_CRITICAL(false, "Inputs will not be used.")
 	}
 }
 
@@ -42,7 +42,6 @@ bool keyboard::has(){
 }
 
 void keyboard::poll(){
-	std::cout << "Inside keyboard poll." << std::endl;
 	ois_keyboard->capture();
 }
 
