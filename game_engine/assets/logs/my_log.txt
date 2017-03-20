@@ -1,255 +1,245 @@
 ----COMMENT----
-TIME:	17:05:22
+TIME:	01:23:58
 MESSAGE:
 Gameparser created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:22
+TIME:	01:23:58
 MESSAGE:
 Ogre::Root * root initialized.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:22
+TIME:	01:23:58
 MESSAGE:
 RenderSystem_GL is now loaded.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:22
+TIME:	01:23:58
 MESSAGE:
 ResourceGroupManager * rgm is now initialized.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:22
+TIME:	01:23:58
 MESSAGE:
 RenderSystem is now generated.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:22
+TIME:	01:23:58
 MESSAGE:
 Level files parsed.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:22
+TIME:	01:23:58
 MESSAGE:
 Level 1 has been created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:22
+TIME:	01:23:58
 MESSAGE:
 Levels are now built.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:22
+TIME:	01:23:58
 MESSAGE:
 Render system is has now been set.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:22
+TIME:	01:23:58
 MESSAGE:
 Render system has been configured.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Window has been created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Viewport has been initialized.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Aspect Ratio calculated.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Renderer is initialized.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Animation listener is initialized.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Frame listener created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Render created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 RENDER CREATION COMPLETE.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Created base class
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 1
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Gamepad created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Mouse created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Keyboard created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 INPUT CREATIONS COMPLETE.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Parsing resource paths.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Group MyLevel1created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Resource location ./assets/meshes added.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Resource location ./assets/materials added.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Finished adding resource locations.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Finished parsing resources.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Parsing scenes.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Parsing scene DeadlyRing.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Parsing objects in group MyLevel1.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Entity Lord added to MyLevel1.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Camera Eine Kamera added to MyLevel1.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Light Blaues Licht added to MyLevel1.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Groups are done parsing.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Outer Ring Rotation node created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Intermediate Ring node created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Ring Rotation node created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	The Ring node created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Kamera Outer node created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Kamera Middle node created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Scene:	Kamera Inner node created.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
-MESSAGE:
-Scene:	Light Container node created.
---END-COMMENT--
-----COMMENT----
-TIME:	17:05:24
-MESSAGE:
-Scene:	outer_light node created.
---END-COMMENT--
-----COMMENT----
-TIME:	17:05:24
-MESSAGE:
-Scene:	Blue Light node created.
---END-COMMENT--
-----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Eine Kamera was loaded.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Viewport now controls Eine Kamera
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Aspect ratio adjusted for camera.
 --END-COMMENT--
 ----COMMENT----
-TIME:	17:05:24
+TIME:	01:24:00
 MESSAGE:
 Renderer called to start rendering.
+--END-COMMENT--
+----COMMENT----
+TIME:	01:25:28
+MESSAGE:
+Escape pressed, exiting game.
 --END-COMMENT--
