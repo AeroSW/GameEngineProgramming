@@ -34,3 +34,5 @@ game_engine/Game
 OISDocumentation/
 
 *.html
+
+*.komodoproject
