@@ -186,6 +186,9 @@ void render::stop_render(){
 		r->stop_rendering();
 	}
 }
+void render::end_render(){
+	unload_level();
+}
 
 void render::log(const std::string &msg){
 	my_manager->log(msg);
@@ -226,6 +229,16 @@ void render::load_level(uint32 lvl/*! 1-based */){
 	curr_level = lvl-1; // Gotta fix off by 1 errors.
 	levels[curr_level].construct_level();
 	level_loaded = true;
+}
+void render::next_level(){
+	if(curr_level < levels.size() - 1){
+		my_manager->log("Loading level " + std::to_string(curr_level + 2));
+		load_level(curr_level + 2); // Function is 1-based where curr_level is 0-based.  Add 2 to get to next level.
+	}
+	else{
+		my_manager->log("No more levels to load, exiting game.");
+		end_render();
+	}
 }
 void render::unload_level(){	// Private Function
 	stop_render();
