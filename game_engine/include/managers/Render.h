@@ -71,19 +71,7 @@ class render{
 		uint32 get_win_length();
 		uint32 get_win_height();
 	//	void push_animation_state(Ogre::AnimationState * as);
-		/*
-		 * get_win
-		 * 	Parameters:
-		 * 		Nothing
-		 * 	Returns:	Reference to Ogre RenderWindow
-		 */
 		Ogre::RenderWindow* get_win();
-		/*
-		 * get_scene
-		 * 	Parameters:
-		 * 		Nothing
-		 * 	Returns:	Reference to Ogre Scene
-		 */
 		Ogre::SceneManager* get_scene();
 
 		/*
@@ -91,15 +79,7 @@ class render{
 		 */
 		void start_render();
 		void stop_render();
-	//	void end_render();
-
-		/*
-		 * get_curr_level_name
-		 * 	Parameters:
-		 * 		None
-		 * 	Returns:
-		 * 		Returns a string representation of the level's name.
-		 */
+		void end_render();
 		std::string get_scene_name();
 
 		/*
@@ -112,7 +92,8 @@ class render{
 		bool add_scene(const std::string &xml_scene_file);
 		
 		void load_level(uint lvl=1); // 1-based function call.
-		
+		void next_level();
+		void prev_level();
 		void log(const std::string &msg);
 		
 		// Listener Functions
