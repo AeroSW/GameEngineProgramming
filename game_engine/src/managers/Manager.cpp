@@ -22,8 +22,8 @@ manager::~manager(){
 	}
 }
 
-manager* manager::get_manager(const std::string &xml_file, const std::string &log_name){
-	static manager game_manager(xml_file, log_name);
+manager* manager::get_manager(const std::string &xml_file, const std::string &log_name, gamepad_t type){
+	static manager game_manager(xml_file, log_name, type);
 	return &game_manager;
 }
 
@@ -73,11 +73,47 @@ void manager::poll_inputs(){
 		}
 	}
 }
-void manager::key_pressed(const std::string &key){
-	std::cout << "Key Pressed:\t" << key << std::endl;
+void manager::key_pressed(const std::string &key){ // On press, check which key was used.
+	if(key.compare("escape") == 0){ // If escape was pressed.
+		log("Escape pressed, exiting game.");
+		renderer->end_render(); // Then stop rendering the game, the user wants to exit.
+		return;
+	}
+	if(key.compare("lctrl") == 0|| key.compare("rctrl")){ // If a ctrl key was pressed
+		my_keyboard_flags.ctrl = true; // Set the flag to true until it is released.
+		return;
+	}
+	if(my_keyboard_flags.ctrl){ // If the ctrl flag is true
+		if(key.compare("lshift") == 0 || key.compare("rshift") == 0)){ // Then check if shift was pressed.
+			my_keyboard_flags.toggle = !my_keyboard_flags.toggle; // If so, then toggle the shift flag.
+			my_keyboard_flags.shift = !my_keyboard_flags.shift;
+			return;
+		}
+	}
+	if(key.compare("lshift") == 0 || key.compare("rshift") == 0){ // If the shift key is pressed
+		my_keyboard_flags.shift = true; // Set the flag to true.  It will be set to false on releae if toggle is false.
+	}
+	if(my_keyboard_flags.shift){ // If shift flag is true
+		if(key.compare("enter") == 0){ // Then if enter was pressed
+			renderer->prev_level(); // Return to the previous level.
+			return;
+		}
+	}
+	if(key.compare("enter") == 0){ // If enter was pressed.
+		renderer->next_level(); // Next level.
+		return;
+	}
 }
 void manager::key_released(const std::string &key){
-	std::cout << "Key Released:\t" << key << std::endl;
+	if(key.compare("lctrl") == 0 || key.compare("rctrl") == 0){ // On release, we should set the flags to false.
+		my_keyboard_flags.ctrl = false;
+	}
+	if((key.compare("lshift") == 0 || key.compare("rshift") == 0) && !my_keyboard_flags.toggle){
+		my_keyboard_flags.shift = false;
+	}
+	if(key.compare("lalt") == 0 || key.compare("ralt") == 0){
+		my_keyboard_flags.alt = false;
+	}
 }
 void manager::mbutton_pressed(const std::string &mbutton){
 	std::cout << "Mouse Pressed:\t" << mbutton << std::endl;
@@ -88,25 +124,70 @@ void manager::mbutton_released(const std::string &mbutton){
 /*
  * Private Methods.
  */
-manager::manager(const std::string &xml_file, const std::string &log_name){
+manager::manager(const std::string &xml_file, const std::string &log_name, gamepad_t type){
 	my_scene = nullptr;
 	my_log = new logger(log_name);
-	init(xml_file);
-	log("Manager Initialized Complete.");
+	init_render(xml_file);
+	log("RENDER CREATION COMPLETE.");
 	if(my_scene == nullptr){
 		my_scene = new scene(renderer);
 	}
-	input_managers.push_back(new gamepad(this));
-	log("Gamepad created.");
-	input_managers.push_back(new mouse(this));
-	log("Mouse created.");
-	input_managers.push_back(new keyboard(this));
-	log("Keyboard created.");
+	init_inputs(type);
+	log("INPUT CREATIONS COMPLETE.");
 	renderer->start_render();
-//	input_managers.push_back(new mouse(this));
-//	input_managers.push_back(new keyboard(this));
 }
-void manager::init(const std::string &xml_file){
+void manager::init_render(const std::string &xml_file){
 	renderer = new render(this, xml_file);
 	log("Render created.");
+}
+void manager::init_inputs(gamepad_t type){
+	bool has_input = false;
+	input * my_gamepad = new gamepad(this);
+	if(my_gamepad->has()){
+		log("Gamepad created.");
+		input_managers.push_back(my_gamepad);
+		my_gamepad_info.type = type;
+		switch(type){
+			case(gamepad_t::DUALSHOCK4):
+				my_gamepad_info.curr_buttons = std::vector<bool>(14);
+				my_gamepad_info.axes = std::vector<float>(6);
+				break;
+			case(gamepad_t::XBOX1):
+				my_gamepad_info.curr_buttons = std::vector<bool>(11);
+				my_gamepad_info.axes = std::vector<float>(6);
+				break;
+		}
+		has_input = true;
+	}
+	else{
+		log("Gamepad creation failure.");
+		delete my_gamepad;
+	}
+	input * my_mouse = new mouse(this);
+	if(my_mouse->has()){
+		log("Mouse created.");
+		input_managers.push_back(my_mouse);
+		has_input = true;
+	}
+	else{
+		log("Mouse creation failure.");
+		delete my_mouse; // If failure in creation, then we need to delete the object.
+	}
+	input * my_keyboard = new keyboard(this);
+	if(my_keyboard->has()){
+		log("Keyboard created.");
+		input_managers.push_back(my_keyboard);
+		my_keyboard_flags.shift = false;
+		my_keyboard_flags.ctrl = false;
+		my_keyboard_flags.alt = false;
+		has_input = true;
+	}
+	else{
+		log("Keyboard creation failure.");
+		delete my_keyboard;
+	}
+	if(!has_input){
+		log("Failure to create an input.");
+		std::exit(1);
+	}
 }
