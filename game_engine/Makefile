@@ -2,14 +2,13 @@ AutomatedMakefile = am
 CC		= g++
 EXE		= Game
 
-MY_INC	= -I./include -I./include/xml_parser
-GL_INC	= -I/usr/local/include/OGRE -I/usr/include/boost
+GL_INC	= -I/usr/include/OGRE -I/usr/include/boost -I/usr/local/include/OIS
 INC_DIRS= $(MY_INC) $(GL_INC)
 
-MY_LIB	= ./obj/*.o ./obj/xml_parser/*.o
+MY_LIB	= ./obj/*.o ./obj/parsers/*.o ./obj/managers/*.o ./obj/logs/*.o ./obj/exceptions/*.o ./obj/listeners/*.o ./obj/managers/inputs/*.o
 GL_LIB	= -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu
 LIB_DIRS= $(MY_LIB) $(GL_LIB)
-LIBS	= -lboost_filesystem -lboost_system -lOgreMain
+LIBS	= -lboost_filesystem -lboost_system -lOgreMain -lOIS
 
 CFLAGS	= -std=c++11 $(INC_DIRS) -c
 EFLAGS	= -std=c++11 $(LIB_DIRS) -o
@@ -21,3 +20,6 @@ compile	:
 	
 install	:
 	$(CC) $(EFLAGS) $(EXE) $(LIBS)
+	
+clean	:
+	cd ./obj && $(MAKE) clean

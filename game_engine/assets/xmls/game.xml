@@ -1,0 +1,3 @@
+<game name="Hello World">
+	<level name="Level 1">./assets/xmls/levels/Lv1.xml</level>
+</game>

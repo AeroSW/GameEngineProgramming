@@ -18,3 +18,21 @@ kecornett42_hw1/
 game_engine/Ogre\.log
 
 *.log
+
+3D-Objects/
+
+game_engine/src/parsers/Parser\.cpp
+
+game_engine/include/parsers/Parser\.h
+
+*.o
+
+game_engine/src/managers/recup_dir\.1/
+
+game_engine/Game
+
+OISDocumentation/
+
+*.html
+
+*.komodoproject

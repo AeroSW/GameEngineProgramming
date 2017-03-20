@@ -1,6 +1,12 @@
 // Functions.cpp
 #include "Functions.h"
 
+#include <algorithm> 
+#include <functional> 
+#include <cctype>
+#include <locale>
+#include <sstream>
+
 std::vector<double> parse_vector(const std::string &vect_str){
 	static char delim = ',';
 	std::stringstream ss;
@@ -23,4 +29,19 @@ std::vector<float> parse_fvector(const std::string &vect_str){
 		value.push_back(std::stof(buffer));
 	}
 	return value;
+}
+
+void trim(std::string &str){
+	ltrim(str);
+	rtrim(str);
+}
+
+void ltrim(std::string &s){
+	s.erase(s.begin(), std::find_if(s.begin(), s.end(),
+			std::not1(std::ptr_fun<int, int>(std::isspace))));
+}
+
+void rtrim(std::string &s){
+	s.erase(std::find_if(s.rbegin(), s.rend(),
+			std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 }
