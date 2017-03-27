@@ -40,6 +40,21 @@ class manager{
 		manager(const std::string &xml, const std::string &log_name, gamepad_t type);
 		void init_render(const std::string &xml);
 		void init_inputs(gamepad_t type);
+		
+		//Dualshock4 Methods
+		void dualshock_move(float value, int index);
+		void dualshock_trigger(float value, int index);
+		void dualshock_pressed(std::vector<bool> buttons, int index);
+		// Xbox One Methods
+		void xbox_move(float value, int index);
+		void xbox_trigger(float value, int index);
+		void xbox_pressed(std::vector<bool> buttons, int index);
+		
+		struct gamepad_flags{
+			bool trigger_toggle;
+			bool local_toggle;
+		} my_gamepad_flags;
+		
 		struct gamepad_info{
 			gamepad_t type;
 			std::vector<bool> curr_buttons;
@@ -67,10 +82,17 @@ class manager{
 		
 		// Input Methods
 		void poll_inputs();
+		// Keyboard Methods
 		void key_pressed(const std::string &key);
 		void key_released(const std::string &key);
+		// Mouse Methods
 		void mbutton_pressed(const std::string &mbutton);
 		void mbutton_released(const std::string &mbutton);
+		// Gamepad Methods
+		bool is_trigger(int index);
+		void gamepad_move(float value, int index);
+		void gamepad_trigger(float value, int index);
+		void gamepad_pressed(std::vector<bool> buttons, int index);
 };
 
 #endif /* MANAGER_H_ */

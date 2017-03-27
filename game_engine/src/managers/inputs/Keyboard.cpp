@@ -46,7 +46,6 @@ void keyboard::poll(){
 }
 
 bool keyboard::keyPressed(const OIS::KeyEvent &event){
-	std::cout << "Key Pressed:\t" << std::endl;
 	std::string key_pressed = map_key(event);
 	if(key_pressed.compare("undefined") != 0){
 		my_manager->key_pressed(key_pressed);

@@ -22,7 +22,6 @@ class level{
 		std::vector<std::pair<std::string, std::vector<uint16> > > node_tracks;
 		
 		
-		
 	protected:
 		
 	public:
@@ -56,6 +55,8 @@ class level{
 		virtual void add_camera(const std::string &camera);
 		virtual void add_light(const std::string &light);
 		virtual void add_node_track(const std::string &node, const uint16 &track); // Need to think this through.
+		
+		uint32 cam_index;
 		
 		level& operator=(const level &lvl);
 };

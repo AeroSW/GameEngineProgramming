@@ -46,6 +46,10 @@ void mouse::poll(){
 }
 
 bool mouse::mouseMoved(const OIS::MouseEvent &event){
+	std::cout << "MOUSE:\n";
+	std::cout << "X: " << event.state.X.abs << "\n";
+	std::cout << "Y: " << event.state.Y.abs << "\n";
+	std::cout << "Z: " << event.state.Z.abs << std::endl;
 	return true;
 }
 
