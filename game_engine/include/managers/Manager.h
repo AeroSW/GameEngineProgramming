@@ -86,13 +86,16 @@ class manager{
 		void key_pressed(const std::string &key);
 		void key_released(const std::string &key);
 		// Mouse Methods
-		void mbutton_pressed(const std::string &mbutton);
-		void mbutton_released(const std::string &mbutton);
+		void mbutton_pressed(uint8 mbutton, std::vector<int> &abs_vals, std::vector<int> &rel_vals);
+		void mbutton_released(uint8 mbutton, std::vector<int> &abs_vals, std::vector<int> &rel_vals);
+		void mouse_moved(std::vector<int> &abs_vals, std::vector<int> &rel_vals);
 		// Gamepad Methods
 		bool is_trigger(int index);
 		void gamepad_move(float value, int index);
 		void gamepad_trigger(float value, int index);
 		void gamepad_pressed(std::vector<bool> buttons, int index);
+		
+		// GUI Methods
 };
 
 #endif /* MANAGER_H_ */

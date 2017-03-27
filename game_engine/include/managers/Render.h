@@ -22,6 +22,7 @@
 
 class level;
 class manager;
+class interface;
 class renderlistener;
 
 class render{
@@ -35,6 +36,7 @@ class render{
 		Ogre::SceneManager * ogre_scene;
 		
 		manager * my_manager;
+		interface * my_interface;
 		
 		std::vector<renderlistener*> listeners;
 		
@@ -113,6 +115,11 @@ class render{
 		void cam_z_global_rotation(float val);
 		void prev_camera();
 		void next_camera();
+		
+		// Mouse movement functions
+		void mouse_moved(std::vector<int> &abs_pos, std::vector<int> &rel_pos);
+		void mouse_pressed(uint8 click_id, std::vector<int> &abs_pos, std::vector<int> &rel_pos);
+		void mouse_released(uint8 click_id, std::vector<int> &abs_pos, std::vector<int> &rel_pos);
 		
 		// Scene Functions
 		//	Manager Functions
