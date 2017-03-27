@@ -38,3 +38,5 @@ OISDocumentation/
 *.komodoproject
 
 game_engine/assets/logs/
+
+*.gz

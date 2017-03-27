@@ -51,7 +51,8 @@ class manager{
 		void xbox_pressed(std::vector<bool> buttons, int index);
 		
 		struct gamepad_flags{
-			bool rotation_toggle;
+			bool trigger_toggle;
+			bool local_toggle;
 		} my_gamepad_flags;
 		
 		struct gamepad_info{

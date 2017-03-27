@@ -106,6 +106,14 @@ void manager::key_pressed(const std::string &key){ // On press, check which key 
 		renderer->next_level(); // Next level.
 		return;
 	}
+	if(key.compare("left") == 0){
+		renderer->prev_camera();
+		return;
+	}
+	if(key.compare("right") == 0){
+		renderer->next_camera();
+		return;
+	}
 }
 void manager::key_released(const std::string &key){
 	if(key.compare("lctrl") == 0 || key.compare("rctrl") == 0){ // On release, we should set the flags to false.
@@ -196,36 +204,59 @@ void manager::dualshock_move(float value, int index){
 		renderer->cam_x_move(value);
 	}
 	else if(index == 1){
-		renderer->cam_y_move(value);
+		renderer->cam_z_move(value);
 	}
-	else if(index == 2){
-		renderer->cam_y_rotation(value);
+	else if(my_gamepad_flags.local_toggle){
+		if(index == 2){
+			renderer->cam_y_local_rotation(-1 * value);
+		}
+		else if(index == 5){
+			renderer->cam_x_local_rotation( -1 * value);
+		}
 	}
-	else if(index == 5){
-		renderer->cam_x_rotation(value);
+	else{
+		if(index == 2){
+			renderer->cam_y_global_rotation(value);
+		}
+		else if(index == 5){
+			renderer->cam_x_global_rotation( -1 * value);
+		}
 	}
 }
 void manager::dualshock_trigger(float value, int index){
-	if(my_gamepad_flags.rotation_toggle){
-		if(index == 4){ // Positive Rotation
-			renderer->cam_z_rotation(value);
+	if(my_gamepad_flags.trigger_toggle){
+		if(my_gamepad_flags.local_toggle){
+			if(index == 4){ // Positive Rotation
+				renderer->cam_z_local_rotation(value);
+			}
+			else{
+				renderer->cam_z_local_rotation(-1 * value);
+			}
 		}
 		else{
-			renderer->cam_z_rotation(-1 * value);
+			if(index == 4){ // Positive Rotation
+				renderer->cam_z_global_rotation(value);
+			}
+			else{
+				renderer->cam_z_global_rotation(-1 * value);
+			}
 		}
 	}
 	else{
 		if(index == 4){ // Positive Rotation
-			renderer->cam_z_move(value);
+			renderer->cam_y_move(value);
 		}
 		else{
-			renderer->cam_z_move(-1 * value);
+			renderer->cam_y_move(-1 * value);
 		}
 	}
 }
 void manager::dualshock_pressed(std::vector<bool> buttons, int index){
 	if(index == 5){
-		my_gamepad_flags.rotation_toggle = !my_gamepad_flags.rotation_toggle;
+		my_gamepad_flags.trigger_toggle = !my_gamepad_flags.trigger_toggle;
+	}
+	else if(index == 4){
+		my_gamepad_flags.local_toggle = !my_gamepad_flags.local_toggle;
 	}
 }
 //  Xbox One Methods
@@ -242,36 +273,59 @@ void manager::xbox_move(float value, int index){
 		renderer->cam_x_move(value);
 	}
 	else if(index == 1){
-		renderer->cam_y_move(value);
+		renderer->cam_z_move(value);
 	}
-	else if(index == 3){
-		renderer->cam_y_rotation(value);
+	else if(!my_gamepad_flags.local_toggle){
+		if(index == 3){
+			renderer->cam_y_global_rotation(value);
+		}
+		else if(index == 4){
+			renderer->cam_x_global_rotation(-1 * value);
+		}
 	}
-	else if(index == 4){
-		renderer->cam_x_rotation(value);
+	else{
+		if(index == 3){
+			renderer->cam_y_local_rotation(-1 * value);
+		}
+		else if(index == 4){
+			renderer->cam_x_local_rotation(-1 * value);
+		}
 	}
 }
 void manager::xbox_trigger(float value, int index){
-	if(my_gamepad_flags.rotation_toggle){
-		if(index == 5){ // Positive Rotation
-			renderer->cam_z_rotation(value);
+	if(my_gamepad_flags.trigger_toggle){
+		if(my_gamepad_flags.local_toggle){
+			if(index == 5){ // Positive Rotation
+				renderer->cam_z_local_rotation(value);
+			}
+			else{
+				renderer->cam_z_local_rotation(-1 * value);
+			}
 		}
 		else{
-			renderer->cam_z_rotation(-1 * value);
+			if(index == 5){ // Positive Rotation
+				renderer->cam_z_global_rotation(value);
+			}
+			else{
+				renderer->cam_z_global_rotation(-1 * value);
+			}
 		}
 	}
 	else{
 		if(index == 5){ // Positive Rotation
-			renderer->cam_z_move(value);
+			renderer->cam_y_move(value);
 		}
 		else{
-			renderer->cam_z_move(-1 * value);
+			renderer->cam_y_move(-1 * value);
 		}
 	}
 }
 void manager::xbox_pressed(std::vector<bool> buttons, int index){
 	if(index == 5){
-		my_gamepad_flags.rotation_toggle = !my_gamepad_flags.rotation_toggle;
+		my_gamepad_flags.trigger_toggle = !my_gamepad_flags.trigger_toggle;
+	}
+	else if(index == 4){
+		my_gamepad_flags.local_toggle = !my_gamepad_flags.local_toggle;
 	}
 }
 
@@ -311,6 +365,7 @@ void manager::init_inputs(gamepad_t type){
 				my_gamepad_info.axes = std::vector<float>(6);
 				break;
 		}
+		my_gamepad_flags.local_toggle = true;
 		has_input = true;
 	}
 	else{

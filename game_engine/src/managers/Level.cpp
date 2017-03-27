@@ -6,6 +6,7 @@
 #include <iostream> // Debug
 
 level::level(const std::string &doc_name, render * my_renderer){
+	cam_index = 0;
 	my_parser = new levelparser(doc_name);
 	my_scene = (scene*)my_renderer->get_scene_manager();
 	name = my_parser->get_name();
@@ -13,6 +14,7 @@ level::level(const std::string &doc_name, render * my_renderer){
 
 level::level(const level &lvl):
 name(lvl.name){
+	cam_index = 0;
 	my_parser = new levelparser(lvl.my_parser->file_name);
 	my_scene = lvl.my_scene;
 }
@@ -47,6 +49,7 @@ void level::destruct_level(){
 }
 
 std::string level::get_camera(uint32 index){
+	cam_index = index;
 	return cameras[index];
 }
 uint32 level::num_cameras(){

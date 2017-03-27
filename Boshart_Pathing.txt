@@ -1,0 +1,14 @@
+$(OIS_PATH)/include
+$(GAME_PATH)
+$(OGRE_PATH)/OgreMain/include  $(OGRE_PATH)/include
+$(BOOST_PATH)
+$(OIS_PATH)/lib
+$(GAME_PATH)
+$(OGRE_PATH)/build/lib
+$(BOOST_PATH)/stage/lib
+
+Boshart Path Setup
+INC_DIRS = -I./ -I$(OGRE_PATH)/OgreMain/include -I$(OGRE_PATH)/include -I$(OIS_PATH)/include -I$(BOOST_PATH)
+LIB_DIRS = -L./ -L$(OGRE_PATH)/build/lib -L$(BOOST_PATH)/stage/lib $(OIS_PATH)/lib
+LIBS	 = -lboost_system-mgw51-mt-1_63 -lois -lOgreMain
+

@@ -105,10 +105,14 @@ class render{
 		void cam_x_move(float val);
 		void cam_y_move(float val);
 		void cam_z_move(float val);
-		void cam_x_rotation(float val);
-		void cam_y_rotation(float val);
-		void cam_z_rotation(float val);
-		
+		void cam_x_local_rotation(float val);
+		void cam_y_local_rotation(float val);
+		void cam_z_local_rotation(float val);
+		void cam_x_global_rotation(float val);
+		void cam_y_global_rotation(float val);
+		void cam_z_global_rotation(float val);
+		void prev_camera();
+		void next_camera();
 		
 		// Scene Functions
 		//	Manager Functions

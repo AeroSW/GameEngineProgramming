@@ -21,6 +21,11 @@
 				<target>0.0,0.0,0.0</target>
 				<clip>0.5,100.0</clip>
 			</object>
+			<object name="Zwei Kamera" type="camera">
+				<loc>0.0, 0.0, 40.0</loc>
+				<target>0.0,0.0,0.0</target>
+				<clip>0.5,100.0</clip>
+			</object>
 			<object name="Blaues Licht" type="light">
 				<type>directional</type>
 				<target>0,-1,1</target>

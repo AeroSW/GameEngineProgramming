@@ -10,6 +10,8 @@
 #include "InputListener.h"
 #include "RenderListener.h"
 #include "RenderException.h"
+#define _USE_MATH_DEFINES
+#include <cmath>
 
 void render::loop_animations(float timestep){
 	std::vector<std::string> astate_names = levels[curr_level].animation_list;
@@ -88,27 +90,6 @@ void render::init(){
 	catch(Ogre::Exception &e){
 		ASSERT_CRITICAL(false, e.what());
 	}
-/*	std::string scene_title = parse_scene_name(xml_file);
-	std::cout << "Creating Scene Manager" << std::endl;
-	my_scene_manager = root->createSceneManager(Ogre::ST_GENERIC, scene_title);
-	std::cout << "Finished Creating Scene Manager<>Creating ResourceGroupManager" << std::endl;
-	Ogre::ResourceGroupManager &rgm = Ogre::ResourceGroupManager::getSingleton();
-	std::cout << "Finished Creating ResourceGroupManager<>ParsingXMLContentForResourceGroupManager" << std::endl;
-	parse_resources(xml_file, &rgm);
-	std::cout << "Finished Parsing RGM's Material<>Initialising and Loading It" << std::endl;
-	rgm.initialiseResourceGroup("MyLevel1");
-	rgm.loadResourceGroup("MyLevel1");
-	std::cout << "Finished Initialising and Loading Material" << std::endl;
-	std::cout << "Parsing Scene Setup Now" << std::endl;
-	parse_scene(xml_file, my_scene_manager, this);
-	std::cout << "Finished Parsing Scene Setup" << std::endl;
-	camera = my_scene_manager->getCamera("Eine Kamera");
-	viewport = window->addViewport(camera, 0, 0.0, 0.0, 1.0, 1.0);
-	viewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
-	float actual_width = Ogre::Real(viewport->getActualWidth());
-	float actual_height = Ogre::Real(viewport->getActualHeight());
-	float aspect_ratio = actual_width/actual_height;
-	camera->setAspectRatio(aspect_ratio);*/
 }
 
 render::render(manager * m, const std::string &xml_file){
@@ -286,27 +267,168 @@ void render::render_scene(const std::string &name){
 // CAMERA MANIPULATION FUNCTIONS
 void render::cam_x_move(float val){
 	Ogre::Camera * ogre_cam = viewport->getCamera();
-	val *= 0.05;
+	val *= 0.1;
 	Ogre::Vector3 new_cam_loc(val, 0, 0);
 	ogre_cam->moveRelative(new_cam_loc);
 }
 void render::cam_y_move(float val){
 	Ogre::Camera * ogre_cam = viewport->getCamera();
-	val *= 0.05;
+	val *= 0.1;
 	Ogre::Vector3 new_cam_loc(0, val, 0);
 	ogre_cam->moveRelative(new_cam_loc);
 }
 void render::cam_z_move(float val){
 	Ogre::Camera * ogre_cam = viewport->getCamera();
-	val *= 0.05;
+	val *= 0.1;
 	Ogre::Vector3 new_cam_loc(0, 0, val);
 	ogre_cam->moveRelative(new_cam_loc);
 }
-void render::cam_x_rotation(float val){}
-void render::cam_y_rotation(float val){}
-void render::cam_z_rotation(float val){}
+void render::cam_x_local_rotation(float val){
+	Ogre::Camera * ogre_cam = viewport->getCamera();
+	val *= 0.5;
+	ogre_cam->pitch(Ogre::Degree(val));
+}
+void render::cam_y_local_rotation(float val){
+	Ogre::Camera * ogre_cam = viewport->getCamera();
+	val *= 0.5;
+	ogre_cam->yaw(Ogre::Degree(val));
+}
+void render::cam_z_local_rotation(float val){
+	Ogre::Camera * ogre_cam = viewport->getCamera();
+	val *= 0.5;
+	ogre_cam->roll(Ogre::Degree(val));
+}
 
-
+void render::cam_x_global_rotation(float val){
+	Ogre::Camera * ogre_cam = viewport->getCamera();
+	Ogre::Vector3 cam_dir = ogre_cam->getRealDirection(); // Get its direction and location.
+	Ogre::Vector3 rel_pos = ogre_cam->getRealPosition();
+	
+	long double radian_val;
+	if(val > 0)
+		radian_val = M_PI / 64;
+	else
+		radian_val = (-1 * M_PI) / 64;
+	long double cos_val = cos(radian_val);
+	long double sin_val = sin(radian_val);
+	
+	// Calculate the new vectors for both location and direction.
+	// Only the x and y coordinate should change, so we will be using
+	/*
+	 *	|						|		|		|		|		|
+	 *	| 	1	0		0		|		|	x	|		|	x	|
+	 *	|	0	cos(T)	-sin(T)	|	*	|	y	|	=	|	y`	|
+	 *	|	0	sin(T)	cos(T)	|		|	z	|		|	z`	|
+	 *	|						|		|		|		|		|
+	 */
+	// Applied the above formula to both the camera's location and direction.
+	float cam_y_rot = (cos_val * rel_pos.y) + (-1 * sin_val * rel_pos.z);
+	float cam_z_rot = (sin_val * rel_pos.y) + (cos_val * rel_pos.z);
+	float look_y_rot = (cos_val * cam_dir.y) + (-1 * sin_val * cam_dir.z);
+	float look_z_rot = (sin_val * cam_dir.y) + (cos_val * cam_dir.z);
+	
+	Ogre::Vector3 new_loc(rel_pos.x, cam_y_rot, cam_z_rot);	// Create the new vectors from the results
+	Ogre::Vector3 new_dir(cam_dir.x, look_y_rot, look_z_rot);
+	
+	ogre_cam->move(new_loc-rel_pos); // Calculate the relative difference between locations and move the camera.
+	ogre_cam->setDirection(new_dir); // Set the new direction.
+}
+void render::cam_y_global_rotation(float val){
+	Ogre::Camera * ogre_cam = viewport->getCamera(); // Get the active camera.
+	Ogre::Vector3 cam_dir = ogre_cam->getRealDirection(); // Get its direction and location.
+	Ogre::Vector3 rel_pos = ogre_cam->getRealPosition();
+	
+	long double radian_val;
+	if(val > 0)
+		radian_val = M_PI / 64;
+	else
+		radian_val = (-1 * M_PI) / 64;
+	long double cos_val = cos(radian_val);
+	long double sin_val = sin(radian_val);
+	
+	// Calculate the new vectors for both location and direction.
+	// Only the x and z coordinate should change, so we will be using
+	/*
+	 *	|						|		|		|		|		|
+	 *	| 	cos(T)	0	sin(T)	|		|	x	|		|	x`	|
+	 *	|	0		1	0		|	*	|	y	|	=	|	y	|
+	 *	|	-sin(T)	0	cos(T)	|		|	z	|		|	z`	|
+	 *	|						|		|		|		|		|
+	 */
+	// Applied the above formula to both the camera's location and direction.
+	float cam_x_rot = (cos_val * rel_pos.x) + (sin_val * rel_pos.z);
+	float cam_z_rot = (sin_val * (-1 * rel_pos.x)) + (cos_val * rel_pos.z);
+	float look_x_rot = (cos_val * cam_dir.x) + (sin_val * cam_dir.z);
+	float look_z_rot = (sin_val * (-1 * cam_dir.x)) + (cos_val * cam_dir.z);
+	
+	Ogre::Vector3 new_loc(cam_x_rot, rel_pos.y, cam_z_rot);	// Create the new vectors from the results
+	Ogre::Vector3 new_dir(look_x_rot, cam_dir.y, look_z_rot);
+	
+	ogre_cam->move(new_loc-rel_pos); // Calculate the relative difference between locations and move the camera.
+	ogre_cam->setDirection(new_dir); // Set the new direction.
+}
+void render::cam_z_global_rotation(float val){
+	Ogre::Camera * ogre_cam = viewport->getCamera();
+	Ogre::Vector3 cam_dir = ogre_cam->getRealDirection(); // Get its direction and location.
+	Ogre::Vector3 rel_pos = ogre_cam->getRealPosition();
+	
+	long double radian_val;
+	if(val > 0)
+		radian_val = M_PI / 64;
+	else
+		radian_val = (-1 * M_PI) / 64;
+	long double cos_val = cos(radian_val);
+	long double sin_val = sin(radian_val);
+	
+	// Calculate the new vectors for both location and direction.
+	// Only the x and y coordinate should change, so we will be using
+	/*
+	 *	|						|		|		|		|		|
+	 *	| 	cos(T)	-sin(T)	0	|		|	x	|		|	x`	|
+	 *	|	sin(T)	cos(T)	0	|	*	|	y	|	=	|	y`	|
+	 *	|	0		0		1	|		|	z	|		|	z	|
+	 *	|						|		|		|		|		|
+	 */
+	// Applied the above formula to both the camera's location and direction.
+	float cam_x_rot = (cos_val * rel_pos.x) + (-1 * sin_val * rel_pos.y);
+	float cam_y_rot = (sin_val * rel_pos.x) + (cos_val * rel_pos.y);
+	float look_x_rot = (cos_val * cam_dir.x) + (-1 * sin_val * cam_dir.y);
+	float look_y_rot = (sin_val * cam_dir.x) + (cos_val * cam_dir.y);
+	
+	Ogre::Vector3 new_loc(cam_x_rot, cam_y_rot, rel_pos.z);	// Create the new vectors from the results
+	Ogre::Vector3 new_dir(look_x_rot, look_y_rot, cam_dir.z);
+	
+	ogre_cam->move(new_loc-rel_pos); // Calculate the relative difference between locations and move the camera.
+	ogre_cam->setDirection(new_dir); // Set the new direction.
+}
+void render::prev_camera(){
+	uint32 curr_cam_index = levels[curr_level].cam_index;
+	uint32 prev_cam_index;
+	if(curr_cam_index == 0){
+		prev_cam_index = levels[curr_level].num_cameras() - 1;
+	}
+	else{
+		prev_cam_index = curr_cam_index - 1;
+	}
+	std::string cam_name = levels[curr_level].get_camera(prev_cam_index);
+	Ogre::Camera * ogre_cam = ogre_scene->getCamera(cam_name);
+	viewport->setCamera(ogre_cam);
+	ogre_cam->setAspectRatio(aspect_ratio);
+}
+void render::next_camera(){
+	uint32 curr_cam_index = levels[curr_level].cam_index;
+	uint32 next_cam_index;
+	if(curr_cam_index == (levels[curr_level].num_cameras()-1)){
+		next_cam_index = 0;
+	}
+	else{
+		next_cam_index = curr_cam_index + 1;
+	}
+	std::string cam_name = levels[curr_level].get_camera(next_cam_index);
+	Ogre::Camera * ogre_cam = ogre_scene->getCamera(cam_name);
+	viewport->setCamera(ogre_cam);
+	ogre_cam->setAspectRatio(aspect_ratio);
+}
 
 
 
@@ -396,6 +518,7 @@ void render::add_camera(const std::string &cam_name, std::vector<float> &loc, st
 		ogre_cam->setNearClipDistance(clip[1]);
 		ogre_cam->setFarClipDistance(clip[0]);
 	}
+	ogre_cam->setAspectRatio(aspect_ratio);
 }
 void render::add_light(const std::string &light_name){
 	if(!ogre_scene->hasLight(light_name)){
