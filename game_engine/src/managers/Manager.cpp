@@ -126,11 +126,14 @@ void manager::key_released(const std::string &key){
 		my_keyboard_flags.alt = false;
 	}
 }
-void manager::mbutton_pressed(const std::string &mbutton){
-	std::cout << "Mouse Pressed:\t" << mbutton << std::endl;
+/*
+ *	Mouse Methods
+ */
+void manager::mbutton_pressed(uint8 button, std::vector<int> &abs_vals, std::vector<int> &rel_vals){
+	renderer->mouse_pressed(button, abs_vals, rel_vals);
 }
-void manager::mbutton_released(const std::string &mbutton){
-	std::cout << "Mouse Released:\t" << mbutton << std::endl;
+void manager::mbutton_released(uint8 button, std::vector<int> &abs_vals, std::vector<int> &rel_vals){
+	renderer->mouse_released(button, abs_vals, rel_vals);
 }
 
 /*
