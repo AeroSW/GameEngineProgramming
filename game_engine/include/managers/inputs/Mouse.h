@@ -2,13 +2,17 @@
 #define MOUSE_H
 
 #include "Input.h"
+#include <vector>
 
 class mouse : public input, public OIS::MouseListener{
 	private:
 		const std::string type = "mouse";
 		OIS::Mouse * ois_mouse;
-		std::string map_button(const OIS::MouseButtonID &id);
+		uint8 map_button(const OIS::MouseButtonID &id);
+		
 		virtual void initialize();
+		virtual std::vector<int> get_absolute_position();
+		virtual std::vector<int> get_relative_position();
 		
 	protected:
 		
