@@ -1,4 +1,5 @@
 #include "Cegui.h"
+#include "GUIParser.h"
 
 void cegui::init(){
 	// Need to initiaize resource locations.
