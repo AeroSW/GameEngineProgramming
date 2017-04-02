@@ -1,0 +1,80 @@
+<gui name="MyCustomGUI-1" version="1.0">
+	<schemes>
+		<scheme file="TaharezLook.scheme"/>
+	</schemes>
+	<fonts>
+		<font file="GreatVibes-16.font"/>
+	</fonts>
+	<defaults>
+		<default type="font"	name="GreatVibes-16.font"/>
+		<default type="mouse"	name="TaharezLook/MouseArrow"/>
+		<default type="tooltip"	name="TaharezLook/Tooltip"/>
+	</defaults>
+	<widgets>
+		<!--
+			<window> is the tag used to specify the creation of a window.
+			
+			Attributes:
+				name:	The name of the window being created.
+				type:	The type of window(or widget) to be created.
+				look:	The looknfeel to apply to this window/widget.
+			
+		-->
+		<window name="Test Frame" type="frame" look="Taharez/FrameWindow">
+			<!--
+				<location> is the tag specified to set this window's
+				position in regards to its parent window.
+				
+				Attributes:
+					relative:	Refers to the relative position offsets for x and y
+								for this window.
+					absolute:	Refers to the absolute pixel offsets for x and y for
+								this window.
+					
+					
+					<location relative="xr,yr" absolute="xa,ya"/>
+					xr is relative x position to the parent window.
+					yr is relative y position to the parent window.
+					xa is absolute x position to the parent window.
+					ya is absolute y position to the parent window.
+					Relative is percentage offset for parent window.
+					Absolute is pixel offset for parent window.
+					
+					
+					So if the tag is as below:
+					<location relative="0.25,0.25" absolute="10.0, 0.0"/>
+					The window's x relative offset is 25% of the distance from the left
+					side of its parent window to the right side of its parent.  The
+					absolute offset of 10 pixels for x offsets it an additional 10 pixels
+					from that.
+					The newly created window's y offset would be 25% of the distance from
+					the top to the bottom of its parent window.
+				
+			-->
+			<location relative="0.25,0.25" absolute="0.0,0.0"/>
+			<!--
+				<area> is the tag specifying how large this window is.
+				
+				Attributes:
+					relative:	How large this window is relative to its parent.
+					aboslute:	How large this window is pixel wise.
+					
+				<area relative="xr,yr" absolute="xa,ya"/>
+				xr is relative width of this window in percentage of parent window's
+					width it is covering.
+				yr is relative height for this window in percentage of parent window's
+					height it is covering.
+				xa is absolute width for this window in pixels.
+				ya is absolute height for this window in pixels.
+			-->
+			<area relative="0.5,0.25" absolute="0.0,0.0"/>
+			<!--
+				<text> is the tag specifying the window's text
+				
+				Attributes:
+					string:	The text to display.
+			-->
+			<text string="Hello World"/>
+		</window>
+	</widgets>
+</gui>
