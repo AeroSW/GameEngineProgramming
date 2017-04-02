@@ -69,6 +69,8 @@ class render{
 		
 		void * get_scene_manager();
 		
+		void build_gui();
+		
 		uint32 get_win_handle();
 		uint32 get_win_length();
 		uint32 get_win_height();
@@ -130,7 +132,8 @@ class render{
 		//	Resource Manipulation
 		void load_resource(const std::string &resource);
 		void unload_resource(const std::string &resource);
-		void add_resource_location(const std::string &location, const std::string &group);
+		void add_resource_location(const std::string &location, const std::string &group); // Add resource location for everything other than levels.
+		void add_resource_location_l(const std::string &location, const std::string &group); // Add resource location for levels.
 		void declare_resource(const std::string &file, const std::string &type, const std::string &group);
 		bool has_group(const std::string &group);
 		//	Generic Scene Functions
