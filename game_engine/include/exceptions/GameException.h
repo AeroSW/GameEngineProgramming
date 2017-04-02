@@ -8,9 +8,9 @@
 class game_error : public std::runtime_error{
 	protected:
 		uint32 line_number;
-		std::string class_name;
+		std::string file_name;
 	public:
-		game_error(const std::string &what_msg, const std::string &class_name, uint32 line_number);
+		game_error(const std::string &what_msg, const std::string &file, uint32 line_number);
 		virtual ~game_error();
 		virtual const char * what();
 };
