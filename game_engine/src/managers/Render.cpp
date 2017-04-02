@@ -1,17 +1,31 @@
-#include <utility>
-#include <iostream>
-
-#include "Asserts.h"
+// Definition include
 #include "Render.h"
-#include "Level.h"
-#include "GameParser.h"
+
+// Exception Includes
+#include "Asserts.h"
+#include "RenderException.h"
+
+// Manager Includes
 #include "Manager.h"
+#include "Level.h"
+
+// Parser Incudes
+#include "GameParser.h"
+
+// Listener Includes
 #include "AnimationListener.h"
 #include "InputListener.h"
 #include "RenderListener.h"
-#include "RenderException.h"
+
+// Interface Includes
+#include "Interface.h"
+#include "Cegui.h"
+
+// std Includes
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <utility>
+#include <iostream>
 
 void render::loop_animations(float timestep){
 	std::vector<std::string> astate_names = levels[curr_level].animation_list;
@@ -37,6 +51,22 @@ void render::build_levels(std::vector<std::string> &names){
 
 void * render::get_scene_manager(){
 	return my_manager->get_scene(this);
+}
+
+void render::build_gui(){
+	try{
+		std::string g_file = gp->get_gui("My GUI");
+		my_manager->log("Gui File Grabbed.");
+		my_interface = new cegui(this, g_file);
+		my_manager->log("Interface initialized.");
+	}
+	catch(game_error &e){
+		ASSERT_LOG(false, e.what());
+	}
+	catch(std::exception &e){
+		
+		ASSERT_CRITICAL(false, e.what());
+	}
 }
 
 void render::init(){
@@ -94,6 +124,7 @@ void render::init(){
 
 render::render(manager * m, const std::string &xml_file){
 	my_manager = m;
+	my_interface = nullptr;
 	try{
 		gp = new gameparser(xml_file);
 		my_manager->log("Gameparser created.");
@@ -160,6 +191,7 @@ uint32 render::get_win_height(){
 
 void render::start_render(){
 	load_level(1);
+	build_gui();
 	root->startRendering();
 }
 void render::stop_render(){
@@ -432,6 +464,23 @@ void render::next_camera(){
 
 
 
+// Mouse Movement functions
+
+
+void render::mouse_moved(std::vector<int> &abs_pos, std::vector<int> &rel_pos){
+	if(my_interface != nullptr)
+		my_interface->mouse_move_event(abs_pos, rel_pos);
+}
+void render::mouse_pressed(uint8 b, std::vector<int> &abs, std::vector<int> &rel){
+	if(my_interface != nullptr)
+		my_interface->mouse_click_event(b, abs, rel);
+}
+void render::mouse_released(uint8 b, std::vector<int> &abs, std::vector<int> &rel){
+	if(my_interface != nullptr)
+		my_interface->mouse_release_event(b, abs, rel);
+}
+
+
 
 // Ogre Resource Group Manager
 
@@ -440,7 +489,7 @@ void render::next_camera(){
 // Resource Group
 void render::load_resource(const std::string &resource){
 	if(!rgm->resourceGroupExists(resource)) throw render_error(resource + " resource group does not exist.",192);
-	std::cout << "\n\n\n\nResources: " << resource << "\n\n\n" << std::endl;
+//	std::cout << "\n\n\n\nResources: " << resource << "\n\n\n" << std::endl;
 //	if(!rgm->isResourceGroupInitialised(resource)){
 		rgm->initialiseResourceGroup(resource);
 //	}
@@ -455,6 +504,11 @@ void render::unload_resource(const std::string &resource){
 	}
 }
 void render::add_resource_location(const std::string &location, const std::string &group){
+	if(!rgm->resourceLocationExists(location, group)){
+		rgm->addResourceLocation(location, "FileSystem", group);
+	}
+}
+void render::add_resource_location_l(const std::string &location, const std::string &group){
 	if(!rgm->resourceLocationExists(location, group)){
 		rgm->addResourceLocation(location, "FileSystem", group);
 	}

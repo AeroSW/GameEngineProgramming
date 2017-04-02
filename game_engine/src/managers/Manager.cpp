@@ -135,6 +135,9 @@ void manager::mbutton_pressed(uint8 button, std::vector<int> &abs_vals, std::vec
 void manager::mbutton_released(uint8 button, std::vector<int> &abs_vals, std::vector<int> &rel_vals){
 	renderer->mouse_released(button, abs_vals, rel_vals);
 }
+void manager::mouse_moved(std::vector<int> &abs_vals, std::vector<int> &rel_vals){
+	renderer->mouse_moved(abs_vals, rel_vals);
+}
 
 /*
  *	Gamepad Methods
@@ -339,13 +342,16 @@ manager::manager(const std::string &xml_file, const std::string &log_name, gamep
 	my_scene = nullptr;
 	my_log = new logger(log_name);
 	init_render(xml_file);
+//	renderer->build_gui();
 	log("RENDER CREATION COMPLETE.");
 	if(my_scene == nullptr){
 		my_scene = new scene(renderer);
 	}
 	init_inputs(type);
 	log("INPUT CREATIONS COMPLETE.");
+//	log("GUI built");
 	renderer->start_render();
+//	renderer->build_gui();
 }
 void manager::init_render(const std::string &xml_file){
 	renderer = new render(this, xml_file);

@@ -33,7 +33,7 @@ void scene::build(const std::string &my_name){
 
 // ResourceGroup Functions
 void scene::add_resrc_location(const std::string &location, const std::string &group){
-	my_renderer->add_resource_location(location, group);
+	my_renderer->add_resource_location_l(location, group);
 }
 void scene::declare_resrc(const std::string &file, const std::string &type, const std::string &group){
 	my_renderer->declare_resource(file, type, group);
