@@ -21,7 +21,7 @@ Manager.o	: $(SRC)/Manager.cpp $(INC)/Manager.h
 	$(CC) $(CFLAGS) -o Manager.o $(SRC)/Manager.cpp
 	
 Render.o	: $(SRC)/Render.cpp $(INC)/Render.h
-	$(CC) $(CFLAGS) -o Render.o $(SRC)/Render.cpp
+	$(CC) $(CFLAGS) -o Render.o $(SRC)/Render.cpp -I../../include/interfaces -I/usr/include/cegui-0.8.4
 	
 Scene.o	: $(SRC)/Scene.cpp $(INC)/Scene.h
 	$(CC) $(CFLAGS) -o Scene.o $(SRC)/Scene.cpp
@@ -31,3 +31,4 @@ Level.o	: $(SRC)/Level.cpp $(INC)/Level.h
 	
 clean	:
 	$(RM) ./*.o
+	cd ./inputs && $(MAKE) clean

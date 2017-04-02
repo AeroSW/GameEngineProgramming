@@ -2,13 +2,13 @@ AutomatedMakefile = am
 CC		= g++
 EXE		= Game
 
-GL_INC	= -I/usr/include/OGRE -I/usr/include/boost -I/usr/local/include/OIS
+GL_INC	= -I/usr/include/OGRE -I/usr/include/boost -I/usr/local/include/OIS -I/usr/include/cegui-0.8.4
 INC_DIRS= $(MY_INC) $(GL_INC)
 
-MY_LIB	= ./obj/*.o ./obj/parsers/*.o ./obj/managers/*.o ./obj/logs/*.o ./obj/exceptions/*.o ./obj/listeners/*.o ./obj/managers/inputs/*.o
-GL_LIB	= -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu
+MY_LIB	= ./obj/*.o ./obj/parsers/*.o ./obj/managers/*.o ./obj/logs/*.o ./obj/exceptions/*.o ./obj/listeners/*.o ./obj/managers/inputs/*.o ./obj/interfaces/*.o
+GL_LIB	= -L/usr/local/lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib -L/usr/lib/cegui-0.8
 LIB_DIRS= $(MY_LIB) $(GL_LIB)
-LIBS	= -lboost_filesystem -lboost_system -lOgreMain -lOIS
+LIBS	= -lboost_filesystem -lboost_system -lOgreMain -lOIS -lCEGUIBase-0 -lCEGUIOgreRenderer-0
 
 CFLAGS	= -std=c++11 $(INC_DIRS) -c
 EFLAGS	= -std=c++11 $(LIB_DIRS) -o

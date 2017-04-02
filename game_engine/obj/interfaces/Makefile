@@ -1,8 +1,8 @@
 AutomatedMakefile = am
 CC		= g++
 
-MY_INC	= -I../../include -I../../include/parsers -I../../include/managers -I../../include/interfaces
-GL_INC	= -I/usr/include/cegui-0.8.4/CEGUI -I/usr/include/OGRE
+MY_INC	= -I../../include -I../../include/parsers -I../../include/managers -I../../include/interfaces -I../../include/exceptions
+GL_INC	= -I/usr/include/cegui-0.8.4 -I/usr/include/OGRE
 
 INC_DIRS= $(MY_INC) $(GL_INC)
 

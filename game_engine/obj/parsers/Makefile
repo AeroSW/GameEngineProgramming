@@ -10,7 +10,7 @@ SRC	= ../../src/parsers
 
 CFLAGS	= -c -g -std=c++11 $(INC_DIRS)
 
-FILES	= LevelParser.o GameParser.o tinyxml2.o
+FILES	= LevelParser.o GameParser.o tinyxml2.o GUIParser.o Parser.o
 
 default	: all
 all	: $(FILES)
@@ -23,6 +23,12 @@ GameParser.o	: $(SRC)/GameParser.cpp $(INC)/GameParser.h
 
 tinyxml2.o	: $(SRC)/tinyxml2.cpp $(INC)/tinyxml2.h
 	$(CC) $(CFLAGS) -o tinyxml2.o $(SRC)/tinyxml2.cpp
+	
+GUIParser.o	: $(SRC)/GUIParser.cpp $(INC)/GUIParser.h
+	$(CC) $(CFLAGS) -o GUIParser.o $(SRC)/GUIParser.cpp -I../../include/interfaces
+	
+Parser.o	: $(SRC)/Parser.cpp $(INC)/Parser.h
+	$(CC) $(CFLAGS) -o Parser.o $(SRC)/Parser.cpp
 
 clean	:
 	$(RM) ./*.o
