@@ -6,7 +6,7 @@
 		<font file="GreatVibes-16.font"/>
 	</fonts>
 	<defaults>
-		<default type="font"	name="GreatVibes-16.font"/>
+		<default type="font"	name="GreatVibes-16"/>
 		<default type="mouse"	name="TaharezLook/MouseArrow"/>
 		<default type="tooltip"	name="TaharezLook/Tooltip"/>
 	</defaults>
@@ -20,7 +20,7 @@
 				look:	The looknfeel to apply to this window/widget.
 			
 		-->
-		<window name="Test Frame" type="frame" look="Taharez/FrameWindow">
+		<window name="Test Frame" type="frame" look="TaharezLook/FrameWindow">
 			<!--
 				<location> is the tag specified to set this window's
 				position in regards to its parent window.
