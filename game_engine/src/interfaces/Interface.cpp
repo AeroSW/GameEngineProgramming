@@ -18,17 +18,17 @@ interface::interface(render * the_renderer, const std::string &document){
 	std::cout << "INTERFACE::RENDER:::::::: " << the_renderer << std::endl;
 	my_renderer = the_renderer;
 	my_parser = new guiparser(document);
-}
+}/*
 interface::interface(render * the_renderer, const std::vector<std::pair<std::string, std::string> > acts):
 actions(acts){
 	my_parser = nullptr;
 	init(the_renderer);
 }
-
+*/
 interface::~interface(){
 	ref_counter--;
 	if(ref_counter == 0)
 		my_renderer = nullptr;
-	actions.clear();
+//	actions.clear();
 	delete my_parser;
 }

@@ -8,7 +8,7 @@
 
 CEGUI::OgreRenderer * cegui::my_ogre_renderer = nullptr;
 uint cegui::ogre_render_count = 0; // Initialise count for the Ogre Renderer.
-
+//*
 void cegui::init(){
 	if(my_ogre_renderer == nullptr){
 		my_ogre_renderer = &CEGUI::OgreRenderer::bootstrapSystem();
@@ -28,14 +28,14 @@ void cegui::init(){
 	for(uint c = 0; c < my_fonts.size(); c++){
 		fm->createFromFile(my_fonts[c]);
 	}
-	
+	std::cout << "Is it above or below this?" << std::endl;
 	// Need to get system information.
 	my_system = CEGUI::System::getSingletonPtr();
 	// Create GUI context using the system.
 	my_context = &my_system->createGUIContext(my_ogre_renderer->getDefaultRenderTarget());
 	
 	// Pull default information from GUI XML file.
-	std::vector<std::pair<std::string, std::string> > default_info = my_parser->get_defaults();
+	std::vector<my_pair> default_info = my_parser->get_defaults();
 	bool font_flag = false;
 	bool mouse_flag = false;
 	bool toolt_flag = false;
@@ -54,15 +54,24 @@ void cegui::init(){
 		}
 		if(font_flag && mouse_flag && toolt_flag) break;
 	}
-	if(!font_flag) throw_trace("Need a default font specified.");
-	else if(!mouse_flag) throw_trace("Need a default mouse specified.");
-	else if(!toolt_flag) throw_trace("Need a default tooltip type specified.");
-	else my_renderer->log("Default tooltips setup.");
+	if(!font_flag){
+		throw_trace("Need a default font specified.");
+	}
+	else if(!mouse_flag){
+		throw_trace("Need a default mouse specified.");
+	}
+	else if(!toolt_flag){
+		throw_trace("Need a default tooltip type specified.");
+	}
+	else{
+		my_renderer->log("Default tooltips setup.");
+	}
 	
 	// Create window manager and root window.
 	my_win_manager = CEGUI::WindowManager::getSingletonPtr();
 	my_window = my_win_manager->createWindow("DefaultWindow","root_window");
 	my_context->setRootWindow(my_window);
+	widgets.push_back(my_window); // Push back the root window to hold index 0!!
 }
 /*
 void cegui::init(){
@@ -70,7 +79,7 @@ void cegui::init(){
 		my_ogre_renderer = &CEGUI::OgreRenderer::bootstrapSystem();
 	}
 	CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
-	CEGUI::FontManager::getSingleton().createFromFile("GreatVibes-16.font");
+	CEGUI::FontManager::getSingleton().createFromFile("GreatVibes-16.font");GreatVibes-16.font
 	CEGUI::System& sys = CEGUI::System::getSingleton();
 	my_context = &sys.createGUIContext(my_ogre_renderer->getDefaultRenderTarget());
 	my_context->setDefaultFont("GreatVibes-16");
@@ -88,6 +97,9 @@ void cegui::init(){
 	// set size to be half the size of the parent
 	fwnd->setSize(CEGUI::USize(CEGUI::UDim( 0.5f, 0.0f ),CEGUI::UDim( 0.5f, 0.0f ) ) );
 	fwnd->setText("Hello World");
+	std::cout << "\n\n\n\n\n\n";
+	std::cout << fwnd->getNamePath();
+	std::cout << "\n\n\n\n\n" << std::endl;
 }*/
 
 void cegui::destroy_context(){
@@ -109,8 +121,13 @@ interface(r, setup){
 	my_win_manager = nullptr;
 	my_window = nullptr;
 	init(); // Initialize the the GUI.
-	
-	my_parser->build_gui(this); // Builds widgets.
+	try{
+		my_parser->build_gui(this);
+	}
+	catch(std::exception &e){
+		throw_trace(std::string(e.what()));
+	}
+//	my_parser->build_gui(this); // Builds widgets.
 	
 //	my_parser->build_gui(this); // Parse the interfaces.
 //	init();
@@ -118,6 +135,7 @@ interface(r, setup){
 //		my_renderer->load_resource(resource);
 //	}
 }
+/*
 cegui::cegui(render * r, std::vector<std::pair<std::string, std::string> > &acts):
 interface(r, acts){
 	std::cout << "CEGUI::: :::: " << my_renderer << std::endl;
@@ -125,30 +143,14 @@ interface(r, acts){
 	my_system = nullptr;
 	my_window = nullptr;
 	init();
-}
+}*/
 cegui::~cegui(){
 	ogre_render_count--; // Decrement reference counter
 	if(ogre_render_count == 0){ // Check if it is 0
 		destroy_context(); // If so, then destroy GUI render system.
 	}
 }
-/*
-void cegui::load_level(){}
-void cegui::unload_level(){}
-*/
-/*
-void cegui::create_widget(const std::string &type, std::pair<float, float> left, std::pair<float, float> top, std::pair<float, float> right, std::pair<float, float> bottom, const std::string &name){
-	
-	CEGUI::Window * new_widget = CEGUI::WindowManager::getSingleton().createWindow(type, name);
-	
-	my_window->addChild(new_widget);
-	uint widget_id = new_widget->getID(); // get the widget's id.
-	
-	widget_mappings.push_back(std::pair<uint, std::string>(widget_id, name)); // Store the id mapping.
-	new_widget->setPosition(CEGUI::UVector2(left.first, left.second), CEGUI::UVector2(top.first, top.second));
-	new_widget->setSize(CEGUI::UDIM(right.first, right.second), CEGUI::UDIM(bottom.first, bottom.second));
-}
-*/
+
 void cegui::key_event(const std::string &event){}
 
 void cegui::mouse_move_event(std::vector<int> &abs, std::vector<int> &rel){
@@ -205,103 +207,67 @@ void cegui::mouse_wheel_event(std::vector<int> &abs, std::vector<int> &rel){
 	// implemented in mouse_move_event.
 }
 
-void cegui::set_resource_loc(const std::string &name, const std::string &loc){
-//	CEGUI::DefaultResourceProvider * my_provider = static_cast<CEGUI::DefaultResourceProvider*>(my_system->getResourceProvider());
-//	my_provider->setResourceGroupDirectory(rsrc, loc); // set resource directory to be this.
-//	try{
-//		my_renderer->add_resource_location(loc, name); // Since we are using the Ogre renderer, we can use Ogre's ResourceGroupManager.
-//		my_renderer->load_resource(name); // GUI may not load without this.
-//	}
-//	catch(game_error &e){
-//		throw_trace(std::string(e.what()));
-//	}
-//	my_resources.push_back(name);
+void cegui::add_child(const std::string &p, const std::string &c){
+	CEGUI::Window * parent = nullptr;
+	CEGUI::Window * child = nullptr;
+	for(CEGUI::Window * window : widgets){
+		if(window->getName().compare(p) == 0){
+			parent = window;
+		}
+		else if(window->getName().compare(c) == 0){
+			child = window;
+		}
+		if(child != nullptr && parent != nullptr) break;
+	}
+	if(parent == nullptr) throw_trace("Parent " + p + " does not exist.");
+	if(child == nullptr) throw_trace("Child " + c + " does not exist.");
+	parent->addChild(child);
 }
-void cegui::create_resource(const std::string &type, const std::string &file){
-	try{
-		if(type.compare("font") == 0){
-			CEGUI::FontManager::getSingleton().createFromFile(file);
-			my_fonts.push_back(file);
-			if(my_fonts.size() == 1){
-				set_default(type, file);
-			}
-		}
-		else if(type.compare("scheme") == 0){
-			CEGUI::SchemeManager::getSingleton().createFromFile(file);
-		}
-		else if(type.compare("layout") == 0){
-			CEGUI::Window * window = my_win_manager->loadLayoutFromFile(file);
-			widgets.push_back(window);
-			if(widgets.size() == 1)
-				my_context->setRootWindow(window);
-		}
-		else if(type.compare("imageset") == 0){
-			CEGUI::ImageManager::getSingleton().loadImageset(file, "my_images");
-		}
-		else{
-			std::cout << "Type not initialized." << std::endl;
-		}
-	}
-	catch(std::runtime_error &e){
-		throw_trace(std::string(e.what()));
-	}
-}
-void cegui::set_default(const std::string &type, const std::string &file){
-	int d_loc = file.find_last_of('.'); // Need to trim the extension off of the filename.
-	std::string str(file);// Copy to modify.
-	str = str.substr(0, d_loc);
-	int bs_loc = str.find_last_of('\\');
-	if(bs_loc != std::string::npos) // Check if there is a backslash in the filename.
-		str = str.substr(bs_loc+1); // If so, then trim it.
-	int fs_loc = str.find_last_of('/');
-	if(fs_loc != std::string::npos){ // Check if there is a forwardslash in the filename.
-		str = str.substr(fs_loc+1); // If so, then trim it.
-	}
-	set_default_component(type, str);
-}
-// Setter functions.
-void cegui::load_resource(const std::string &name){
-	try{
-		my_renderer->load_resource(name);
-	}
-	catch(game_error &e){
-		throw_trace(std::string(e.what()));
-	}
-}
-void cegui::set_default_component(const std::string &component, const std::string &value){
-//	std::cout << "\n\n\tcomponent: " << component << "\n\n" << std::endl;
-	try{
-		if(component.compare("font") == 0){
-			my_context->setDefaultFont(value);
-		}
-		else if(component.compare("mouse") == 0){
-			my_context->getMouseCursor().setDefaultImage(value);
-		}
-		else if(component.compare("tooltip") == 0){
-			my_context->setDefaultTooltipType(value);
-		}
-		else{
-			my_renderer->log("Undefined component.");
-		}
-	}
-	catch(game_error &e){
-		throw_trace(std::string(e.what()));
-	}
-	catch(std::runtime_error &e){
-		throw_trace(std::string(e.what()));
-	}
-}
-void cegui::apply_script(const std::string &widget, const std::string &script){
-	uint id;
-	bool flag = false;
-	for(std::pair<uint, std::string> mapping : widget_mappings){
-		if(mapping.second.compare(widget) == 0){
-			id = mapping.first;
-			flag = true;
+
+void cegui::add_root_child(const std::string &c){
+	for(CEGUI::Window * window : widgets){
+		if(window->getName().compare(c) == 0){
+			my_window->addChild(window);
 			break;
 		}
 	}
-	if(flag){ // do stuff
-		std::cout << "id mapped" << std::endl;
+}
+
+void cegui::create_widget(const std::string &n, const std::string &t, const std::string &l){
+	if(t.compare("frame") == 0){
+		CEGUI::FrameWindow * fwnd = static_cast<CEGUI::FrameWindow*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(fwnd);
+	}
+	else if(false){}
+	else if(false){}
+	else if(false){}
+	else if(false){}
+	else{}
+}
+
+void cegui::set_area(const std::string &name, std::vector<float> &abs, std::vector<float> &rel){
+	for(CEGUI::Window * window : widgets){
+		if(window->getName().compare(name) == 0){
+			window->setSize(CEGUI::USize(CEGUI::UDim(rel[0], abs[0]),CEGUI::UDim(rel[1], abs[1])));
+			break;
+		}
+	}
+}
+
+void cegui::set_position(const std::string &name, std::vector<float> &abs, std::vector<float> &rel){
+	for(CEGUI::Window * window : widgets){
+		if(window->getName().compare(name) == 0){
+			window->setPosition(CEGUI::UVector2(CEGUI::UDim(rel[0], abs[0]), CEGUI::UDim(rel[1], abs[1])));
+			break;
+		}
+	}
+}
+
+void cegui::set_text(const std::string &name, const std::string &text){
+	for(CEGUI::Window * window : widgets){
+		if(window->getName().compare(name) == 0){
+			window->setText(text);
+			break;
+		}
 	}
 }

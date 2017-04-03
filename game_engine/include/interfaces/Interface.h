@@ -45,7 +45,7 @@ class interface{
 		
 		// instance variables.
 		guiparser * my_parser; //!< guiparsing object to parse xml files to construct gui.
-		std::vector<std::pair<std::string,std::string> > actions; //!< A list/vector of tuples for widgets and their action scripts.
+	//	std::vector<std::pair<std::string,std::string> > actions; //!< A list/vector of tuples for widgets and their action scripts.
 		
 		std::vector<std::string> my_fonts;
 		std::vector<std::string> my_schemes;
@@ -53,7 +53,7 @@ class interface{
 		
 		// constructor for inheritance.
 		interface(render * the_renderer, const std::string &document);
-		interface(render * the_renderer, const std::vector<std::pair<std::string, std::string> > acts);
+	//	interface(render * the_renderer, const std::vector<std::pair<std::string, std::string> > acts);
 		
 	public:
 		virtual ~interface(); // Destructor
@@ -62,9 +62,9 @@ class interface{
 		virtual void add_child(const std::string &parent_name, const std::string &child_name) = 0;
 		virtual void add_root_child(const std::string &child_name) = 0;
 		virtual void create_widget(const std::string &name, const std::string &type, const std::string &looknfeel) = 0;
-		virtual void set_position(const std::string &widget_name, std::vector<float> abs, std::vector<float> rel) = 0;
-		virtual void set_area(const std::string &widget_name, std::vector<float> abs, std::vector<float> rel) = 0;
-		
+		virtual void set_position(const std::string &widget_name, std::vector<float> &abs, std::vector<float> &rel) = 0;
+		virtual void set_area(const std::string &widget_name, std::vector<float> &abs, std::vector<float> &rel) = 0;
+		virtual void set_text(const std::string &widget_name, const std::string &text) = 0;
 		
 		// Keyboard event.
 		/*!	\brief	A function describing how a key_event function should look.
