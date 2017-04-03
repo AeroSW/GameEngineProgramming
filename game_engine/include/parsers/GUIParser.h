@@ -8,6 +8,14 @@
 
 class interface;
 
+struct my_pair{
+	std::string first;
+	std::string second;
+	my_pair();
+	my_pair(const std::string &f, const std::string &s);
+	my_pair(const my_pair &mp);
+};
+
 class guiparser : public parser{
 	private:
 		// To-Do:	Add helper methods.
@@ -19,7 +27,7 @@ class guiparser : public parser{
 	//	void parse_widgets(interface * my_interface);
 	//	void parse_locations(interface * my_interface, tinyxml2::XMLElement * locations_tag);
 		
-		void build_window(interface * i, tinyxml2::XMLElement * window_element);
+		std::string build_window(interface * i, tinyxml2::XMLElement * window_element);
 		
 	public:
 		guiparser(const std::string &file);
@@ -32,7 +40,7 @@ class guiparser : public parser{
 		
 		std::vector<std::string> get_fonts();
 		std::vector<std::string> get_schemes();
-		std::vector<std::pair<std::string, std::string> > get_defaults();
+		std::vector<my_pair> get_defaults();
 };
 
 #endif

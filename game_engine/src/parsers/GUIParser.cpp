@@ -3,7 +3,17 @@
 #include "GameException.h"
 #include "SudoExcept.h"
 
+#include <iostream>
+
 const std::string guiparser::main_tag = "gui";
+const std::string guiparser::type = "guiparser";
+
+my_pair::my_pair():
+first(""), second(""){}
+my_pair::my_pair(const std::string &f, const std::string &s):
+first(f),second(s){}
+my_pair::my_pair(const my_pair &mp):
+first(mp.first),second(mp.second){}
 
 guiparser::guiparser(const std::string &file):
 parser(file, main_tag){}
@@ -48,6 +58,7 @@ std::string guiparser::build_window(interface * my_interface, tinyxml2::XMLEleme
 	trim(type_str);
 	std::string look_str(look_cstr);
 	trim(look_str);
+	
 	my_interface->create_widget(name_str, type_str, look_str); // Create the widget.
 	
 	std::string lastr(loc_abs); // <location>'s and <area>'s relative and absolute attributes exist, so convert them to vector<float>s
@@ -73,8 +84,8 @@ std::string guiparser::build_window(interface * my_interface, tinyxml2::XMLEleme
 	
 	tinyxml2::XMLElement * text_tag = my_window->FirstChildElement("text");
 	if(text_tag != nullptr){
-		std::string text_str(text_tag->GetText());
-		my_interface->set_text(text_str);
+		std::string text_str(text_tag->Attribute("string"));
+		my_interface->set_text(name_str, text_str);
 	}
 	return name_str;
 }
@@ -110,8 +121,8 @@ std::vector<std::string> guiparser::get_schemes(){
 	
 	return schemes;
 }
-std::vector<std::pair<std::string, std::string> > guiparser::get_defaults(){
-	std::vector<std::pair<std::string, std::string> > defaults;
+std::vector<my_pair> guiparser::get_defaults(){
+	std::vector<my_pair> defaults;
 	
 	tinyxml2::XMLElement * tag = get_main_element();
 	tinyxml2::XMLElement * defaults_tag = tag->FirstChildElement("defaults");
@@ -120,8 +131,24 @@ std::vector<std::pair<std::string, std::string> > guiparser::get_defaults(){
 	for(tinyxml2::XMLElement * default_tag = defaults_tag->FirstChildElement("default"); default_tag != nullptr; default_tag = default_tag->NextSiblingElement("default")){
 		const char * type_cstr = default_tag->Attribute("type");
 		const char * name_cstr = default_tag->Attribute("name");
-		std::pair<std::string, std::string> new_pair(std::string(type_cstr), std::string(name_cstr));
-		defaults.push_back(new_pair);
+	//	std::pair<std::string, std::string> new_pair(std::string(type_cstr), std::string(name_cstr));
+		defaults.push_back(my_pair(std::string(type_cstr),std::string(name_cstr)));
+	//	std::string type_str(type_cstr);
+	//	std::string name_str(name_cstr);
+	//	std::pair<std::string, std::string> the_pair(type_str, name_str);
+		
+	//	defaults.push_back(the_pair);
 	}
 	return defaults;
+}
+
+std::string guiparser::get_type(){
+	return type;
+}
+
+std::string guiparser::get_name(){
+	tinyxml2::XMLElement * tag = get_main_element();
+	const char * name_cstr = tag->Attribute("name");
+	if(name_cstr == nullptr) throw_trace("GUI needs a name.");
+	return std::string(name_cstr);
 }
