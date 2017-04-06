@@ -11,7 +11,7 @@ CFLAGS	= -c -std=c++11 -g $(INC_DIRS)
 SRC	= ../src
 INC	= ../include
 
-FILES	= Transform.o Functions.o Game.o
+FILES	= Transform.o Functions.o Game.o PairException.o
 
 default	: all
 all	: $(FILES)
@@ -30,6 +30,9 @@ Functions.o	: $(SRC)/Functions.cpp $(INC)/Functions.h
 	
 Game.o	: $(SRC)/Game.cpp
 	$(CC) $(CFLAGS) -o Game.o $(SRC)/Game.cpp
+	
+PairException.o	:	$(SRC)/PairException.cpp $(INC)/PairException.h
+	$(CC) $(CFLAGS) -o PairException.o $(SRC)/PairException.cpp
 	
 clean	:
 	$(RM) ./*.o
