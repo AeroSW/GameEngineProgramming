@@ -69,7 +69,7 @@ class interface{
 		virtual void set_text(const std::string &widget_name, const std::string &text) = 0;
 		
 		// Keyboard event.
-		/*!	\brief	A function describing how a key_event function should look.
+		/*!	\brief A function describing how a key_event function should look.
 		 *	A pure abstract function displaying a common setup for adding keyboard
 		 *	events into your interface.  It enforces all implementing interfaces to
 		 *	define a key_event function.
