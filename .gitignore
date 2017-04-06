@@ -42,3 +42,5 @@ Videos
 My_Paths\.txt
 
 game_engine/assets/cegui/
+
+*.gch
