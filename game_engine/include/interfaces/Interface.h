@@ -47,6 +47,8 @@ class interface{
 		guiparser * my_parser; //!< guiparsing object to parse xml files to construct gui.
 	//	std::vector<std::pair<std::string,std::string> > actions; //!< A list/vector of tuples for widgets and their action scripts.
 		
+		
+		// Needed for GUI Parser ****
 		std::vector<std::string> my_fonts;
 		std::vector<std::string> my_schemes;
 		std::vector<std::string> my_tooltips;
