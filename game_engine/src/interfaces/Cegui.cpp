@@ -74,7 +74,7 @@ void cegui::init(){
 	widgets.push_back(my_window); // Push back the root window to hold index 0!!
 }
 /*
-void cegui::init(){
+void cegui::init(){ // Example init method
 	if(my_ogre_renderer == nullptr){
 		my_ogre_renderer = &CEGUI::OgreRenderer::bootstrapSystem();
 	}
@@ -115,7 +115,7 @@ void cegui::destroy_context(){
 cegui::cegui(render * r, const std::string &setup):
 interface(r, setup){
 	my_renderer = r;
-	std::cout << "CEGUI::: :::: " << my_renderer << std::endl;
+//	std::cout << "CEGUI::: :::: " << my_renderer << std::endl;
 	my_context = nullptr; // Initialize nonstatic methods to reference NULL
 	my_system = nullptr;
 	my_win_manager = nullptr;
@@ -238,11 +238,57 @@ void cegui::create_widget(const std::string &n, const std::string &t, const std:
 		CEGUI::FrameWindow * fwnd = static_cast<CEGUI::FrameWindow*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(fwnd);
 	}
-	else if(false){}
-	else if(false){}
-	else if(false){}
-	else if(false){}
-	else{}
+	else if(t.compare("button") == 0){
+		CEGUI::PushButton * bttn = static_cast<CEGUI::PushButton*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(bttn);
+	}
+	else if(t.compare("scrollbar") == 0){
+		CEGUI::Scrollbar * scrlbar = static_cast<CEGUI::Scrollbar*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(scrlbar);
+	}
+	else if(t.compare("pane") == 0){
+		CEGUI::ScrollablePane * pane = static_cast<CEGUI::ScrollablePane*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(pane);
+	}
+	else if(t.compare("combobox") == 0){
+		CEGUI::Combobox * box = static_cast<CEGUI::Combobox*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(box);
+	}
+	else if(t.compare("combolist") == 0){
+		CEGUI::ComboDropList * list = static_cast<CEGUI::ComboDropList*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(list);
+	}
+	else if(t.compare("title") == 0){
+		CEGUI::Titlebar * title = static_cast<CEGUI::Titlebar*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(title);
+	}
+	else if(t.compare("checkbox") == 0){
+		CEGUI::ToggleButton * box = static_cast<CEGUI::ToggleButton*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(box);
+	}
+	else if(t.compare("listbox") == 0){
+		CEGUI::Listbox * box = static_cast<CEGUI::Listbox*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(box);
+	}
+	else if(t.compare("listheader") == 0){
+		CEGUI::ListHeader * list_header = static_cast<CEGUI::ListHeader*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(list_header);
+	}
+	else if(t.compare("text") == 0){
+		CEGUI::Editbox * edit = static_cast<CEGUI::Editbox*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(edit);
+	}
+	else if(t.compare("textbox") == 0){
+		CEGUI::MultiLineEditbox * box = static_cast<CEGUI::MultiLineEditbox*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(box);
+	}
+	else if(t.compare("radio") == 0){
+		CEGUI::RadioButton * radio = static_cast<CEGUI::RadioButton*>(my_win_manager->createWindow(l,n));
+		widgets.push_back(radio);
+	}
+	else{
+		throw_trace("Type " + t + " does not exist.");
+	}
 }
 
 void cegui::set_area(const std::string &name, std::vector<float> &abs, std::vector<float> &rel){
