@@ -44,3 +44,7 @@ My_Paths\.txt
 game_engine/assets/cegui/
 
 *.gch
+
+game_engine/tests/pair_exe
+
+game_engine/tests/tree_exe
