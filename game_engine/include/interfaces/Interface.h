@@ -15,6 +15,14 @@
 class render;
 class guiparser;
 
+
+enum widget_t{
+	NONE = -1, FRAME = 0, BUTTON, SCROLLBAR, PANE,
+	COMBOBOX, COMBOLIST, TITLE,
+	CHECKBOX, LISTBOX, LISTHEADER,
+	TEXT, TEXTBOX, RADIO
+};
+
 /*!	\class interface
  *	\brief Abstract class to define interfaces in game engine off of.
  *	This abstract class defines the key methods and objects needed for
@@ -62,6 +70,7 @@ class interface{
 		
 		// Location functions.
 		virtual void add_child(const std::string &parent_name, const std::string &child_name) = 0;
+		virtual void add_event(const std::string &widget_name, const std::string &event_name) = 0;
 		virtual void add_root_child(const std::string &child_name) = 0;
 		virtual void create_widget(const std::string &name, const std::string &type, const std::string &looknfeel) = 0;
 		virtual void set_position(const std::string &widget_name, std::vector<float> &abs, std::vector<float> &rel) = 0;
