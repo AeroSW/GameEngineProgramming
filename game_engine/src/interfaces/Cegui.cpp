@@ -7,8 +7,14 @@
 #include "SudoExcept.h"
 
 typedef bool (cegui::*my_func_ptr)(const CEGUI::EventArgs&);
-bool cegui::temp_button(const CEGUI::EventArgs &args){
+bool cegui::button_click(const CEGUI::EventArgs &args){
 	std::cout << "Hello World" << std::endl;
+	
+	const CEGUI::WindowEventArgs& my_args = static_cast<const CEGUI::WindowEventArgs&>(args); // Let's pull the window that caused this event!!!
+	CEGUI::PushButton * my_button = static_cast<CEGUI::PushButton*>(my_args.window);
+	std::cout << "Hello, my name is " << my_button->getName() << ", and I caused this event!" << std::endl;
+	
+	
 	return true;
 }
 
@@ -335,7 +341,9 @@ void cegui::add_event(const std::string &widget, const std::string &event){
 	for(window_resource wp : my_windows){
 		if(wp.name.compare(widget) == 0){
 			if(wp.type.compare("button") == 0){
-				
+				CEGUI::PushButton * pb = static_cast<CEGUI::PushButton*>(wp.window);
+				my_func_ptr mfp = &cegui::button_click;
+				pb->subscribeEvent(CEGUI::PushButton::EventClicked,CEGUI::Event::Subscriber(mfp, this));
 			}
 			else if(wp.type.compare("scrollbar") == 0){
 				
