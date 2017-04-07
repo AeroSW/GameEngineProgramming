@@ -15,13 +15,15 @@ FILES	= Interface.o Cegui.o
 
 default	: all
 all	: $(FILES)
-	
+
 Interface.o	: $(SRC)/Interface.cpp $(INC)/Interface.h
 	$(CC) $(CFLAGS) -o Interface.o $(SRC)/Interface.cpp
-	
+
 Cegui.o	: $(SRC)/Cegui.cpp $(INC)/Cegui.h
 	$(CC) $(CFLAGS) -o Cegui.o $(SRC)/Cegui.cpp
 
+#CeguiWidgetMapping.o : $(SRC)/CeguiWidgetMapping.cpp $(INC)/CeguiWidgetMapping.h
+#	$(CC) $(CFLAGS) -o CeguiWidgetMapping.o $(SRC)/CeguiWidgetMapping.cpp
 
 clean	:
 	$(RM) ./*.o
