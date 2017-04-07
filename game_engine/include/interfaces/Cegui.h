@@ -11,14 +11,15 @@ class cegui : public interface{
 		const std::string type = "cegui";
 		
 		
-		struct window_pair{
+		struct window_resource{
 			std::string name;
+			std::string type;
 			CEGUI::Window * window;
-			window_pair();
-			window_pair(const std::string &n, CEGUI::Window * win);
-			window_pair(const window_pair &wp);
+			window_resource();
+			window_resource(const std::string &n, const std::string &t, CEGUI::Window * win);
+			window_resource(const window_resource &wp);
 		};
-		std::vector<window_pair> my_windows;
+		std::vector<window_resource> my_windows;
 		
 		std::string file;
 	//	guiparser my_parser;

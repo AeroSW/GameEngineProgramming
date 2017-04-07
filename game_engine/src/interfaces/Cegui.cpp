@@ -78,7 +78,7 @@ void cegui::init(){
 	my_window = my_win_manager->createWindow("DefaultWindow","root_window");
 	my_context->setRootWindow(my_window);
 //	widgets.push_back(my_window); // Push back the root window to hold index 0!!
-	window_pair wp("root_window", my_window);
+	window_resource wp("root_window", "DefaultWindow", my_window);
 	my_windows.push_back(wp);
 }
 
@@ -184,7 +184,7 @@ void cegui::add_child(const std::string &p, const std::string &c){
 		}
 		if(child != nullptr && parent != nullptr) break;
 	}*/
-	for(window_pair wp : my_windows){
+	for(window_resource wp : my_windows){
 		if(wp.name.compare(p) == 0){
 			parent = wp.window;
 		}
@@ -199,7 +199,7 @@ void cegui::add_child(const std::string &p, const std::string &c){
 }
 
 void cegui::add_root_child(const std::string &c){
-	for(window_pair the_window : my_windows){
+	for(window_resource the_window : my_windows){
 		if(the_window.name.compare(c) == 0){
 			my_window->addChild(the_window.window);
 			break;
@@ -212,91 +212,91 @@ void cegui::create_widget(const std::string &n, const std::string &t, const std:
 		CEGUI::FrameWindow * fwnd = static_cast<CEGUI::FrameWindow*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(fwnd);
 		std::string t_name(fwnd->getName().c_str());
-		window_pair wp(t_name, fwnd);
+		window_resource wp(t_name, t, fwnd);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("button") == 0){
 		CEGUI::PushButton * bttn = static_cast<CEGUI::PushButton*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(bttn);
 		std::string t_name(bttn->getName().c_str());
-		window_pair wp(t_name, bttn);
+		window_resource wp(t_name, t, bttn);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("scrollbar") == 0){
 		CEGUI::Scrollbar * scrlbar = static_cast<CEGUI::Scrollbar*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(scrlbar);
 		std::string t_name(scrlbar->getName().c_str());
-		window_pair wp(t_name, scrlbar);
+		window_resource wp(t_name, t, scrlbar);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("pane") == 0){
 		CEGUI::ScrollablePane * pane = static_cast<CEGUI::ScrollablePane*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(pane);
 		std::string t_name(pane->getName().c_str());
-		window_pair wp(t_name, pane);
+		window_resource wp(t_name, t, pane);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("combobox") == 0){
 		CEGUI::Combobox * box = static_cast<CEGUI::Combobox*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(box);
 		std::string t_name(box->getName().c_str());
-		window_pair wp(t_name, box);
+		window_resource wp(t_name, t, box);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("combolist") == 0){
 		CEGUI::ComboDropList * list = static_cast<CEGUI::ComboDropList*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(list);
 		std::string t_name(list->getName().c_str());
-		window_pair wp(t_name, list);
+		window_resource wp(t_name, t, list);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("title") == 0){
 		CEGUI::Titlebar * title = static_cast<CEGUI::Titlebar*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(title);
 		std::string t_name(title->getName().c_str());
-		window_pair wp(t_name, title);
+		window_resource wp(t_name, t, title);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("checkbox") == 0){
 		CEGUI::ToggleButton * box = static_cast<CEGUI::ToggleButton*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(box);
 		std::string t_name(box->getName().c_str());
-		window_pair wp(t_name, box);
+		window_resource wp(t_name, t, box);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("listbox") == 0){
 		CEGUI::Listbox * box = static_cast<CEGUI::Listbox*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(box);
 		std::string t_name(box->getName().c_str());
-		window_pair wp(t_name, box);
+		window_resource wp(t_name, t, box);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("listheader") == 0){
 		CEGUI::ListHeader * list_header = static_cast<CEGUI::ListHeader*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(list_header);
 		std::string t_name(list_header->getName().c_str());
-		window_pair wp(t_name, list_header);
+		window_resource wp(t_name, t, list_header);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("text") == 0){
 		CEGUI::Editbox * edit = static_cast<CEGUI::Editbox*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(edit);
 		std::string t_name(edit->getName().c_str());
-		window_pair wp(t_name, edit);
+		window_resource wp(t_name, t, edit);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("textbox") == 0){
 		CEGUI::MultiLineEditbox * box = static_cast<CEGUI::MultiLineEditbox*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(box);
 		std::string t_name(box->getName().c_str());
-		window_pair wp(t_name, box);
+		window_resource wp(t_name, t, box);
 		my_windows.push_back(wp);
 	}
 	else if(t.compare("radio") == 0){
 		CEGUI::RadioButton * radio = static_cast<CEGUI::RadioButton*>(my_win_manager->createWindow(l,n));
 	//	widgets.push_back(radio);
 		std::string t_name(radio->getName().c_str());
-		window_pair wp(t_name, radio);
+		window_resource wp(t_name, t, radio);
 		my_windows.push_back(wp);
 	}
 	else{
@@ -305,7 +305,7 @@ void cegui::create_widget(const std::string &n, const std::string &t, const std:
 }
 
 void cegui::set_area(const std::string &name, std::vector<float> &abs, std::vector<float> &rel){
-	for(window_pair wp : my_windows){
+	for(window_resource wp : my_windows){
 		if(wp.name.compare(name) == 0){
 			wp.window->setSize(CEGUI::USize(CEGUI::UDim(rel[0], abs[0]),CEGUI::UDim(rel[1], abs[1])));
 			break;
@@ -314,7 +314,7 @@ void cegui::set_area(const std::string &name, std::vector<float> &abs, std::vect
 }
 
 void cegui::set_position(const std::string &name, std::vector<float> &abs, std::vector<float> &rel){
-	for(window_pair wp : my_windows){
+	for(window_resource wp : my_windows){
 		if(wp.name.compare(name) == 0){
 			wp.window->setPosition(CEGUI::UVector2(CEGUI::UDim(rel[0], abs[0]), CEGUI::UDim(rel[1], abs[1])));
 			break;
@@ -323,7 +323,7 @@ void cegui::set_position(const std::string &name, std::vector<float> &abs, std::
 }
 
 void cegui::set_text(const std::string &name, const std::string &text){
-	for(window_pair wp : my_windows){
+	for(window_resource wp : my_windows){
 		if(wp.name.compare(name) == 0){
 			wp.window->setText(text);
 			break;
@@ -340,18 +340,18 @@ void cegui::add_event(const std::string &widget, const std::string &event){}
  *		window pair constructors						  *
  *************************//******************************/
 
-cegui::window_pair::window_pair():
+cegui::window_resource::window_resource():
 name(""){
 //	type = widget_t::NONE;
 	window = nullptr;
 }
-cegui::window_pair::window_pair(const std::string &n, CEGUI::Window * win):
-name(n){
+cegui::window_resource::window_resource(const std::string &n, const std::string &t, CEGUI::Window * win):
+name(n), type(t){
 //	type = t;
 	window = win;
 }
-cegui::window_pair::window_pair(const window_pair &wp):
-name(wp.name){
+cegui::window_resource::window_resource(const window_resource &wp):
+name(wp.name), type(wp.type){
 //	type = wp.type;
 	window = wp.window;
 }
