@@ -225,9 +225,15 @@ void cegui::add_child(const std::string &p, const std::string &c){
 }
 
 void cegui::add_root_child(const std::string &c){
-	for(CEGUI::Window * window : widgets){
+/*	for(CEGUI::Window * window : widgets){
 		if(window->getName().compare(c) == 0){
 			my_window->addChild(window);
+			break;
+		}
+	}*/
+	for(window_pair the_window : my_windows){
+		if(the_window.name.compare(c) == 0){
+			my_window->addChild(the_window.window);
 			break;
 		}
 	}
@@ -237,54 +243,93 @@ void cegui::create_widget(const std::string &n, const std::string &t, const std:
 	if(t.compare("frame") == 0){
 		CEGUI::FrameWindow * fwnd = static_cast<CEGUI::FrameWindow*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(fwnd);
+		std::string t_name(fwnd->getName().c_str());
+		window_pair wp(t_name, fwnd);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("button") == 0){
 		CEGUI::PushButton * bttn = static_cast<CEGUI::PushButton*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(bttn);
+		std::string t_name(bttn->getName().c_str());
+		window_pair wp(t_name, bttn);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("scrollbar") == 0){
 		CEGUI::Scrollbar * scrlbar = static_cast<CEGUI::Scrollbar*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(scrlbar);
+		std::string t_name(scrlbar->getName().c_str());
+		window_pair wp(t_name, scrlbar);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("pane") == 0){
 		CEGUI::ScrollablePane * pane = static_cast<CEGUI::ScrollablePane*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(pane);
+		std::string t_name(pane->getName().c_str());
+		window_pair wp(t_name, pane);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("combobox") == 0){
 		CEGUI::Combobox * box = static_cast<CEGUI::Combobox*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(box);
+		std::string t_name(box->getName().c_str());
+		window_pair wp(t_name, box);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("combolist") == 0){
 		CEGUI::ComboDropList * list = static_cast<CEGUI::ComboDropList*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(list);
+		std::string t_name(list->getName().c_str());
+		window_pair wp(t_name, list);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("title") == 0){
 		CEGUI::Titlebar * title = static_cast<CEGUI::Titlebar*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(title);
+		std::string t_name(title->getName().c_str());
+		window_pair wp(t_name, title);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("checkbox") == 0){
 		CEGUI::ToggleButton * box = static_cast<CEGUI::ToggleButton*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(box);
+		std::string t_name(box->getName().c_str());
+		window_pair wp(t_name, box);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("listbox") == 0){
 		CEGUI::Listbox * box = static_cast<CEGUI::Listbox*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(box);
+		std::string t_name(box->getName().c_str());
+		window_pair wp(t_name, box);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("listheader") == 0){
 		CEGUI::ListHeader * list_header = static_cast<CEGUI::ListHeader*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(list_header);
+		std::string t_name(list_header->getName().c_str());
+		window_pair wp(t_name, list_header);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("text") == 0){
 		CEGUI::Editbox * edit = static_cast<CEGUI::Editbox*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(edit);
+		std::string t_name(edit->getName().c_str());
+		window_pair wp(t_name, edit);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("textbox") == 0){
 		CEGUI::MultiLineEditbox * box = static_cast<CEGUI::MultiLineEditbox*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(box);
+		std::string t_name(box->getName().c_str());
+		window_pair wp(t_name, box);
+		my_windows.push_back(wp);
 	}
 	else if(t.compare("radio") == 0){
 		CEGUI::RadioButton * radio = static_cast<CEGUI::RadioButton*>(my_win_manager->createWindow(l,n));
 		widgets.push_back(radio);
+		std::string t_name(radio->getName().c_str());
+		window_pair wp(t_name, radio);
+		my_windows.push_back(wp);
 	}
 	else{
 		throw_trace("Type " + t + " does not exist.");
@@ -317,3 +362,30 @@ void cegui::set_text(const std::string &name, const std::string &text){
 		}
 	}
 }
+
+void cegui::add_event(const std::string &widget, const std::string &event){}
+
+
+
+
+/**************************//******************************
+ *		window pair constructors						  *
+ *************************//******************************/
+
+cegui::window_pair::window_pair():
+name(""){
+//	type = widget_t::NONE;
+	window = nullptr;
+}
+cegui::window_pair::window_pair(const std::string &n, CEGUI::Window * win):
+name(n){
+//	type = t;
+	window = win;
+}
+cegui::window_pair::window_pair(const window_pair &wp):
+name(wp.name){
+//	type = wp.type;
+	window = wp.window;
+}
+
+

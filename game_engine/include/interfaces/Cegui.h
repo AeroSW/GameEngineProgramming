@@ -11,7 +11,7 @@ class cegui : public interface{
 		const std::string type = "cegui";
 		
 		
-	/*	struct window_pair{
+		struct window_pair{
 			std::string name;
 			CEGUI::Window * window;
 			window_pair();
@@ -19,7 +19,7 @@ class cegui : public interface{
 			window_pair(const window_pair &wp);
 		};
 		std::vector<window_pair> my_windows;
-	*/	
+		
 		std::string file;
 	//	guiparser my_parser;
 		render * my_renderer;
@@ -52,6 +52,7 @@ class cegui : public interface{
 		
 		virtual void add_child(const std::string &parent, const std::string &child);
 		virtual void add_root_child(const std::string &child);
+		virtual void add_event(const std::string &widget, const std::string &event);
 		virtual void create_widget(const std::string &name, const std::string &type, const std::string &looknfeel);
 		virtual void set_area(const std::string &widget_name, std::vector<float> &abs, std::vector<float> &rel);
 		virtual void set_position(const std::string &widget_name, std::vector<float> &abs, std::vector<float> &rel);
