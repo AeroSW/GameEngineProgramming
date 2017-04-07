@@ -6,6 +6,12 @@
 #include "GameException.h"
 #include "SudoExcept.h"
 
+typedef bool (cegui::*my_func_ptr)(const CEGUI::EventArgs&);
+bool cegui::temp_button(const CEGUI::EventArgs &args){
+	std::cout << "Hello World" << std::endl;
+	return true;
+}
+
 CEGUI::OgreRenderer * cegui::my_ogre_renderer = nullptr;
 uint cegui::ogre_render_count = 0; // Initialise count for the Ogre Renderer.
 //*

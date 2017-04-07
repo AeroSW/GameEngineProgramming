@@ -50,6 +50,8 @@ class cegui : public interface{
 	//	cegui(render * the_renderer, std::vector<std::pair<std::string, std::string> > &acts);
 		~cegui();
 		
+		virtual bool temp_button(const CEGUI::EventArgs &args);
+		
 		virtual void add_child(const std::string &parent, const std::string &child);
 		virtual void add_root_child(const std::string &child);
 		virtual void add_event(const std::string &widget, const std::string &event);
