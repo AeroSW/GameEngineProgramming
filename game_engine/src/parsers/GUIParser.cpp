@@ -77,14 +77,24 @@ std::string guiparser::build_window(interface * my_interface, tinyxml2::XMLEleme
 	my_interface->set_position(name_str, location_absolutes, location_relatives); // Set the position and area for the widget.
 	my_interface->set_area(name_str, area_absolutes, area_relatives);
 	
+	// Since a widget is able to have multiple events, it is important to loop over all events and add them to the widget!
+	for(tinyxml2::XMLElement * event = my_window->FirstChildElement("event"); event != nullptr; event = event->NextSiblingElement("event")){
+		const char * script_attribute = event->Attribute("script");
+		std::string script_name(script_attribute);
+		trim(script_name);
+		my_interface->add_event(name_str, script_name);
+	}
+	
 	for(tinyxml2::XMLElement * window_tag = my_window->FirstChildElement("window"); window_tag != nullptr; window_tag = window_tag->NextSiblingElement("window")){ // Recursively create this widget's children.
 		std::string child_name = build_window(my_interface, window_tag);
+		trim(child_name);
 		my_interface->add_child(name_str, child_name);
 	}
 	
 	tinyxml2::XMLElement * text_tag = my_window->FirstChildElement("text");
 	if(text_tag != nullptr){
 		std::string text_str(text_tag->Attribute("string"));
+		trim(text_str);
 		my_interface->set_text(name_str, text_str);
 	}
 	return name_str;
@@ -102,6 +112,7 @@ std::vector<std::string> guiparser::get_fonts(){
 	for(tinyxml2::XMLElement * font_tag = fonts_tag->FirstChildElement("font"); font_tag != nullptr; font_tag = font_tag->NextSiblingElement("font")){
 		const char * file_cstr = font_tag->Attribute("file");
 		std::string file_str(file_cstr);
+		trim(file_str);
 		fonts.push_back(file_str);
 	}
 	return fonts;
@@ -116,6 +127,7 @@ std::vector<std::string> guiparser::get_schemes(){
 	for(tinyxml2::XMLElement * scheme_tag = schemes_tag->FirstChildElement("scheme"); scheme_tag != nullptr; scheme_tag = scheme_tag->NextSiblingElement("scheme")){
 		const char * file_cstr = scheme_tag->Attribute("file");
 		std::string file_str(file_cstr);
+		trim(file_str);
 		schemes.push_back(file_str);
 	}
 	
