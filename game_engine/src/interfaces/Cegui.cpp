@@ -331,7 +331,49 @@ void cegui::set_text(const std::string &name, const std::string &text){
 	}
 }
 
-void cegui::add_event(const std::string &widget, const std::string &event){}
+void cegui::add_event(const std::string &widget, const std::string &event){
+	for(window_resource wp : my_windows){
+		if(wp.name.compare(widget) == 0){
+			if(wp.type.compare("button") == 0){
+				
+			}
+			else if(wp.type.compare("scrollbar") == 0){
+				
+			}
+			else if(wp.type.compare("pane") == 0){
+				
+			}
+			else if(wp.type.compare("combobox") == 0){
+				
+			}
+			else if(wp.type.compare("combolist") == 0){
+				
+			}
+			else if(wp.type.compare("title") == 0){
+				
+			}
+			else if(wp.type.compare("checkbox") == 0){
+				
+			}
+			else if(wp.type.compare("listbox") == 0){
+				
+			}
+			else if(wp.type.compare("listheader") == 0){
+				
+			}
+			else if(wp.type.compare("text") == 0){
+				
+			}
+			else if(wp.type.compare("textbox") == 0){
+				
+			}
+			else if(wp.type.compare("radio") == 0){
+				
+			}
+			break;
+		}
+	}
+}
 
 
 
