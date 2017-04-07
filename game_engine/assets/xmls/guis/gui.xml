@@ -67,7 +67,7 @@
 				xa is absolute width for this window in pixels.
 				ya is absolute height for this window in pixels.
 			-->
-			<area relative="0.5,0.25" absolute="0.0,0.0"/>
+			<area relative="0.5,0.5" absolute="0.0,0.0"/>
 			<!--
 				<text> is the tag specifying the window's text
 				
@@ -75,6 +75,11 @@
 					string:	The text to display.
 			-->
 			<text string="Hello World"/>
+			<window  name="My 1st Button" type="button" look="TaharezLook/Button">
+				<location relative="0.8,0.8" absolute="0.0,0.0"/>
+				<area relative="0.1,0.1" absolute="-5.0,-5.0"/>
+				<event script="My_Script_Name"/> 
+			</window>
 		</window>
 	</widgets>
 </gui>
