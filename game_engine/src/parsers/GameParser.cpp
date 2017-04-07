@@ -4,6 +4,7 @@
 #include "SudoExcept.h"
 
 const std::string gameparser::my_tag = "game";
+const std::string gameparser::my_type = "gameparser";
 
 gameparser::gameparser(const std::string &doc_name):
 parser(doc_name, my_tag){}
@@ -124,4 +125,7 @@ std::string gameparser::get_name(){
 	std::string name(game_attr);
 	trim(name);
 	return name;
+}
+std::string gameparser::get_type(){
+	return my_type;
 }
