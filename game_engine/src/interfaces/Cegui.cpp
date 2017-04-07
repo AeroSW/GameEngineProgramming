@@ -337,27 +337,45 @@ void cegui::create_widget(const std::string &n, const std::string &t, const std:
 }
 
 void cegui::set_area(const std::string &name, std::vector<float> &abs, std::vector<float> &rel){
-	for(CEGUI::Window * window : widgets){
+/*	for(CEGUI::Window * window : widgets){
 		if(window->getName().compare(name) == 0){
 			window->setSize(CEGUI::USize(CEGUI::UDim(rel[0], abs[0]),CEGUI::UDim(rel[1], abs[1])));
+			break;
+		}
+	}*/
+	for(window_pair wp : my_windows){
+		if(wp.name.compare(name) == 0){
+			wp.window->setSize(CEGUI::USize(CEGUI::UDim(rel[0], abs[0]),CEGUI::UDim(rel[1], abs[1])));
 			break;
 		}
 	}
 }
 
 void cegui::set_position(const std::string &name, std::vector<float> &abs, std::vector<float> &rel){
-	for(CEGUI::Window * window : widgets){
+/*	for(CEGUI::Window * window : widgets){
 		if(window->getName().compare(name) == 0){
 			window->setPosition(CEGUI::UVector2(CEGUI::UDim(rel[0], abs[0]), CEGUI::UDim(rel[1], abs[1])));
+			break;
+		}
+	}*/
+	for(window_pair wp : my_windows){
+		if(wp.name.compare(name) == 0){
+			wp.window->setPosition(CEGUI::UVector2(CEGUI::UDim(rel[0], abs[0]), CEGUI::UDim(rel[1], abs[1])));
 			break;
 		}
 	}
 }
 
 void cegui::set_text(const std::string &name, const std::string &text){
-	for(CEGUI::Window * window : widgets){
+/*	for(CEGUI::Window * window : widgets){
 		if(window->getName().compare(name) == 0){
 			window->setText(text);
+			break;
+		}
+	}*/
+	for(window_pair wp : my_windows){
+		if(wp.name.compare(name) == 0){
+			wp.window->setText(text);
 			break;
 		}
 	}
