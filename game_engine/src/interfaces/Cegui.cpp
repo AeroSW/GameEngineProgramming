@@ -71,36 +71,10 @@ void cegui::init(){
 	my_win_manager = CEGUI::WindowManager::getSingletonPtr();
 	my_window = my_win_manager->createWindow("DefaultWindow","root_window");
 	my_context->setRootWindow(my_window);
-	widgets.push_back(my_window); // Push back the root window to hold index 0!!
+//	widgets.push_back(my_window); // Push back the root window to hold index 0!!
+	window_pair wp("root_window", my_window);
+	my_windows.push_back(wp);
 }
-/*
-void cegui::init(){ // Example init method
-	if(my_ogre_renderer == nullptr){
-		my_ogre_renderer = &CEGUI::OgreRenderer::bootstrapSystem();
-	}
-	CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
-	CEGUI::FontManager::getSingleton().createFromFile("GreatVibes-16.font");GreatVibes-16.font
-	CEGUI::System& sys = CEGUI::System::getSingleton();
-	my_context = &sys.createGUIContext(my_ogre_renderer->getDefaultRenderTarget());
-	my_context->setDefaultFont("GreatVibes-16");
-	my_context->getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
-	my_context->setDefaultTooltipType("TaharezLook/Tooltip");
-	CEGUI::WindowManager * wmgr = &CEGUI::WindowManager::getSingleton();
-//	my_window = wmgr->loadLayoutFromFile("MyDemo.layout");
-//	my_context->setRootWindow(my_window);
-	CEGUI::Window * my_root = wmgr->createWindow("DefaultWindow","root");
-	CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(my_root);
-	CEGUI::FrameWindow * fwnd = static_cast<CEGUI::FrameWindow*>(wmgr->createWindow("TaharezLook/FrameWindow","testWindow"));
-	my_root->addChild(fwnd);
-	// position a quarter of the way in from the top-left of parent.
-	fwnd->setPosition(CEGUI::UVector2( CEGUI::UDim( 0.25f, 0.0f ), CEGUI::UDim( 0.25f, 0.0f ) ) );
-	// set size to be half the size of the parent
-	fwnd->setSize(CEGUI::USize(CEGUI::UDim( 0.5f, 0.0f ),CEGUI::UDim( 0.5f, 0.0f ) ) );
-	fwnd->setText("Hello World");
-	std::cout << "\n\n\n\n\n\n";
-	std::cout << fwnd->getNamePath();
-	std::cout << "\n\n\n\n\n" << std::endl;
-}*/
 
 void cegui::destroy_context(){
 	/*
@@ -225,12 +199,6 @@ void cegui::add_child(const std::string &p, const std::string &c){
 }
 
 void cegui::add_root_child(const std::string &c){
-/*	for(CEGUI::Window * window : widgets){
-		if(window->getName().compare(c) == 0){
-			my_window->addChild(window);
-			break;
-		}
-	}*/
 	for(window_pair the_window : my_windows){
 		if(the_window.name.compare(c) == 0){
 			my_window->addChild(the_window.window);
@@ -337,12 +305,6 @@ void cegui::create_widget(const std::string &n, const std::string &t, const std:
 }
 
 void cegui::set_area(const std::string &name, std::vector<float> &abs, std::vector<float> &rel){
-/*	for(CEGUI::Window * window : widgets){
-		if(window->getName().compare(name) == 0){
-			window->setSize(CEGUI::USize(CEGUI::UDim(rel[0], abs[0]),CEGUI::UDim(rel[1], abs[1])));
-			break;
-		}
-	}*/
 	for(window_pair wp : my_windows){
 		if(wp.name.compare(name) == 0){
 			wp.window->setSize(CEGUI::USize(CEGUI::UDim(rel[0], abs[0]),CEGUI::UDim(rel[1], abs[1])));
@@ -352,12 +314,6 @@ void cegui::set_area(const std::string &name, std::vector<float> &abs, std::vect
 }
 
 void cegui::set_position(const std::string &name, std::vector<float> &abs, std::vector<float> &rel){
-/*	for(CEGUI::Window * window : widgets){
-		if(window->getName().compare(name) == 0){
-			window->setPosition(CEGUI::UVector2(CEGUI::UDim(rel[0], abs[0]), CEGUI::UDim(rel[1], abs[1])));
-			break;
-		}
-	}*/
 	for(window_pair wp : my_windows){
 		if(wp.name.compare(name) == 0){
 			wp.window->setPosition(CEGUI::UVector2(CEGUI::UDim(rel[0], abs[0]), CEGUI::UDim(rel[1], abs[1])));
@@ -367,12 +323,6 @@ void cegui::set_position(const std::string &name, std::vector<float> &abs, std::
 }
 
 void cegui::set_text(const std::string &name, const std::string &text){
-/*	for(CEGUI::Window * window : widgets){
-		if(window->getName().compare(name) == 0){
-			window->setText(text);
-			break;
-		}
-	}*/
 	for(window_pair wp : my_windows){
 		if(wp.name.compare(name) == 0){
 			wp.window->setText(text);
