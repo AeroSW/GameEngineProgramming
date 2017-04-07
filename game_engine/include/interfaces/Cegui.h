@@ -42,7 +42,7 @@ class cegui : public interface{
 		CEGUI::WindowManager * my_win_manager;
 		CEGUI::Window * my_window;
 		// How to store multiple widgets.
-		std::vector<CEGUI::Window*> widgets; // IS NEEDED!!!!!! :D glad I thought this up early on!!!!
+	//	std::vector<CEGUI::Window*> widgets; // IS NEEDED!!!!!! :D glad I thought this up early on!!!!
 	//	std::vector<std::pair<uint, std::string> > widget_mappings; //!< Map window ids to names given by user.
 		
 	public:
