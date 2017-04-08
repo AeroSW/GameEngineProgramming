@@ -31,34 +31,34 @@ class render{
 		Ogre::RenderWindow * window;
 		Ogre::Viewport * viewport;
 		float aspect_ratio;
-		
+
 		Ogre::ResourceGroupManager * rgm;
 		Ogre::SceneManager * ogre_scene;
-		
+
 		manager * my_manager;
 		interface * my_interface;
-		
+
 		std::vector<renderlistener*> listeners;
-		
+
 		std::vector<level> levels; // The list of levels.  Keeps track of cameras, entities, and lights.  Animations etc.
 		uint32 curr_level; // 0-based
-		
+
 		gameparser * gp;
-		
-		
+
+
 	//	Ogre::Camera * active_cam;
-		
+
 		void init();
-		
+
 		void destroy_levels();
 		void unload_level();
-		
+
 	//	void set_camera();
 		uint32 win_handler; // window handler
 		Ogre::Real tslf; // time since last frame
-		
+
 		void build_levels(std::vector<std::string> &names);
-		
+
 	protected:
 
 
@@ -66,11 +66,11 @@ class render{
 		render(manager * manjr, const std::string &xml_file);
 		render(const render &ren);
 		virtual ~render();
-		
+
 		void * get_scene_manager();
-		
+
 		void build_gui();
-		
+
 		uint32 get_win_handle();
 		uint32 get_win_length();
 		uint32 get_win_height();
@@ -94,17 +94,18 @@ class render{
 		 * 				successfully loaded or not.
 		 */
 		bool add_scene(const std::string &xml_scene_file);
-		
+
 		void load_level(uint lvl=1); // 1-based function call.
 		void next_level();
 		void prev_level();
 		void log(const std::string &msg);
-		
+
 		// Listener Functions
 		//	Listener Grabber
 		void loop_animations(float timestep);
 		void check_input(float timestep);
-		
+		void update_audio(float timestep);
+
 		// Cam movement functions
 		void cam_x_move(float val);
 		void cam_y_move(float val);
@@ -117,12 +118,12 @@ class render{
 		void cam_z_global_rotation(float val);
 		void prev_camera();
 		void next_camera();
-		
+
 		// Mouse movement functions
 		void mouse_moved(std::vector<int> &abs_pos, std::vector<int> &rel_pos);
 		void mouse_pressed(uint8 click_id, std::vector<int> &abs_pos, std::vector<int> &rel_pos);
 		void mouse_released(uint8 click_id, std::vector<int> &abs_pos, std::vector<int> &rel_pos);
-		
+
 		// Scene Functions
 		//	Manager Functions
 		bool has_scene_manager(const std::string &name);

@@ -35,6 +35,9 @@ void render::loop_animations(float timestep){
 		ogre_astate->addTime(timestep);
 	}
 }
+void render::update_audio(float timestep){
+	my_manager->update_audio(timestep);
+}
 
 void render::build_levels(std::vector<std::string> &names){
 	for(std::string name : names){
@@ -64,7 +67,7 @@ void render::build_gui(){
 		ASSERT_LOG(false, e.what());
 	}
 	catch(std::exception &e){
-		
+
 		ASSERT_CRITICAL(false, e.what());
 	}
 }
@@ -84,11 +87,11 @@ void render::init(){
 		my_manager->log("ResourceGroupManager * rgm is now initialized.");
 		Ogre::RenderSystem * render_system = root->getRenderSystemByName("OpenGL Rendering Subsystem");
 		my_manager->log("RenderSystem is now generated.");
-		
+
 		if(render_system == nullptr){
 			ASSERT_CRITICAL(false, "Render System is null.");
 		}
-		
+
 		try{
 			std::vector<std::string> level_files = gp->get_levels();
 			my_manager->log("Level files parsed.");
@@ -100,12 +103,12 @@ void render::init(){
 		}
 		root->setRenderSystem(render_system);
 		my_manager->log("Render system is has now been set.");
-		
+
 		render_system->setConfigOption("Full Screen", "No");
 		render_system->setConfigOption("Video Mode", "800 x 600 @ 32-bit colour");
-		
+
 		my_manager->log("Render system has been configured.");
-		
+
 		window = root->initialise(true, "Kenneth's Game Engine");
 		window->getCustomAttribute("WINDOW", &win_handler);
 		my_manager->log("Window has been created.");
@@ -335,7 +338,7 @@ void render::cam_x_global_rotation(float val){
 	Ogre::Camera * ogre_cam = viewport->getCamera();
 	Ogre::Vector3 cam_dir = ogre_cam->getRealDirection(); // Get its direction and location.
 	Ogre::Vector3 rel_pos = ogre_cam->getRealPosition();
-	
+
 	long double radian_val;
 	if(val > 0)
 		radian_val = M_PI / 64;
@@ -343,7 +346,7 @@ void render::cam_x_global_rotation(float val){
 		radian_val = (-1 * M_PI) / 64;
 	long double cos_val = cos(radian_val);
 	long double sin_val = sin(radian_val);
-	
+
 	// Calculate the new vectors for both location and direction.
 	// Only the x and y coordinate should change, so we will be using
 	/*
@@ -358,10 +361,10 @@ void render::cam_x_global_rotation(float val){
 	float cam_z_rot = (sin_val * rel_pos.y) + (cos_val * rel_pos.z);
 	float look_y_rot = (cos_val * cam_dir.y) + (-1 * sin_val * cam_dir.z);
 	float look_z_rot = (sin_val * cam_dir.y) + (cos_val * cam_dir.z);
-	
+
 	Ogre::Vector3 new_loc(rel_pos.x, cam_y_rot, cam_z_rot);	// Create the new vectors from the results
 	Ogre::Vector3 new_dir(cam_dir.x, look_y_rot, look_z_rot);
-	
+
 	ogre_cam->move(new_loc-rel_pos); // Calculate the relative difference between locations and move the camera.
 	ogre_cam->setDirection(new_dir); // Set the new direction.
 }
@@ -369,7 +372,7 @@ void render::cam_y_global_rotation(float val){
 	Ogre::Camera * ogre_cam = viewport->getCamera(); // Get the active camera.
 	Ogre::Vector3 cam_dir = ogre_cam->getRealDirection(); // Get its direction and location.
 	Ogre::Vector3 rel_pos = ogre_cam->getRealPosition();
-	
+
 	long double radian_val;
 	if(val > 0)
 		radian_val = M_PI / 64;
@@ -377,7 +380,7 @@ void render::cam_y_global_rotation(float val){
 		radian_val = (-1 * M_PI) / 64;
 	long double cos_val = cos(radian_val);
 	long double sin_val = sin(radian_val);
-	
+
 	// Calculate the new vectors for both location and direction.
 	// Only the x and z coordinate should change, so we will be using
 	/*
@@ -392,10 +395,10 @@ void render::cam_y_global_rotation(float val){
 	float cam_z_rot = (sin_val * (-1 * rel_pos.x)) + (cos_val * rel_pos.z);
 	float look_x_rot = (cos_val * cam_dir.x) + (sin_val * cam_dir.z);
 	float look_z_rot = (sin_val * (-1 * cam_dir.x)) + (cos_val * cam_dir.z);
-	
+
 	Ogre::Vector3 new_loc(cam_x_rot, rel_pos.y, cam_z_rot);	// Create the new vectors from the results
 	Ogre::Vector3 new_dir(look_x_rot, cam_dir.y, look_z_rot);
-	
+
 	ogre_cam->move(new_loc-rel_pos); // Calculate the relative difference between locations and move the camera.
 	ogre_cam->setDirection(new_dir); // Set the new direction.
 }
@@ -403,7 +406,7 @@ void render::cam_z_global_rotation(float val){
 	Ogre::Camera * ogre_cam = viewport->getCamera();
 	Ogre::Vector3 cam_dir = ogre_cam->getRealDirection(); // Get its direction and location.
 	Ogre::Vector3 rel_pos = ogre_cam->getRealPosition();
-	
+
 	long double radian_val;
 	if(val > 0)
 		radian_val = M_PI / 64;
@@ -411,7 +414,7 @@ void render::cam_z_global_rotation(float val){
 		radian_val = (-1 * M_PI) / 64;
 	long double cos_val = cos(radian_val);
 	long double sin_val = sin(radian_val);
-	
+
 	// Calculate the new vectors for both location and direction.
 	// Only the x and y coordinate should change, so we will be using
 	/*
@@ -426,10 +429,10 @@ void render::cam_z_global_rotation(float val){
 	float cam_y_rot = (sin_val * rel_pos.x) + (cos_val * rel_pos.y);
 	float look_x_rot = (cos_val * cam_dir.x) + (-1 * sin_val * cam_dir.y);
 	float look_y_rot = (sin_val * cam_dir.x) + (cos_val * cam_dir.y);
-	
+
 	Ogre::Vector3 new_loc(cam_x_rot, cam_y_rot, rel_pos.z);	// Create the new vectors from the results
 	Ogre::Vector3 new_dir(look_x_rot, look_y_rot, cam_dir.z);
-	
+
 	ogre_cam->move(new_loc-rel_pos); // Calculate the relative difference between locations and move the camera.
 	ogre_cam->setDirection(new_dir); // Set the new direction.
 }
@@ -621,7 +624,7 @@ void render::set_light_colour(const std::string &light_name, std::vector<float> 
 		throw render_error("Colour vector is incorrect size.", 348);
 	}
 	Ogre::Light * ogre_light = ogre_scene->getLight(light_name);
-	
+
 	ogre_light->setDiffuseColour(ogre_colour);
 //	ogre_light->setSpecularColour(colour[0], colour[1], colour[2]);
 }

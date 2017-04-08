@@ -13,10 +13,14 @@
 
 #include "UnsignedTypes.h"
 
+// Class Forward Declarations.
+class audio;
+class input;
+class logger;
 class render;
 class scene;
-class logger;
-class input;
+// Struct Forward Declarations.
+struct audio_info;
 
 // Determines which layout to use.
 enum gamepad_t{
@@ -26,6 +30,7 @@ enum gamepad_t{
 
 class manager{
 	private:
+		audio * my_audio;
 		render* renderer;
 		scene * my_scene;
 		logger * my_log;
@@ -34,13 +39,14 @@ class manager{
 		 * Parameters:
 		 * 	None
 		 */
-		
+
 		std::vector<input*> input_managers;
-		
-		manager(const std::string &xml, const std::string &log_name, gamepad_t type);
+
+		manager(const std::string &xml, const std::string &log_name, const std::string &audio_xml, gamepad_t type);
 		void init_render(const std::string &xml);
 		void init_inputs(gamepad_t type);
-		
+		void init_audio(const std::string &xml);
+
 		//Dualshock4 Methods
 		void dualshock_move(float value, int index);
 		void dualshock_trigger(float value, int index);
@@ -49,12 +55,12 @@ class manager{
 		void xbox_move(float value, int index);
 		void xbox_trigger(float value, int index);
 		void xbox_pressed(std::vector<bool> buttons, int index);
-		
+
 		struct gamepad_flags{
 			bool trigger_toggle;
 			bool local_toggle;
 		} my_gamepad_flags;
-		
+
 		struct gamepad_info{
 			gamepad_t type;
 			std::vector<bool> curr_buttons;
@@ -66,10 +72,10 @@ class manager{
 			bool alt;
 			bool toggle;
 		} my_keyboard_flags;
-	
+
 	public:
 		virtual ~manager();
-		static manager* get_manager(const std::string &xml_file, const std::string &log_name, gamepad_t type = gamepad_t::DUALSHOCK4);
+		static manager* get_manager(const std::string &game_xml, const std::string &log_name, const std::string &audio_xml, gamepad_t type = gamepad_t::DUALSHOCK4);
 		uint32 get_win_length();
 		uint32 get_win_height();
 		uint32 get_render_win_handler();
@@ -79,7 +85,10 @@ class manager{
 		void log(const std::string &comment);
 		void log(const std::string &comment, uint32 ln_number, const char * msg);
 		scene * get_scene(render * mr);
-		
+
+		audio_info * create_audio_info();
+		void update_audio(float timestep);
+
 		// Input Methods
 		void poll_inputs();
 		// Keyboard Methods
@@ -94,7 +103,7 @@ class manager{
 		void gamepad_move(float value, int index);
 		void gamepad_trigger(float value, int index);
 		void gamepad_pressed(std::vector<bool> buttons, int index);
-		
+
 		// GUI Methods
 };
 

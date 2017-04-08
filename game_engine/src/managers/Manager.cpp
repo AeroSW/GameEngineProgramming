@@ -5,6 +5,8 @@
  *      Author: uge
  */
 
+#include "Audio.h"
+#include "BassAudio.h"
 #include "Manager.h"
 #include "Render.h"
 #include "Scene.h"
@@ -22,8 +24,8 @@ manager::~manager(){
 	}
 }
 
-manager* manager::get_manager(const std::string &xml_file, const std::string &log_name, gamepad_t type){
-	static manager game_manager(xml_file, log_name, type);
+manager* manager::get_manager(const std::string &game_xml, const std::string &log_name, const std::string &audio_xml, gamepad_t type){
+	static manager game_manager(game_xml, log_name, audio_xml, type);
 	return &game_manager;
 }
 
@@ -63,6 +65,17 @@ void manager::log(const std::string &comment, uint ln_number, const char * what_
 	std::string new_comment = comment + ":\n" + msg;
 	my_log->problem(new_comment, ln_number);
 }
+
+/*
+ *	Audio Methods
+ */
+audio_info * manager::create_audio_info(){
+	return my_audio->create_info();
+}
+void manager::update_audio(float time){
+	my_audio->update_audio(time);
+}
+
 /*
  *	Input methods
  */
@@ -338,10 +351,10 @@ void manager::xbox_pressed(std::vector<bool> buttons, int index){
 /*
  * Private Methods.
  */
-manager::manager(const std::string &xml_file, const std::string &log_name, gamepad_t type){
+manager::manager(const std::string &game_xml, const std::string &log_name, const std::string &audio_xml, gamepad_t type){
 	my_scene = nullptr;
 	my_log = new logger(log_name);
-	init_render(xml_file);
+	init_render(game_xml);
 //	renderer->build_gui();
 	log("RENDER CREATION COMPLETE.");
 	if(my_scene == nullptr){
@@ -349,6 +362,8 @@ manager::manager(const std::string &xml_file, const std::string &log_name, gamep
 	}
 	init_inputs(type);
 	log("INPUT CREATIONS COMPLETE.");
+	init_audio(audio_xml);
+	log("AUDIO CREATION COMPLETE.");
 //	log("GUI built");
 	renderer->start_render();
 //	renderer->build_gui();
@@ -408,4 +423,7 @@ void manager::init_inputs(gamepad_t type){
 		log("Failure to create an input.");
 		std::exit(1);
 	}
+}
+void manager::init_audio(const std::string &xml){
+	my_audio = new bass_audio(this, xml);
 }
