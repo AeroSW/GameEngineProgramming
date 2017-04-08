@@ -1,0 +1,8 @@
+<audio name="My Game's Audio" version="1.0">
+	<samples>
+		<sample name="My First Sample" file="./assets/audio/samples/MyFirstSample.mp3"/>
+	</samples>
+	<streams>
+		<stream name="My First Stream" file="./assets/audio/streams/MyFirstStream.mp3"/>
+	</streams>
+</audio>
