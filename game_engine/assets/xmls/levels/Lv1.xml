@@ -2,8 +2,13 @@
 	<name>Level 1</name>
 	<resources>
 		<group name="MyLevel1">
+			<!-- Level Resources -->
 			<loc>./assets/meshes</loc>
 			<loc>./assets/materials</loc>
+			<!-- Audio Resources -->
+			<loc>./assets/audio/streams</loc>
+			<loc>./assets/audio/samples</loc>
+			<!-- GUI Manager Resources -->
 			<loc>./assets/cegui/animations</loc>
 			<loc>./assets/cegui/fonts</loc>
 			<loc>./assets/cegui/imagesets</loc>
