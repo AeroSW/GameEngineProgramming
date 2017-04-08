@@ -11,7 +11,7 @@ class scripter{
 		std::vector<std::string> script_names; // Unsure if I will need this.
 		
 	public:
-		virtual ~scripter();
+		virtual ~scripter(){}
 		virtual void add_script(std::string &name) = 0;
 		virtual void rmv_script(std::string &name) = 0;
 		virtual void exe_script(std::string &name) = 0;
