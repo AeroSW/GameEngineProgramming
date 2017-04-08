@@ -1,0 +1,29 @@
+AutomatedMakefile = am
+CC		= g++
+
+MY_INC	= -I../../include -I../../include/parsers -I../../include/managers -I../../include/audio -I../../include/exceptions
+GL_INC	= -I/usr/local/include/BASS
+
+INC_DIRS= $(MY_INC) $(GL_INC)
+
+CFLAGS	= -c -std=c++11 -g $(INC_DIRS)
+
+SRC	= ../../src/audio
+INC	= ../../include/audio
+
+FILES	= AudioResource.o BassAudio.o
+
+default	: all
+all	: $(FILES)
+
+AudioResource.o	: $(SRC)/AudioResource.cpp $(INC)/AudioResource.h
+	$(CC) $(CFLAGS) -o AudioResource.o $(SRC)/AudioResource.cpp
+
+BassAudio.o	: $(SRC)/BassAudio.cpp $(INC)/BassAudio.h $(INC)/Audio.h
+	$(CC) $(CFLAGS) -o BassAudio.o $(SRC)/BassAudio.cpp
+
+#CeguiWidgetMapping.o : $(SRC)/CeguiWidgetMapping.cpp $(INC)/CeguiWidgetMapping.h
+#	$(CC) $(CFLAGS) -o CeguiWidgetMapping.o $(SRC)/CeguiWidgetMapping.cpp
+
+clean	:
+	$(RM) ./*.o
