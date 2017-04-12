@@ -1,8 +1,8 @@
 AutomatedMakefile = am
 CC		= g++
 
-MY_INC	= -I../../include -I../../include/parsers -I../../include/managers -I../../include/exceptions -I../../include/logs -I../../include/listeners -I../../include/managers/inputs
-GL_INC	= -I/usr/include/OGRE -I/usr/local/include/OIS
+MY_INC	= -I../../include -I../../include/parsers -I../../include/managers -I../../include/exceptions -I../../include/logs -I../../include/listeners -I../../include/managers/inputs -I../../include/audio -I../../include/scripts
+GL_INC	= -I/usr/include/OGRE -I/usr/local/include/OIS -I/usr/local/include/BASS -I/usr/include/lua5.3 -I/usr/include/LuaBridge
 
 INC_DIRS= $(MY_INC) $(GL_INC)
 
