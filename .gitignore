@@ -48,3 +48,9 @@ game_engine/assets/cegui/
 game_engine/tests/pair_exe
 
 game_engine/tests/tree_exe
+
+*.mp3
+
+temp/
+
+game_engine/tests/
