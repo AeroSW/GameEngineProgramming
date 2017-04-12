@@ -8,3 +8,5 @@ std::vector<float> parse_fvector(const std::string &vect_str);
 void trim(std::string &str);
 void ltrim(std::string &str);
 void rtrim(std::string &str);
+
+std::wstring string2wstring(const std::string &str);
