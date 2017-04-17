@@ -54,3 +54,5 @@ game_engine/tests/tree_exe
 temp/
 
 game_engine/tests/
+
+game_engine/Templates\.txt
