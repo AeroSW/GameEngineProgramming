@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Imageset version="1" name="Gui-Layout" imagefile="Gui-Layout.png" nativeHorzRes="1280" nativeVertRes="720" autoScaled="vertical">
+	<Image name="RadioButtonUnselected" xPos="0" yPos="0" width="11" height="11"/>
+	<Image name="RadioButtonSelected" xPos="0" yPos="13" width="11" height="11" />
+	<Image name="CheckButtonUnselected" xPos="13" yPos="0" width="11" height="11" />
+	<Image name="CheckButtonSelected" xPos="13" yPos="13" width="11" height="11" />
+	<Image name="UpArrow" xPos="0" yPos="26" width="9" height="6" />
+	<Image name="UpArrowPressed" xPos="0" yPos="35" width="9" height="5" />
+	<Image name="DownArrow" xPos="12" yPos="26" width="9" height="6" />
+	<Image name="DownArrowPressed" xPos="12" yPos="35" width="9" height="5" />
+	<Image name="MouseCursor" xPos="26" yPos="0" width="16" height="16" />
+	<Image name="Highlight" xPos="26" yPos="18" width="12" height="18" />
+	<Image name="VertScrollTop" xPos="0" yPos="43" width="18" height="12" />
+	<Image name="VertScrollBottom" xPos="0" yPos="300" width="18" height="12" />
+	<Image name="VertScrollMid" xPos="0" yPos="248" width="18" height="27" />
+	<Image name="VertScrollSlider" xPos="4" yPos="102" width="11" height="47" />
+	<Image name="CirclePushButton" xPos="23" yPos="38" width="31" height="31" />
+	<Image name="TitleBarLeft" xPos="114" yPos="19" width="8" height="18" />
+	<Image name="TitleBarRight" xPos="156" yPos="19" width="8" height="18" />
+	<Image name="TitleBarMid" xPos="131" yPos="19" width="12" height="18" />
+	<Image name="SquarePushButton" xPos="123" yPos="42" width="27" height="28" />
+	<Image name="SquarePushButtonHovered" xPos="155" yPos="42" width="27" height="28" />
+	<Image name="SquarePushButtonPushed" xPos="186" yPos="42" width="27" height="28" />
+	<Image name="TooltipTop" xPos="81" yPos="0" width="8" height="7" />
+	<Image name="TooltipBottom" xPos="80" yPos="42" width="8" height="7" />
+	<Image name="TooltipRight" xPos="102" yPos="20" width="7" height="8" />
+	<Image name="TooltipLeft" xPos="56" yPos="20" width="7" height="8" />
+	<Image name="TooltipMid" xPos="78" yPos="20" width="8" height="8" />
+	<Image name="TooltipTopLeft" xPos="56" yPos="0" width="7" height="7" />
+	<Image name="TooltipTopRight" xPos="102" yPos="0" width="7" height="7" />
+	<Image name="TooltipBottomRight" xPos="102" yPos="42" width="7" height="7" />
+	<Image name="TooltipBottomLeft" xPos="56" yPos="42" width="7" height="7" />
+	<Image name="FrameBG" xPos="59" yPos="111" width="10" height="10" />
+	<Image name="FrameTop" xPos="88" yPos="84" yOffset="-12" width="10" height="19" />
+	<Image name="FrameBottom" xPos="99" yPos="280" width="10" height="7" />
+	<Image name="FrameRight" xPos="262" yPos="198" width="7" height="10" />
+	<Image name="FrameLeft" xPos="36" yPos="204" width="7" height="10" />
+	<Image name="FrameTopLeft" xPos="29" xOffset="-7" yPos="84" yOffset="-12" width="14" height="19" />
+	<Image name="FrameTopRight" xPos="262" xOffset="10" yPos="84" yOffset="-12" width="17" height="19" />
+	<Image name="FrameBottomRight" xPos="260" xOffset="3" yPos="279" yOffset="3" width="10" height="10" />
+	<Image name="FrameBottomLeft" xPos="34" xOffset="2" yPos="279" yOffset="2" width="9" height="9" />
+</Imageset>

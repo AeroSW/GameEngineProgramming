@@ -2,7 +2,7 @@ AutomatedMakefile = am
 CC		= g++
 
 MY_INC	= -I../../../include -I../../../include/managers -I../../../include/managers/inputs -I../../../include/exceptions -I../../../include/listeners
-GL_INC	= -I$(OIS_PATH)/include
+GL_INC	= -I./ -I$(OGRE_PATH)/OgreMain/include -I$(OGRE_PATH)/include -I$(OIS_PATH)/include -I$(BOOST_PATH) -I$(LUA_PATH)/src -I$(LUA_PATH)/luabridge -I$(CEGUI_PATH)/cegui/include
 
 INC_DIRS= $(MY_INC) $(GL_INC)
 

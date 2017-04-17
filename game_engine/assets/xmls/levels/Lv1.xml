@@ -2,8 +2,21 @@
 	<name>Level 1</name>
 	<resources>
 		<group name="MyLevel1">
+			<!-- Level Resources -->
 			<loc>./assets/meshes</loc>
 			<loc>./assets/materials</loc>
+			<!-- Audio Resources -->
+			<loc>./assets/audio/streams</loc>
+			<loc>./assets/audio/samples</loc>
+			<!-- GUI Manager Resources -->
+			<loc>./assets/cegui/animations</loc>
+			<loc>./assets/cegui/fonts</loc>
+			<loc>./assets/cegui/imagesets</loc>
+			<loc>./assets/cegui/layouts</loc>
+			<loc>./assets/cegui/looknfeel</loc>
+			<loc>./assets/cegui/lua_scripts</loc>
+			<loc>./assets/cegui/schemes</loc>
+			<loc>./assets/cegui/xml_schemas</loc>
 			<resource>
 				<type>Mesh</type>
 				<file>Ring.mesh</file>

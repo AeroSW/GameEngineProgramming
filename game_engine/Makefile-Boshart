@@ -2,13 +2,13 @@ AutomatedMakefile = am
 CC		= g++
 EXE		= Game
 
-GL_INC	= -I$(OGRE_PATH)/OgreMain/include -I$(OGRE_PATH)/include -I$(BOOST_PATH) -I$(OIS_PATH)/include
+GL_INC	= INC_DIRS = -I./ -I$(OGRE_PATH)/OgreMain/include -I$(OGRE_PATH)/include -I$(OIS_PATH)/include -I$(BOOST_PATH) -I$(LUA_PATH)/src -I$(LUA_PATH)/luabridge -I$(CEGUI_PATH)/cegui/include
 INC_DIRS= $(MY_INC) $(GL_INC)
 
 MY_LIB	= ./obj/*.o ./obj/parsers/*.o ./obj/managers/*.o ./obj/logs/*.o ./obj/exceptions/*.o ./obj/listeners/*.o ./obj/managers/inputs/*.o
-GL_LIB	= -L$(OGRE_PATH)/build/lib -L$(BOOST_PATH)/stage/lib $(OIS_PATH)/lib
+GL_LIB	= -L./ -L$(OGRE_PATH)/build/lib -L$(BOOST_PATH)/stage/lib -L$(OIS_PATH)/lib -L$(BASS_PATH) -L(LUA_PATH)/lib -L$(CEGUI_PATH)/build/lib
 LIB_DIRS= $(MY_LIB) $(GL_LIB)
-LIBS	= -lboost_system-mgw51-mt-1_63 -lois -lOgreMain
+LIBS	= -lboost_system-mgw51-mt-1_63 -lois -lOgreMain -llua -lbass -lCEGUIBase-0 -lCEGUIOgreRenderer-0
 
 CFLAGS	= -std=c++11 $(INC_DIRS) -c
 EFLAGS	= -std=c++11 $(LIB_DIRS) -o

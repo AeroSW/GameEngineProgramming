@@ -21,10 +21,6 @@ game_engine/Ogre\.log
 
 3D-Objects/
 
-game_engine/src/parsers/Parser\.cpp
-
-game_engine/include/parsers/Parser\.h
-
 *.o
 
 game_engine/src/managers/recup_dir\.1/
@@ -42,3 +38,19 @@ game_engine/assets/logs/
 *.gz
 
 Videos
+
+My_Paths\.txt
+
+game_engine/assets/cegui/
+
+*.gch
+
+game_engine/tests/pair_exe
+
+game_engine/tests/tree_exe
+
+*.mp3
+
+temp/
+
+game_engine/tests/

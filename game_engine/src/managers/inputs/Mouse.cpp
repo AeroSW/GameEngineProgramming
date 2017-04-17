@@ -63,13 +63,13 @@ void mouse::poll(){
 }
 
 bool mouse::mouseMoved(const OIS::MouseEvent &event){
-	std::cout << "MOUSE:\n";
-	std::cout << "ABS X: " << event.state.X.abs << "\n";
-	std::cout << "ABS Y: " << event.state.Y.abs << "\n";
-	std::cout << "ABS Z: " << event.state.Z.abs << std::endl;
-	std::cout << "REL X: " << event.state.X.rel << "\n";
-	std::cout << "REL Y: " << event.state.Y.rel << "\n";
-	std::cout << "REL Z: " << event.state.Z.rel << std::endl;
+//	std::cout << "MOUSE:\n";
+//	std::cout << "ABS X: " << event.state.X.abs << "\n";
+//	std::cout << "ABS Y: " << event.state.Y.abs << "\n";
+//	std::cout << "ABS Z: " << event.state.Z.abs << std::endl;
+//	std::cout << "REL X: " << event.state.X.rel << "\n";
+//	std::cout << "REL Y: " << event.state.Y.rel << "\n";
+//	std::cout << "REL Z: " << event.state.Z.rel << std::endl;
 	std::vector<int> absolute_values;
 	absolute_values.push_back(event.state.X.abs);
 	absolute_values.push_back(event.state.Y.abs);

@@ -1,0 +1,10 @@
+<script type="lua" name="MyLuaScripter" version="0.0.1">
+	<scripts>
+		<file name="play" path="./assets/scripts/PlayAudio.lua"/>
+		<file name="queue" path="./assets/scripts/QueueAudio.lua"/>
+		<file name="stop" path="./assets/scripts/StopAudio.lua"/>
+	</scripts>
+	<methods>
+		<method class="audio"/>
+	</methods>
+</script>

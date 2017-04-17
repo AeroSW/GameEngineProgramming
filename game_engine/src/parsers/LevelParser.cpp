@@ -1,9 +1,11 @@
 #include "LevelParser.h"
 #include "Functions.h"
-#include "ParseException.h"
-#include "SceneException.h"
 #include "Transform.h"
 #include "Manager.h"
+
+// Exception Files.
+#include "GameException.h"
+#include "SudoExcept.h"
 
 #include <iostream>
 
@@ -16,17 +18,13 @@ file_name(doc_name){
 	lvl_element = nullptr;
 	doc = new tinyxml2::XMLDocument();
 	tinyxml2::XMLError err = doc->LoadFile(doc_name.c_str());
-	if(err != tinyxml2::XML_SUCCESS){
-		throw parse_error_l("Could not load XML file.", 15);
-	}
+	if(err != tinyxml2::XML_SUCCESS) throw_trace(doc_name + " could not be loaded into tinyxml2.");
 }
 levelparser::levelparser(const levelparser &lp):
 file_name(lp.file_name){
 	doc = new tinyxml2::XMLDocument();
 	tinyxml2::XMLError err = doc->LoadFile(file_name.c_str());
-	if(err != tinyxml2::XML_SUCCESS){
-		throw parse_error_l("Could not load XML file.", 15);
-	}
+	if(err != tinyxml2::XML_SUCCESS) throw_trace(file_name + " could not be loaded into tinyxml2.");
 	lvl_element = lp.lvl_element;
 }
 
@@ -45,9 +43,7 @@ void levelparser::parse_paths(scene * manager){
 	if(resources != nullptr){
 		for(tinyxml2::XMLElement * group = resources->FirstChildElement("group"); group != nullptr; group = group->NextSiblingElement("group")){
 			const char * name_attr = group->Attribute("name");
-			if(name_attr == nullptr){
-				throw parse_error_l("Name attribute required for group tag.", 35);
-			}
+			if(name_attr == nullptr) throw_trace("Group tag requires a 'name' attribute.");
 			std::string name(name_attr);
 			trim(name);
 			manager->log("Group " + name + "created.");
@@ -61,9 +57,7 @@ void levelparser::parse_paths(scene * manager){
 			for(tinyxml2::XMLElement * rsrc = resources->FirstChildElement("resource"); rsrc != nullptr; rsrc = rsrc->NextSiblingElement("resource")){
 				tinyxml2::XMLElement * type = rsrc->FirstChildElement("type");
 				tinyxml2::XMLElement * file = rsrc->FirstChildElement("file");
-				if(type == nullptr || file == nullptr){
-					throw parse_error_l("file and type tags are needed", 51);
-				}
+				if(type == nullptr || file == nullptr) throw_trace("File and/or type tags are missing.");
 				std::string t(type->GetText());
 				std::string f(type->GetText());
 				trim(t);
@@ -82,20 +76,20 @@ void levelparser::parse_scene(scene * manager){
 	tinyxml2::XMLElement * scene_tree = lvl->FirstChildElement("scene");
 	if(scene_tree != nullptr){
 		const char * name_attr = scene_tree->Attribute("name");
-		if(name_attr == nullptr) throw parse_error_l("Scene tag requires name attribute.", 71);
+		if(name_attr == nullptr) throw_trace("Scene tag requires a 'name' attribute.");
 		std::string name(name_attr);
 		manager->log("Parsing scene " + name + ".");
 		for(tinyxml2::XMLElement * objects = scene_tree->FirstChildElement("objects"); objects != nullptr; objects = objects->NextSiblingElement("objects")){
 			const char * group_attr = objects->Attribute("group");
-			if(group_attr == nullptr) throw parse_error_l("Group attribute required for objects tag.", 76);
+			if(group_attr == nullptr) throw_trace("Objects tag requires 'group' attribute");
 			std::string group(group_attr);
 			trim(group);
-			if(!manager->has_group(group)) throw parse_error_l("Group does not exist.", 78);
+			if(!manager->has_group(group)) throw_trace("Group does not exist.");
 			manager->log("Parsing objects in group " + group + ".");
 			for(tinyxml2::XMLElement * object = objects->FirstChildElement("object"); object != nullptr; object = object->NextSiblingElement("object")){
 				const char * obj_name_attr = object->Attribute("name");
 				const char * obj_type_attr = object->Attribute("type");
-				if(obj_name_attr == nullptr || obj_type_attr == nullptr) throw parse_error_l("Object tag needs name and type attributes.", 83);
+				if(obj_name_attr == nullptr || obj_type_attr == nullptr) throw_trace("Object tag requires 'name' and 'type' attributes.");
 				std::string obj_name(obj_name_attr);
 				std::string obj_type(obj_type_attr);
 				if(obj_type.compare("entity") == 0){
@@ -110,12 +104,12 @@ void levelparser::parse_scene(scene * manager){
 					parse_light(manager, group, obj_name, object);
 					manager->log("Light " + obj_name + " added to " + group + ".");
 				}
-				else throw parse_error_l("<object name='...' type=???> unknown type.", 98);
+				else throw_trace("Unknown type attribute.");
 			}
 		}
 		manager->log("Groups are done parsing.");
 		tinyxml2::XMLElement * graph = scene_tree->FirstChildElement("graph");
-		if(graph == nullptr) throw parse_error_l("Scene graph is needed for scene setup.", 103);
+		if(graph == nullptr) throw_trace("'graph' tag is needed within 'scene' tag.");
 		parse_graph(manager, graph);
 	}
 }
@@ -124,7 +118,7 @@ std::string levelparser::get_name(){
 	tinyxml2::XMLElement * lvl = get_lvl_element();
 	tinyxml2::XMLElement * name_elem = lvl->FirstChildElement("name");
 	if(name_elem == nullptr){
-		throw parse_error_l("Need name element.", 127);
+		throw_trace("'level' tag requires 'name' attribute.");
 	}
 	std::string name(name_elem->GetText());
 //	const char * name_attr = lvl->Attribute("name");
@@ -143,7 +137,7 @@ void levelparser::load_level(const std::string &doc_name){
 	tinyxml2::XMLError flag = new_doc->LoadFile(doc_name.c_str());
 	if(flag != tinyxml2::XML_SUCCESS){
 		delete new_doc;
-		throw parse_error_l("Could not load XML file.", 124);
+		throw_trace(doc_name + " could not be loaded into tinyxml2.");
 	}
 	if(doc != nullptr){
 		doc->Clear();
@@ -159,17 +153,17 @@ tinyxml2::XMLElement * levelparser::get_lvl_element(){
 		if(lvl_element == nullptr){
 			lvl_element = doc->FirstChildElement("level");
 			if(lvl_element == nullptr){
-				throw parse_error_l("Level file is improperly formatted.", 140);
+				throw_trace("Level file is improperly formatted.");
 			}
 		}
 		return lvl_element;
 	}
-	throw parse_error_l("No XML file loaded.", 145);
+	throw_trace("No XML file loaded.");
 }
 
 void levelparser::parse_graph(scene * manager, tinyxml2::XMLElement * graph){
 	tinyxml2::XMLElement * root_elem = graph->FirstChildElement("root");
-	if(root_elem == nullptr) throw parse_error_l("Root tag is needed for structural purposes.", 150);
+	if(root_elem == nullptr) throw_trace("Root tag is needed for structural purposes.");
 	for(tinyxml2::XMLElement * node_elem = root_elem->FirstChildElement("node"); node_elem != nullptr; node_elem = node_elem->NextSiblingElement("node")){
 		std::string node_name = recursive_parsing(manager, node_elem);
 		manager->add_root_child(node_name);
@@ -178,7 +172,7 @@ void levelparser::parse_graph(scene * manager, tinyxml2::XMLElement * graph){
 
 void levelparser::parse_entity(scene * manager, const std::string &group_name, const std::string &obj_name, tinyxml2::XMLElement * object){
 	tinyxml2::XMLElement * mesh_elem = object->FirstChildElement("mesh");
-	if(mesh_elem == nullptr) throw parse_error_l("Entity object needs a mesh.", 159);
+	if(mesh_elem == nullptr) throw_trace("Entity object needs a mesh.");
 	std::string mesh(mesh_elem->GetText());
 	trim(mesh);
 	manager->add_entity(obj_name, mesh, group_name);
@@ -192,11 +186,11 @@ void levelparser::parse_entity(scene * manager, const std::string &group_name, c
 
 void levelparser::parse_camera(scene * manager, const std::string &group_name, const std::string &obj_name, tinyxml2::XMLElement * object){
 	tinyxml2::XMLElement * loc_elem = object->FirstChildElement("loc");
-	if(loc_elem == nullptr) throw parse_error_l("Camera location needed.", 174);
+	if(loc_elem == nullptr) throw_trace("Camera location needed.");
 	tinyxml2::XMLElement * tar_elem = object->FirstChildElement("target");
-	if(tar_elem == nullptr) throw parse_error_l("Camera target needed.", 176);
+	if(tar_elem == nullptr) throw_trace("Camera target needed.");
 	tinyxml2::XMLElement * clip_elem = object->FirstChildElement("clip");
-	if(clip_elem == nullptr) throw parse_error_l("Camera clip distance needed.", 178);
+	if(clip_elem == nullptr) throw_trace("Camera clip distance needed.");
 	std::string loc_str(loc_elem->GetText());
 	std::string tar_str(tar_elem->GetText());
 	std::string clip_str(clip_elem->GetText());
@@ -212,14 +206,14 @@ void levelparser::parse_camera(scene * manager, const std::string &group_name, c
 void levelparser::parse_light(scene * manager, const std::string &group_name, const std::string &obj_name, tinyxml2::XMLElement * object){
 	manager->create_light(obj_name);
 	tinyxml2::XMLElement * type_elem = object->FirstChildElement("type");
-	if(type_elem==nullptr) throw parse_error_l("Light type is required.", 194);
+	if(type_elem==nullptr) throw_trace("Light type is required.");
 	std::string type(type_elem->GetText());
 	trim(type);
 	try{
 		manager->set_light_type(obj_name, type);
 	}
-	catch(scene_error &e){
-		throw parse_error_l(e.what(), 201);
+	catch(game_error &e){
+		throw_trace(std::string(e.what()));
 	}
 	tinyxml2::XMLElement * loc_elem = object->FirstChildElement("loc");
 	tinyxml2::XMLElement * tar_elem = object->FirstChildElement("target");
@@ -246,14 +240,14 @@ void levelparser::parse_light(scene * manager, const std::string &group_name, co
 
 std::string levelparser::recursive_parsing(scene * manager, tinyxml2::XMLElement * curr_node){
 	const char * name_attr = curr_node->Attribute("name");
-	if(name_attr == nullptr) throw parse_error_l("XML file is improperly formatted.", 228);
+	if(name_attr == nullptr) throw_trace("XML file is improperly formatted.");
 	std::string name(name_attr);
 	trim(name);
 	try{
 		manager->create_node(name);
 	}
-	catch(scene_error &e){
-		throw parse_error_l("Could not parse " + name + ".", 235);
+	catch(game_error &e){
+		throw_trace("Could not parse " + name + ".");
 	}
 	manager->log(name + " node created."); // Log the creation of this node.
 	tinyxml2::XMLElement * child_node = curr_node->FirstChildElement("node");
@@ -263,23 +257,23 @@ std::string levelparser::recursive_parsing(scene * manager, tinyxml2::XMLElement
 			try{
 				manager->add_child(name, child_name); // manager will add a child to the current node.
 			}
-			catch(scene_error &e){
-				throw parse_error_l("Could not add " + child_name + " as child to " + name + ".", 246);
+			catch(game_error &e){
+				throw_trace(std::string(e.what()));
 			}
 		}
 	}
 	else{
 		const char * obj_attr = curr_node->Attribute("object");
 		if(obj_attr == nullptr){
-			throw parse_error_l("Leaf scene node is missing a moveable object type.", 253);
+			throw_trace("Leaf scene node is missing a moveable object type.");
 		}
 		std::string obj(obj_attr);
 		trim(obj);
 		try{
 			manager->attach_object(name, obj);
 		}
-		catch(scene_error &e){
-			throw parse_error_l("Could not attach " + obj + " to " + name + ".", 261);
+		catch(game_error &e){
+			throw_trace(std::string(e.what()));
 		}
 	}
 	apply_transforms(manager, curr_node, name);
@@ -292,14 +286,14 @@ void levelparser::apply_transforms(scene * manager, tinyxml2::XMLElement * curr_
 	for(; transforms != nullptr; transforms = transforms->NextSiblingElement("transform")){
 		const char * t_attribute = transforms->Attribute("type");
 		if(t_attribute == nullptr){
-			throw parse_error_l("<transform> is missing a type attribute.", 274);
+			throw_trace("<transform> is missing a type attribute.");
 		}
 		std::string type(t_attribute);
 		trim(type);
 		if(type.compare("rotation") == 0){
 			const char * axis_attr = transforms->Attribute("axis");
 			if(axis_attr == nullptr){
-				throw parse_error_l("<transform type=rotation> is missing axis attribute.", 281);
+				throw_trace("<transform type=rotation> is missing axis attribute.");
 			}
 			std::string axis_str(axis_attr);
 			trim(axis_str);
@@ -314,7 +308,7 @@ void levelparser::apply_transforms(scene * manager, tinyxml2::XMLElement * curr_
 				a = axis::Z;
 			}
 			else{
-				throw parse_error_l("<transform type=rotation axis=???> unknown axis", 296);
+				throw_trace("<transform type=rotation axis=???> unknown axis");
 			}
 			std::string degree_str(transforms->GetText());
 			trim(degree_str);
@@ -334,7 +328,7 @@ void levelparser::apply_transforms(scene * manager, tinyxml2::XMLElement * curr_
 			manager->apply_translation(node_name, translate_vectre);
 		}
 		else{
-			throw parse_error_l("<transform type=???> unknown type.", 316);
+			throw_trace("<transform type=???> unknown type.");
 		}
 	}
 }
@@ -345,11 +339,11 @@ void levelparser::apply_animations(scene * manager, tinyxml2::XMLElement * curr_
 	if(anim_elem != nullptr){
 		const char * name_attr = anim_elem->Attribute("name");
 		if(name_attr == nullptr){
-			throw parse_error_l("Animations need a name.", 327);
+			throw_trace("Animations need a name.");
 		}
 		const char * time_attr = anim_elem->Attribute("time");
 		if(time_attr == nullptr){
-			throw parse_error_l("Animations need a time limit", 332);
+			throw_trace("Animations need a time limit");
 		}
 		std::string name(name_attr);
 		trim(name);
@@ -359,13 +353,13 @@ void levelparser::apply_animations(scene * manager, tinyxml2::XMLElement * curr_
 		try{
 			manager->create_animation(node_name, name, time, track);
 		}
-		catch(scene_error &e){
-			throw parse_error_l("Could not create animation.", 343);
+		catch(game_error &e){
+			throw_trace(std::string(e.what()));
 		}
 		for(tinyxml2::XMLElement * frame_elem = anim_elem->FirstChildElement("frame"); frame_elem != nullptr; frame_elem = frame_elem->NextSiblingElement("frame")){
 			const char * frame_attr = frame_elem->Attribute("time");
 			if(frame_attr == nullptr){
-				throw parse_error_l("Frame's need a time attribute.", 347);
+				throw_trace("Frame's need a time attribute.");
 			}
 			std::string frame_time_str(frame_attr);
 			trim(frame_time_str);
@@ -375,7 +369,7 @@ void levelparser::apply_animations(scene * manager, tinyxml2::XMLElement * curr_
 				transform * frame_mod = nullptr;
 				const char * t_attribute = transforms->Attribute("type");
 				if(t_attribute == nullptr){
-					throw parse_error_l("<transform> is missing a type attribute.", 357);
+					throw_trace("<transform> is missing a type attribute.");
 				}
 				std::string type(t_attribute);
 				trim(type);
@@ -383,7 +377,7 @@ void levelparser::apply_animations(scene * manager, tinyxml2::XMLElement * curr_
 				if(type.compare("rotation") == 0){
 					const char * axis_attr = transforms->Attribute("axis");
 					if(axis_attr == nullptr){
-						throw parse_error_l("<transform type=rotation> is missing axis attribute.", 365);
+						throw_trace("<transform type=rotation> is missing axis attribute.");
 					}
 					std::string degree_str(transforms->GetText());
 					trim(degree_str);
@@ -407,7 +401,7 @@ void levelparser::apply_animations(scene * manager, tinyxml2::XMLElement * curr_
 						transform_vector.push_back(1);
 					}
 					else{
-						throw parse_error_l("<transform type=rotation axis=???> unknown axis", 389);
+						throw_trace("<transform type=rotation axis=???> unknown axis");
 					}
 					frame_mod = new transform(transform_type::ROTATION, transform_vector);
 				}
@@ -424,7 +418,7 @@ void levelparser::apply_animations(scene * manager, tinyxml2::XMLElement * curr_
 					frame_mod = new transform(transform_type::TRANSLATION, transform_vector);
 				}
 				else{
-					throw parse_error_l("<transform type=???> unknown type.", 406);
+					throw_trace("<transform type=???> unknown type.");
 				}
 				frame_transforms.push_back(*frame_mod);
 				delete frame_mod;
@@ -438,6 +432,6 @@ levelparser& levelparser::operator=(const levelparser &lp){
 	file_name = lp.file_name;
 	tinyxml2::XMLError err = doc->LoadFile(file_name.c_str());
 	if(err != tinyxml2::XML_SUCCESS){
-		throw parse_error_l("Could not load XML file.", 15);
+		throw_trace("Could not load XML file.");
 	}
 }

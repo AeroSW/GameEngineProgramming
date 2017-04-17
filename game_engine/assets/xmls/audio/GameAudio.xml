@@ -1,0 +1,13 @@
+<audio name="My Game's Audio" version="1.0">
+	<samples>
+		<sample name="XP_Theme.mp3" file="./assets/audio/samples/XP_Theme.mp3"/>
+		<sample name="clever.mp3" file="./assets/audio/samples/clever.mp3"/>
+		<sample name="odds.mp3" file="./assets/audio/samples/odds.mp3"/>
+		<sample name="trap.mp3" file="./assets/audio/samples/trap.mp3"/>
+		<sample name="death.mp3" file="./assets/audio/samples/death.mp3"/>
+	</samples>
+	<streams>
+		<stream name="bensound-epic.mp3" file="./assets/audio/streams/bensound-epic.mp3"/>
+		<stream name="bensound-newdawn.mp3" file="./assets/audio/streams/bensound-newdawn.mp3"/>
+	</streams>
+</audio>
