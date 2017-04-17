@@ -15,7 +15,7 @@ void interface::init(render * the_renderer){
 	ref_counter++;
 }
 interface::interface(render * the_renderer, const std::string &document){
-	std::cout << "INTERFACE::RENDER:::::::: " << the_renderer << std::endl;
+//	std::cout << "INTERFACE::RENDER:::::::: " << the_renderer << std::endl;
 	my_renderer = the_renderer;
 	my_parser = new guiparser(document);
 }/*

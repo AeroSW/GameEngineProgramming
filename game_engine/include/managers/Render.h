@@ -100,6 +100,9 @@ class render{
 		void prev_level();
 		void log(const std::string &msg);
 
+		// Other methods
+		void call_script(const std::string &script, std::vector<std::string> &args);
+
 		// Listener Functions
 		//	Listener Grabber
 		void loop_animations(float timestep);

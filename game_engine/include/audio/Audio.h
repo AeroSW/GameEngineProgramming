@@ -25,18 +25,18 @@ class audio{
 
 	public:
 		~audio(){}
-		virtual audio_info * create_info() = 0;
+	//	virtual audio_info * create_info() = 0;
 
-		virtual void queue_audio(std::string &name) = 0;
+	//	virtual void queue_audio(std::string &name) = 0;
 		virtual void add_sample(const std::string &name, const std::string &file) = 0;
 		virtual void add_stream(const std::string &name, const std::string &file) = 0;
 
 		virtual void set_volume(float vol) = 0;
 		virtual void update_audio(float timestep) = 0;
 
-		virtual void play(uint index) = 0;
-		virtual void play(const std::string &track) = 0;
-		virtual void start() = 0;
+	//	virtual void play(uint index) = 0;
+		virtual void queue(const std::string &track) = 0;
+		virtual void play() = 0;
 
 		virtual void stop() = 0;
 		virtual void skip(bool forward) = 0;

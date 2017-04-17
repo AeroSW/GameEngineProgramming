@@ -7,14 +7,20 @@
 
 #include "Audio.h"
 #include "BassAudio.h"
+#include "Scripter.h"
+#include "LuaScripter.h"
+
 #include "Manager.h"
 #include "Render.h"
 #include "Scene.h"
 #include "LogManager.h"
+
 #include "Input.h"
 #include "Gamepad.h"
 #include "Mouse.h"
 #include "Keyboard.h"
+
+#include <iostream>
 
 manager::~manager(){
 	delete renderer;
@@ -24,8 +30,8 @@ manager::~manager(){
 	}
 }
 
-manager* manager::get_manager(const std::string &game_xml, const std::string &log_name, const std::string &audio_xml, gamepad_t type){
-	static manager game_manager(game_xml, log_name, audio_xml, type);
+manager* manager::get_manager(const std::string &game_xml, const std::string &log_name, const std::string &audio_xml, const std::string &script_xml, gamepad_t type){
+	static manager game_manager(game_xml, log_name, audio_xml, script_xml, type);
 	return &game_manager;
 }
 
@@ -67,13 +73,27 @@ void manager::log(const std::string &comment, uint ln_number, const char * what_
 }
 
 /*
+ *	Script Methods
+ */
+void manager::call_script(const std::string &script, std::vector<std::string> &args){
+//	std::cout << "Inside Manager Call Script \n";
+	my_scripter->exe_script(script, args);
+}
+
+/*
  *	Audio Methods
  */
-audio_info * manager::create_audio_info(){
-	return my_audio->create_info();
-}
 void manager::update_audio(float time){
 	my_audio->update_audio(time);
+}
+void manager::play_audio(){
+	my_audio->play();
+}
+void manager::stop_audio(){
+	my_audio->stop();
+}
+void manager::queue_audio(const std::string &audio_name){
+	my_audio->queue(audio_name);
 }
 
 /*
@@ -126,6 +146,24 @@ void manager::key_pressed(const std::string &key){ // On press, check which key 
 	if(key.compare("right") == 0){
 		renderer->next_camera();
 		return;
+	}
+	if(key.compare("p") == 0){
+		my_audio->queue("It's a trap");
+	}
+	if(key.compare("o") == 0){
+		my_audio->queue("The Ring");
+	}
+	if(key.compare("i") == 0){
+		my_audio->queue("My First Stream");
+	}
+	if(key.compare("u") == 0){
+		my_audio->stop();
+	}
+	if(key.compare("y") == 0){
+		std::cout << "Number of tracks downloaded: " << my_audio->track_count() << std::endl;
+	}
+	if(key.compare("k") == 0){
+		my_audio->play();
 	}
 }
 void manager::key_released(const std::string &key){
@@ -351,7 +389,7 @@ void manager::xbox_pressed(std::vector<bool> buttons, int index){
 /*
  * Private Methods.
  */
-manager::manager(const std::string &game_xml, const std::string &log_name, const std::string &audio_xml, gamepad_t type){
+manager::manager(const std::string &game_xml, const std::string &log_name, const std::string &audio_xml, const std::string &script_xml, gamepad_t type){
 	my_scene = nullptr;
 	my_log = new logger(log_name);
 	init_render(game_xml);
@@ -364,6 +402,7 @@ manager::manager(const std::string &game_xml, const std::string &log_name, const
 	log("INPUT CREATIONS COMPLETE.");
 	init_audio(audio_xml);
 	log("AUDIO CREATION COMPLETE.");
+	init_scripter(script_xml);
 //	log("GUI built");
 	renderer->start_render();
 //	renderer->build_gui();
@@ -426,4 +465,8 @@ void manager::init_inputs(gamepad_t type){
 }
 void manager::init_audio(const std::string &xml){
 	my_audio = new bass_audio(this, xml);
+}
+
+void manager::init_scripter(const std::string &xml){
+	my_scripter = new lua_scripter(this, xml);
 }

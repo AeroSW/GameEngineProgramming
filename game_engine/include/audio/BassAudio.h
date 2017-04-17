@@ -38,9 +38,9 @@ class bass_audio : public audio{
 		virtual void set_volume(float val);
 		virtual void update_audio(float time);
 
-		virtual void play(uint index); // Queues resources to play.
-		virtual void play(const std::string &track);
-		virtual void start();
+	//	virtual void play(uint index); // Queues resources to play.
+		virtual void queue(const std::string &track);
+		virtual void play();
 
 	//	virtual void pause();
 		virtual void stop();

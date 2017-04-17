@@ -16,6 +16,7 @@
 #include "AnimationListener.h"
 #include "InputListener.h"
 #include "RenderListener.h"
+#include "AudioListener.h"
 
 // Interface Includes
 #include "Interface.h"
@@ -141,6 +142,7 @@ render::render(manager * m, const std::string &xml_file){
 //	set_camera();
 	listeners.push_back(new animationlistener(this));
 	listeners.push_back(new inputlistener(this));
+	listeners.push_back(new audiolistener(this));
 	my_manager->log("Animation listener is initialized.");
 //	root->addFrameListener(al);
 	for(renderlistener * r : listeners){
@@ -235,7 +237,7 @@ bool render::has_scene_manager(const std::string &name){
 }
 void render::create_scene_manager(const std::string &name){
 	if(!root->hasSceneManager(name)){
-		Ogre::SceneManager * ogre_scene = root->createSceneManager(Ogre::ST_GENERIC, name);
+		ogre_scene = root->createSceneManager(Ogre::ST_GENERIC, name);
 	}
 }
 
@@ -296,7 +298,10 @@ void render::render_scene(const std::string &name){
 }
 
 
-
+void render::call_script(const std::string &script, std::vector<std::string> &args){
+//	std::cout << "Inside Render Call Script.\n";
+	my_manager->call_script(script, args);
+}
 
 
 // CAMERA MANIPULATION FUNCTIONS
