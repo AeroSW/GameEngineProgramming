@@ -19,9 +19,7 @@
      <https://gcc.gnu.org/>
 
 
-#  +----------------+
-#  | How to Compile |
-#  +----------------+
+#  How to Compile
 
  1)  Install and compile dependencies in a fashion which will allow them to link
      with GCC compilers.
