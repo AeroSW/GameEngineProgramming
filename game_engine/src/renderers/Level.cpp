@@ -19,3 +19,4 @@ level::scene::~scene(){
 	light_names.clear();
 	entity_group_material_names.clear();
 }
+
