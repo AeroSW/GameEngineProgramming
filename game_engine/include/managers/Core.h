@@ -46,6 +46,9 @@ class core{
 		 *	\brief The constructor for the game engine's core.
 		 *	\details The constructor which creates the game engine based off the given XML
 		 *	file.
+		 *
+		 *	\param my_dox The document which acts as the blueprint defining how to build
+		 *	the game engine.
 		 *	\exception game_error A game_error is generated when certain criteria are not met for the
 		 *	game engine's creation.
 		 */

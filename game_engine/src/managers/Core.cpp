@@ -57,14 +57,27 @@ void core::core_init(const std::string &dox){
 	logger::log_achievement("Finished constructing game engine.");
 }
 void core::render_init(const std::string &dox){
-	render_manager = new OgreRender(this, dox);
+	if(render_manager != nullptr){
+		ogre_render::destroy();
+		render_manager = nullptr;
+	}
+	ogre_render::initialize(this, dox);
+	render_manager = ogre_render::get_singleton_ptr();
 	logger::log_achievement("Finished initializing render manager.");
 }
 void core::audio_init(const std::string &dox){
+	if(audio_manager != nullptr){
+		delete audio_manager;
+		audio_manager = nullptr;
+	}
 	audio_manager = new bass_audio(this, dox); // Depends on render manager.
 	logger::log_achievement("Finished initializing audio manager.");
 }
 void core::scripts_init(const std::string &dox){
+	if(script_manager != nullptr){
+		delete script_manager;
+		script_manager = nullptr;
+	}
 	script_manager = new lua_scripter(this, dox);
 	logger::log_achievement("Finished initializing script manager.");
 }
@@ -139,7 +152,10 @@ uint32 core::get_window_height(){
 uint32 core::get_window_width(){
 	return render_manager->window_width();
 }
-uint32 core::level_name(){
+uint32 core::get_window_handler(){
+	return render_manager->window_handle();
+}
+std::string core::level_name(){
 	return render_manager->active_level();
 }
 
@@ -230,14 +246,14 @@ void core::scale_object(const std::string &obj, float x, float y, float z){
 }
 void core::show_object(const std::string &obj){
 	try{
-		render_manager->translate_object(obj);
+		render_manager->reveal_object(obj);
 	}catch(game_error &e){
 		throw_trace(e.what());
 	}
 }
 void core::hide_object(const std::string &obj){
 	try{
-		render_manager->translate_object(obj);
+		render_manager->hide_object(obj);
 	}catch(game_error &e){
 		throw_trace(e.what());
 	}
@@ -272,7 +288,7 @@ void core::mbutton_released(uint8 id, std::vector<int> &abs_vals, std::vector<in
 }
 void core::mouse_moved(std::vector<int> &abs_vals, std::vector<int> &rel_vals){
 	try{
-		render_manager->mouse_clicked(abs_vals, rel_vals);
+		render_manager->mouse_moved(abs_vals, rel_vals);
 	}catch(game_error &e){
 		throw_trace(e.what());
 	}
