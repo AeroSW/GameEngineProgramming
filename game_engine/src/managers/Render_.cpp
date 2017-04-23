@@ -80,7 +80,7 @@ void render::init(){
 	rgm = nullptr;
 	try{
 		root = OGRE_NEW Ogre::Root("","");
-		has_scene_manager("some name");
+	//	has_scene_manager("some name");
 		my_manager->log("Ogre::Root * root initialized.");
 		root->loadPlugin("RenderSystem_GL");
 		my_manager->log("RenderSystem_GL is now loaded.");
