@@ -63,7 +63,8 @@ class cegui : public interface{
 		virtual void set_position(const std::string &widget_name, std::vector<float> &abs, std::vector<float> &rel);
 		virtual void set_text(const std::string &widget_name, const std::string &text);
 
-		virtual void key_event(const std::string &key); // What happens if a key is entered.
+		virtual void key_press_event(const std::string &key); // What happens if a key is entered.
+		virtual void key_release_event(char &key);
 		virtual void mouse_move_event(std::vector<int> &abs, std::vector<int> &rel); // What happens if mouse is moved?
 		virtual void mouse_click_event(uint8 button, std::vector<int> &abs, std::vector<int> &rel); // What happens if a mouse button is pressed?
 		virtual void mouse_release_event(uint8 button, std::vector<int> &abs, std::vector<int> &rel); // What happens if a mouse button is pressed?
