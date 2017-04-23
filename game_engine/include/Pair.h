@@ -12,17 +12,17 @@ namespace asw{
 			pair(const T &t, const U &u);
 			pair(T * t, U * u);
 			pair(const pair &p);
-			~pair();
+			virtual ~pair();
 
-			T * first();
-			U * second();
+			virtual T * first();
+			virtual U * second();
 
-			void set_first(const T &t);
-			void set_first(T * t);
-			void set_second(const U &u);
-			void set_second(U * u);
+			virtual void set_first(const T &t);
+			virtual void set_first(T * t);
+			virtual void set_second(const U &u);
+			virtual void set_second(U * u);
 
-			pair& operator=(const pair &p);
+			virtual pair& operator=(const pair &p);
 	};
 	template<class T, class U>
 	pair<T,U>::pair(){
