@@ -33,6 +33,8 @@ class level{
 		uint32 curr_scene_num;
 		uint32 curr_camera_num; // based on current scene.
 		
+		virtual void initialize(render * render_manager, const std::string &dox);
+		
 	protected:
 		render * render_manager;
 		level_parser * my_parser;

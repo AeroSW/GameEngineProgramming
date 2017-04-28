@@ -1,4 +1,11 @@
-<game name="Hello World">
-	<level name="Level 1">./assets/xmls/levels/Lv1.xml</level>
-	<gui name="My GUI">./assets/xmls/guis/gui.xml</gui>
-</game>
+<core name="Hello World">
+	<render	name="Primary Render File"		file="./assets/xmls/renders/render-1.xml"/>
+	<audio	name="Primary Audio File"		file="./assets/xmls/audio/GameAudio.xml"/>
+	<script	name="Primary Script File"		file="./assets/xmls/scripts/script.xml"/>
+	<logger	name="Primary Log Output File"	file="./assets/logs/my_log.txt"/>
+	<inputs>
+		<input	name="Controller Input File"	type="xbox1"	file="./assets/xmls/scripts/xbox1.xml"/>
+		<input	name="Keyboard Input File"		type="keyboard"	file="./assets/xmls/scripts/keyboard.xml"/>
+		<input	name="Mouse"					type="mouse"/>
+	</inputs>
+</core>
