@@ -24,6 +24,7 @@ class level;
 class manager;
 class interface;
 class renderlistener;
+class bullet;
 
 class render{
 	private:
@@ -37,6 +38,7 @@ class render{
 
 		manager * my_manager;
 		interface * my_interface;
+		bullet * physics_manager;
 
 		std::vector<renderlistener*> listeners;
 
@@ -70,6 +72,7 @@ class render{
 		void * get_scene_manager();
 
 		void build_gui();
+		void build_physics();
 
 		uint32 get_win_handle();
 		uint32 get_win_length();
@@ -108,7 +111,8 @@ class render{
 		void loop_animations(float timestep);
 		void check_input(float timestep);
 		void update_audio(float timestep);
-
+		void update_physics(float timestep);
+		
 		// Cam movement functions
 		void cam_x_move(float val);
 		void cam_y_move(float val);
@@ -119,9 +123,14 @@ class render{
 		void cam_x_global_rotation(float val);
 		void cam_y_global_rotation(float val);
 		void cam_z_global_rotation(float val);
+		
 		void prev_camera();
 		void next_camera();
 
+		void set_node_position(const std::string &node_name, float x, float y, float z);
+		void set_node_orientation(const std::string &node_name, float w, float x, float y, float z);
+		bool has_node(const std::string &name);
+		
 		// Mouse movement functions
 		void mouse_moved(std::vector<int> &abs_pos, std::vector<int> &rel_pos);
 		void mouse_pressed(uint8 click_id, std::vector<int> &abs_pos, std::vector<int> &rel_pos);
@@ -141,6 +150,7 @@ class render{
 		void declare_resource(const std::string &file, const std::string &type, const std::string &group);
 		bool has_group(const std::string &group);
 		//	Generic Scene Functions
+		void add_plane(const std::string &plane, const std::string &axis, float w, float h, const std::string &group);
 		void add_entity(const std::string &entity, const std::string &mesh, const std::string &group);
 		void add_material(const std::string &entity, const std::string &material, const std::string &group);
 		void add_camera(const std::string &cam_name, std::vector<float> &loc, std::vector<float> &target, std::vector<float> &clip);
