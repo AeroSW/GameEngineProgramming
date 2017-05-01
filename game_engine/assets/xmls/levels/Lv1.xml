@@ -29,6 +29,11 @@
 				<mesh>Ring.mesh</mesh>
 				<mat>Ring</mat>
 			</object>
+			<object name="Ground" type="plane" axis="z">
+			<!--	<mat>Ground</mat> -->
+				<width>100</width>
+				<height>100</height>
+			</object>
 			<object name="Eine Kamera" type="camera">
 				<loc>0.0,0.0,-10.0</loc>
 				<target>0.0,0.0,0.0</target>
@@ -52,54 +57,9 @@
 						<node name="Ring Rotation">
 							<node name="The Ring" object="Lord">
 								<transform type="scale">2.0,2.0,2.0</transform>
+								<transform type="translation">0,20,0</transform>
 							</node>
 						</node>
-						<animation name="Ring_Animation" time="5">5.0,0.0,0.0
-							<frame time="0.0">
-								<transform type="rotation" axis="y">0.0</transform>
-								<transform type="translation">0,0,0</transform>
-							</frame>
-							<frame time="0.5">
-								<transform type="rotation" axis="y">20</transform>
-								<transform type="translation">0,1,0</transform>
-							</frame>
-							<frame time="1.0">
-								<transform type="rotation" axis="y">40</transform>
-								<transform type="scale">4,4,4</transform>
-							</frame>
-							<frame time="1.5">
-								<transform type="rotation" axis="y">80</transform>
-								<transform type="translation">0,-2,0</transform>
-							</frame>
-							<frame time="2.0">
-								<transform type="rotation" axis="y">120</transform>
-								<transform type="scale">2,2,2</transform>
-							</frame>
-							<frame time="2.5">
-								<transform type="rotation" axis="y">160</transform>
-								<transform type="translation">0,3,0</transform>
-							</frame>
-							<frame time="3.0">
-								<transform type="rotation" axis="y">240</transform>
-								<transform type="scale">1,1,1</transform>
-							</frame>
-							<frame time="3.5">
-								<transform type="rotation" axis="y">300</transform>
-								<transform type="translation">0,-4,0</transform>
-							</frame>
-							<frame time="4.0">
-								<transform type="rotation" axis="y">320</transform>
-								<transform type="scale">0.5,0.5,0.5</transform>
-							</frame>
-							<frame time="4.5">
-								<transform type="rotation" axis="y">340</transform>
-								<transform type="translation">0,0,0</transform>
-							</frame>
-							<frame time="5.0">
-								<transform type="rotation" axis="y">360</transform>
-								<transform type="scale">1,1,1</transform>
-							</frame>
-						</animation>
 					</node>
 				</node>
 				<node name="Kamera Outer">
@@ -108,6 +68,9 @@
 							<transform type="translation">0,0,-20</transform>
 						</node>
 					</node>
+				</node>
+				<node name="Ground Node">
+					<node name="Inner Ground" object="Ground"/>
 				</node>
 			</root>
 		</graph>

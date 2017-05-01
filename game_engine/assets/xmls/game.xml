@@ -1,4 +1,5 @@
 <game name="Hello World">
 	<level name="Level 1">./assets/xmls/levels/Lv1.xml</level>
 	<gui name="My GUI">./assets/xmls/guis/gui.xml</gui>
+	<physics name="physics">./assets/xmls/physics/physics.xml</physics>
 </game>
