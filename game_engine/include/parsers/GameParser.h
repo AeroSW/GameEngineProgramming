@@ -25,6 +25,7 @@ class gameparser : public parser{
 		virtual ~gameparser();
 		virtual std::string get_level(const std::string &skey);
 		virtual std::string get_gui(const std::string &skey);
+		virtual std::string get_physics(const std::string &skey);
 		virtual std::vector<std::string> get_levels();
 		virtual std::vector<std::string> get_guis();
 		virtual std::string get_name(); // Overloaded function
