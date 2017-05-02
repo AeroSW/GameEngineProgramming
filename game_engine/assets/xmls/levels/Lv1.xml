@@ -25,52 +25,64 @@
 	</resources>
 	<scene name="DeadlyRing">
 		<objects group="MyLevel1">
-			<object name="Lord" type="entity">
+			<object name="Canoe" type="entity">
+				<mesh>Canoe.mesh</mesh>
+				<mat>Canoe</mat>
+			</object>
+			<object name="Ring" type="entity">
 				<mesh>Ring.mesh</mesh>
 				<mat>Ring</mat>
 			</object>
 			<object name="Ground" type="plane" axis="z">
-			<!--	<mat>Ground</mat> -->
-				<width>100</width>
-				<height>100</height>
+				<mat>Ground</mat> 
+				<width>10000</width>
+				<height>10000</height>
 			</object>
 			<object name="Eine Kamera" type="camera">
-				<loc>0.0,0.0,-10.0</loc>
-				<target>0.0,0.0,0.0</target>
-				<clip>0.5,100.0</clip>
+				<loc>0.0,10.0,-10.0</loc>
+				<target>0.0,0.0,20.0</target>
+				<clip>0.5,100000.0</clip>
 			</object>
 			<object name="Zwei Kamera" type="camera">
 				<loc>0.0, 0.0, 40.0</loc>
 				<target>0.0,0.0,0.0</target>
-				<clip>0.5,100.0</clip>
+				<clip>0.5,200.0</clip>
 			</object>
 			<object name="Blaues Licht" type="light">
 				<type>directional</type>
 				<target>0,-1,1</target>
-				<color>0.0,.5,1</color>
+				<color>1,1,1</color>
+			</object>
+			<object name="Licht Dos" type="light">
+				<type>directional</type>
+				<target>0,1,1</target>
+				<color>1,1,1</color>
 			</object>
 		</objects>
 		<graph>
 			<root>
-				<node name="Outer Ring Rotation">
-					<node name="Intermediate Ring">
-						<node name="Ring Rotation">
-							<node name="The Ring" object="Lord">
-								<transform type="scale">2.0,2.0,2.0</transform>
-								<transform type="translation">0,20,0</transform>
-							</node>
-						</node>
+				<node name="Canoe Outer">
+					<node name="The Canoe" object="Canoe">
+					<transform type="scale">0.1,0.1,0.1</transform>
+					<transform type="translation">0,100,0</transform>
+					<transform type="rotation" axis="x">90</transform>
 					</node>
 				</node>
 				<node name="Kamera Outer">
 					<node name="Kamera Middle">
 						<node name="Kamera Inner" object="Eine Kamera">
-							<transform type="translation">0,0,-20</transform>
+							<transform type="translation">0,0,-30</transform>
 						</node>
 					</node>
 				</node>
 				<node name="Ground Node">
 					<node name="Inner Ground" object="Ground"/>
+				</node>
+				<node name="Ring Intermediate">
+					<node name="Ring Inner" object="Ring">
+						<transform type="translation">7,0,0</transform>
+						<transform type="scale">2.0,0.8,2.0</transform>
+					</node>
 				</node>
 			</root>
 		</graph>

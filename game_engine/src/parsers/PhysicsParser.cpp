@@ -105,6 +105,9 @@ void physics_parser::build_resource(bullet * bullet_manager, const std::string &
 			else if(type_str.compare("cylinder") == 0){
 				shape = shape_t::CYLINDER;
 			}
+			else if(type_str.compare("cylinder_x") == 0){
+				shape = shape_t::CYLINDER_X;
+			}
 			else if(type_str.compare("plane") == 0){
 				shape = shape_t::PLANE;
 			}

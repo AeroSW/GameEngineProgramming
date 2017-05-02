@@ -1,21 +1,35 @@
 <physics>
 	<setup>
-		<gravity value="9.8"/>
+		<gravity value="-9.8"/>
 	</setup>
 	<resources>
 		<resource name="ground" node="Ground Node">
 			<object mass="0.0" name="ground-box">
-				<shape type="box">50.0,1.0,50.0</shape>
+				<shape type="box">200.0,2.0,200.0</shape>
 				<basis>1,0,0,0</basis><!-- angle is in radians -->
-				<origin>0,0,0</origin>
+				<origin>0,-2,0</origin>
 				<inertia>0,0,0</inertia>
 			</object>
 		</resource>
-		<resource name="Death Ring" node="Intermediate Ring">
-			<object mass="10.0" name="canoe-base">
-				<shape type="cylinder">2.0,2.0,2.0</shape>
+		<resource name="Canoe" node="Canoe Outer">
+			<object mass="1000.0" name="canoe-base-1">
+				<shape type="cylinder_x">3.5,0.1,1.0</shape>
+				<basis>1.72,1,0,0</basis>
+				<origin>0,100,0</origin>
+				<inertia>0,0,0</inertia>
+			</object>
+			<object mass="5.0" name="sphere-base">
+				<shape type="sphere">10</shape>
 				<basis>1,0,0,0</basis>
-				<origin>0,20,0</origin>
+				<origin>0,95,0</origin>
+				<inertia>0,0,0</inertia>
+			</object>
+		</resource>
+		<resource name="Ring Physx" node="Ring Inner">
+			<object mass="200.0" name="Ring-Base">
+				<shape type="cylinder">1.0,0.4,1.0</shape>
+				<basis>1,0,0,0</basis>
+				<origin>7,0,0</origin>
 				<inertia>0,0,0</inertia>
 			</object>
 		</resource>

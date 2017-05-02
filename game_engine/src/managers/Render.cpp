@@ -499,18 +499,44 @@ void render::next_camera(){
 	ogre_cam->setAspectRatio(aspect_ratio);
 }
 
-
+std::vector<float> render::get_node_position(const std::string &node_name){
+	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name + " does not exist in scene.");
+	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
+	Ogre::Vector3 m_orientation = m_node->getPosition();
+	std::vector<float> orien;
+	orien.push_back(m_orientation.x);
+	orien.push_back(m_orientation.y);
+	orien.push_back(m_orientation.z);
+	return orien;
+}
+std::vector<float> render::get_node_orientation(const std::string &node_name){
+	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name + " does not exist in scene.");
+	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
+	Ogre::Quaternion m_orientation = m_node->getOrientation();
+	std::vector<float> orien;
+	orien.push_back(m_orientation.w);
+	orien.push_back(m_orientation.x);
+	orien.push_back(m_orientation.y);
+	orien.push_back(m_orientation.z);
+	return orien;
+}
 void render::set_node_position(const std::string &node_name, float x, float y, float z){
 	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name + " does not exist in scene.");
 	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
-	Ogre::Vector3 local_coords = m_node->convertWorldToLocalPosition(Ogre::Vector3(x,y,z));
-	m_node->setPosition(local_coords);
+	
+	m_node->setPosition(Ogre::Vector3(x, y, z));
+	
+	/*Ogre::Vector3 new_pos(x, y, z);
+	Ogre::Vector3 my_loc_pos = m_node->getPosition();
+	Ogre::Vector3 new_loc = new_pos - m_node->convertLocalToWorldPosition(my_loc_pos);
+	m_node->translate(new_loc,  Ogre::Node::TransformSpace::TS_WORLD);*/
 }
 void render::set_node_orientation(const std::string &node_name, float w, float x, float y, float z){
 	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name  + " does not exist in scene.");
 	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
-	Ogre::Quaternion local_orientation = m_node->convertWorldToLocalOrientation(Ogre::Quaternion(w, x, y, z));
-	m_node->setOrientation(local_orientation);
+	m_node->setOrientation(Ogre::Quaternion(w,x,y,z));
+//	Ogre::Quaternion local_orientation = m_node->convertWorldToLocalOrientation(Ogre::Quaternion(w, x, y, z));
+//	m_node->setOrientation(local_orientation);
 }
 bool render::has_node(const std::string &name){
 	return ogre_scene->hasSceneNode(name);

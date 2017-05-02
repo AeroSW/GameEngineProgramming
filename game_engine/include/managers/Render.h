@@ -126,7 +126,9 @@ class render{
 		
 		void prev_camera();
 		void next_camera();
-
+		
+		std::vector<float> get_node_position(const std::string &node_name);
+		std::vector<float> get_node_orientation(const std::string &node_name);
 		void set_node_position(const std::string &node_name, float x, float y, float z);
 		void set_node_orientation(const std::string &node_name, float w, float x, float y, float z);
 		bool has_node(const std::string &name);

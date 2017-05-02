@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-enum shape_t{BOX = 1, CONE, CYLINDER, PLANE, SPHERE, SQUARE};
+enum shape_t{BOX = 1, CONE, CYLINDER, CYLINDER_X, PLANE, SPHERE, SQUARE};
 enum body_t{GHOST = 0, RIGID, SOFT};
 
 struct object_struct{

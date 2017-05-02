@@ -39,18 +39,12 @@ void bullet::initialize(render * rm, const std::string &file){
 	else{
 		my_parser->load_file(file);
 	}
-	std::cout << "\n\n\n\n\n\n=====================================================\n\n\n\n";
 	broadphase = new btDbvtBroadphase();
-	std::cout << "\n\n\n\n\n\n(2)          ========================================\n\n\n\n";
 	collision_config = new btDefaultCollisionConfiguration();
-	std::cout << "\n\n\n\n\n\n(3)          ===========================================\n\n\n\n";
 	dispatcher = new btCollisionDispatcher(collision_config);
 //	btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
-	std::cout << "\n\n\n\n\n\n(4)          ==========================================\n\n\n\n";
 	solver = new btSequentialImpulseConstraintSolver();
-	std::cout << "\n\n\nBefore the crash." << std::endl;
 	dynamic_world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collision_config);
-	std::cout << "After the crash.\n\n\n" << std::endl;
 //	dynamic_world->setGravity(btVector3(0,-9.8,0));
 }
 
@@ -70,9 +64,7 @@ void bullet::uninitialize(){
 }
 
 bullet::bullet(render * rm, const std::string &file){
-	std::cout << "\n\n\n\n\n\n-------------------------------------------------------------------------------------\n\n\n\n\n";
 	initialize(rm, file);
-	std::cout << "\n\n\n\n\n\n*************************************************************************************\n\n\n\n\n";
 	my_parser->setup_physics(this);
 	my_parser->build_physics(this);
 	build_rigid_bodies();
@@ -83,7 +75,7 @@ bullet::~bullet(){
 }
 
 void bullet::add_resource(const std::string &name, const std::string &node){
-	if(!render_manager->has_node(name)) throw_trace("Object must exist in Ogre.");
+	if(!render_manager->has_node(node)) throw_trace(node + " must exist in Ogre.");
 	bullet_resource * br = new bullet_resource();
 	br->m_name = name;
 	br->m_shape = new btCompoundShape();
@@ -109,9 +101,16 @@ void bullet::add_object(const std::string &resource_name, object_struct * my_str
 			btQuaternion my_q(my_struct->basis[1], my_struct->basis[2], my_struct->basis[3], my_struct->basis[0]);
 			btMatrix3x3 my_matrix(my_q);
 			
-			btTransform m_transform(my_matrix, btVector3(my_struct->origin[0], my_struct->origin[1], my_struct->origin[2]));
-			br->m_transform *= m_transform;
-			
+		//	btTransform m_transform(my_matrix, btVector3(my_struct->origin[0], my_struct->origin[1], my_struct->origin[2]));
+			btTransform m_transform;
+			m_transform.setIdentity();
+		//	br->m_transform *= m_transform;
+		//	std::vector<float> trans = render_manager->get_node_position(br->m_node);
+		//	std::vector<float> orien = render_manager->get_node_orientation(br->m_node);
+		//	m_transform.setOrigin(btVector3(trans[0], trans[1], trans[2]));
+		//	m_transform.setRotation(btQuaternion(orien[1], orien[2], orien[3], orien[0]));
+			m_transform.setRotation(btQuaternion(my_struct->basis[1], my_struct->basis[2], my_struct->basis[3], my_struct->basis[0]));
+			m_transform.setOrigin(btVector3(my_struct->origin[0], my_struct->origin[1], my_struct->origin[2]));
 			btDefaultMotionState * my_motion_state = new btDefaultMotionState(m_transform);
 			
 			btVector3 my_inertia(my_struct->inertia[0],my_struct->inertia[1],my_struct->inertia[2]);
@@ -147,6 +146,9 @@ btCollisionShape * bullet::create_shape(shape_t &shape, std::vector<float> args)
 		case shape_t::CYLINDER:
 			if(args.size() != 3) throw_trace("Incorrect number of arguments for cylinder shape.");
 			return new btCylinderShape(btVector3(args[0],args[1],args[2]));
+		case shape_t::CYLINDER_X:
+			if(args.size() != 3) throw_trace("Incorrect number of arguments for cylinder shape.");
+			return new btCylinderShapeX(btVector3(args[0],args[1],args[2]));
 		case shape_t::PLANE:
 		//	if(args.size() != 4) throw_trace("Incorrect number of arguments for plane shape.");
 		//	return new btStaticPlaneShape(btVector3(args[0], args[1], args[2]),args[3]);
@@ -187,10 +189,17 @@ void bullet::update_bodies(){
 			m_body->getMotionState()->getWorldTransform(m_transformation);
 			btQuaternion m_orientation = m_transformation.getRotation();
 			btVector3 m_origin = m_transformation.getOrigin();
-			
+		//	if(!true_shape->isNonMoving()){
+		//		int num_childs = true_shape->getNumChildShapes();
+		//		for(int dx = 0; dx < num_childs; dx++){
+		//			true_shape->updateChildTransform(dx, m_transformation);
+		//		}
+		//	}
 			// Apply transforms
-			render_manager->set_node_position(scene_node_name, m_origin.getX(),m_origin.getY(),m_origin.getZ());
-			render_manager->set_node_orientation(scene_node_name, m_orientation.getW(), m_orientation.getX(), m_orientation.getY(), m_orientation.getZ());
+		//	if(!true_shape->isNonMoving()){
+				render_manager->set_node_position(scene_node_name, m_origin.getX(),m_origin.getY(),m_origin.getZ());
+				render_manager->set_node_orientation(scene_node_name, m_orientation.getW(), m_orientation.getX(), m_orientation.getY(), m_orientation.getZ());
+		//	}
 		}
 	}
 }
