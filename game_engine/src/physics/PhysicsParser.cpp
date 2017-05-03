@@ -92,7 +92,7 @@ void physics_parser::build_resource(bullet * bullet_manager, const std::string &
 			if(type_args != nullptr){
 				type_args_str = std::string(type_args);
 				trim(type_args_str);
-				shape_args = parse_fvector(type_args_str);
+				shape_args = stringToVector<float>(type_args_str);
 			}
 			std::string type_str(type_attr);
 			trim(type_str);
@@ -130,7 +130,7 @@ void physics_parser::build_resource(bullet * bullet_manager, const std::string &
 			else{
 				std::string basis_str(basis_vals);
 				trim(basis_str);
-				basis = parse_fvector(basis_str);
+				basis = stringToVector<float>(basis_str);
 			}
 		}
 		
@@ -142,7 +142,7 @@ void physics_parser::build_resource(bullet * bullet_manager, const std::string &
 			else{
 				std::string origin_str(origin_vals);
 				trim(origin_str);
-				origin = parse_fvector(origin_str);
+				origin = stringToVector<float>(origin_str);
 			}
 		}
 		
@@ -154,7 +154,7 @@ void physics_parser::build_resource(bullet * bullet_manager, const std::string &
 			else{
 				std::string inertia_str(inertia_vals);
 				trim(inertia_str);
-				inertia = parse_fvector(inertia_str);
+				inertia = stringToVector<float>(inertia_str);
 			}
 		}
 		

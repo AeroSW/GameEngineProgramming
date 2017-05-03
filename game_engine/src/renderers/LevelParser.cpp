@@ -232,9 +232,9 @@ void levelparser::parse_camera(scene * manager, const std::string &group_name, c
 	trim(loc_str);
 	trim(tar_str);
 	trim(clip_str);
-	std::vector<float> loc = parse_fvector(loc_str);
-	std::vector<float> tar = parse_fvector(tar_str);
-	std::vector<float> clip = parse_fvector(clip_str);
+	std::vector<float> loc = stringToVector<float>(loc_str);
+	std::vector<float> tar = stringToVector<float>(tar_str);
+	std::vector<float> clip = stringToVector<float>(clip_str);
 	manager->create_camera(obj_name, loc, tar, clip);
 }
 
@@ -256,19 +256,19 @@ void levelparser::parse_light(scene * manager, const std::string &group_name, co
 	if(loc_elem != nullptr){
 		std::string loc(loc_elem->GetText());
 		trim(loc);
-		std::vector<float> loc_v = parse_fvector(loc);
+		std::vector<float> loc_v = stringToVector<float>(loc);
 		manager->set_light_location(obj_name, loc_v);
 	}
 	if(tar_elem != nullptr){
 		std::string tar_str(tar_elem->GetText());
 		trim(tar_str);
-		std::vector<float> tar = parse_fvector(tar_str);
+		std::vector<float> tar = stringToVector<float>(tar_str);
 		manager->set_light_target(obj_name, tar);
 	}
 	if(col_elem != nullptr){
 		std::string col_str(col_elem->GetText());
 		trim(col_str);
-		std::vector<float> col = parse_fvector(col_str);
+		std::vector<float> col = stringToVector<float>(col_str);
 		manager->set_light_color(obj_name, col);
 	}
 }
@@ -353,13 +353,13 @@ void levelparser::apply_transforms(scene * manager, tinyxml2::XMLElement * curr_
 		else if(type.compare("scale") == 0){
 			std::string scale_vectre_str(transforms->GetText());
 			trim(scale_vectre_str);
-			std::vector<float> scale_vectre = parse_fvector(scale_vectre_str);
+			std::vector<float> scale_vectre = stringToVector<float>(scale_vectre_str);
 			manager->apply_scale(node_name, scale_vectre);
 		}
 		else if(type.compare("translation") == 0){
 			std::string translate_vectre_str(transforms->GetText());
 			trim(translate_vectre_str);
-			std::vector<float> translate_vectre = parse_fvector(translate_vectre_str);
+			std::vector<float> translate_vectre = stringToVector<float>(translate_vectre_str);
 			manager->apply_translation(node_name, translate_vectre);
 		}
 		else{
@@ -443,13 +443,13 @@ void levelparser::apply_animations(scene * manager, tinyxml2::XMLElement * curr_
 				else if(type.compare("scale") == 0){
 					std::string scale_vectre_str(transforms->GetText());
 					trim(scale_vectre_str);
-					transform_vector = parse_fvector(scale_vectre_str);
+					transform_vector = stringToVector<float>(scale_vectre_str);
 					frame_mod = new transform(transform_type::SCALE, transform_vector);
 				}
 				else if(type.compare("translation") == 0){
 					std::string translate_vectre_str(transforms->GetText());
 					trim(translate_vectre_str);
-					transform_vector = parse_fvector(translate_vectre_str);
+					transform_vector = stringToVector<float>(translate_vectre_str);
 					frame_mod = new transform(transform_type::TRANSLATION, transform_vector);
 				}
 				else{
