@@ -2,7 +2,7 @@
 #include "Render.h"
 
 // Exception Includes
-#include "asserts.h"
+#include "except_macros.h"
 #include "RenderException.h"
 #include "GameException.h"
 #include "SudoExcept.h"

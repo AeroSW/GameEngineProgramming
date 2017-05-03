@@ -1,7 +1,7 @@
 // Err stuff
 #include "GameException.h"
 #include "SudoExcept.h"
-#include "asserts.h"
+#include "except_macros.h"
 // Base includes
 #include "Manager.h"
 #include "BassAudio.h"

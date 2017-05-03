@@ -1,6 +1,6 @@
 // Exception stuff
 #include "GameException.h"
-#include "asserts.h"
+#include "except_macros.h"
 #include "SudoExcept.h"
 // Base Includes
 #include "LuaScripter.h"

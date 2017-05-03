@@ -26,7 +26,7 @@
  *	Exception Libraries
  ***********************//****/
 #include "game_exception.h"
-#include "asserts.h"
+#include "except_macros.h"
 #include "sudo_except.h"
 
 /***********************//*****

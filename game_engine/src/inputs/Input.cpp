@@ -1,7 +1,7 @@
 #include "Input.h"
 #include <sstream>
 #include "Manager.h"
-#include "asserts.h"
+#include "except_macros.h"
 
 OIS::InputManager * input::ois_manager = nullptr;
 uint32 input::count = 0;
