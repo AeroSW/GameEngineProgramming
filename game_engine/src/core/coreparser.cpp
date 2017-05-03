@@ -108,15 +108,29 @@ bool asw::CoreParser::parseInput(Core * core_manager, tinyxml2::XMLElement * inp
 	if(input_type_attr == nullptr) THROW_TRACE("<input> tag needs 'type' attribute to discern input's type.");
 	std::string input_type(input_type_attr);
 	trim(input_type);
-	if(input_type.compare("keyboard") == 0){
+	input_t m_type;
+	
+	if(input_type.compare("keyboard") == 0)
+		m_type = input_t::KEYBOARD;
+	else if(input_type.compare("mouse") == 0)
+		m_type = input_t::MOUSE;
+	else if(input_type.compare("xbox1") == 0)
+		m_type = input_t::XBOX1;
+	else if(input_type.compare("dualshock4") == 0)
+		m_type = input_t::DUALSHOCK4;
+	else
+		THROW_TRACE("Invalid input type.");
+	
+	std::string file = "";
+	if(m_type != input_t::MOUSE){
 		const char * input_file_attr = input_tag->Attribute("file");
-		ASSERT_LOG(input_file_attr != nullptr, "'keyboard' <input> tag does not have 'file' attribute for scripts to call on event.");
+		ASSERT_LOG(input_file_attr != nullptr, "Non-mouse <input> need a 'file' attribute with a path to an XML file containing \nevent scripts.");
+		if(input_file_attr != nullptr){
+			file = std::string(input_file_attr);
+			trim(file);
+		}
 	}
-	else if(input_type.compare("mouse") == 0){
-		
-	}
-	else if(input_type.compare("xbox1") == 0 || input_type.compare("dualshock4") == 0){
-		
-	}
-	else THROW_TRACE("Invalid input type.");
+	
+	core_manager->createInput(m_type, file);
+	return true;
 }
