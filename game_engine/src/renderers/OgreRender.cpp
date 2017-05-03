@@ -19,7 +19,7 @@
 // Exceptions
 #include "GameException.h"
 #include "SudoExcept.h"
-#include "Asserts.h"
+#include "asserts.h"
 // STD
 #ifdef __linux__
 	#define _USE_MATH_DEFINES // defines PI, **not available on Windows

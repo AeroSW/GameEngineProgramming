@@ -1,7 +1,7 @@
 #include "Gamepad.h"
 #include "Manager.h"
 
-#include "Asserts.h"
+#include "asserts.h"
 #include <cstdlib>
 #include <sstream>
 #include <vector>
