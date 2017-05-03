@@ -3,31 +3,30 @@
  *	Manager Libraries
  *************************//***/
 // Audio
-#include "audio.h"
-#include "bassaudio.h"
+#include "include/audio/audio.h"
+#include "include/audio/bassaudio.h"
 // Script
-#include "scripter.h"
-#include "luascripter.h"
+#include "include/scripts/scripter.h"
+#include "include/scripts/luascripter.h"
 // Render
-#include "render.h"
-#include "ogre_render.h"
+#include "include/renderers/render.h"
+#include "include/renderers/ogre_render.h"
 // Input
-#include "input.h"
-#include "keyboard.h"
-#include "mouse.h"
-#include "gamepad.h"
+#include "include/inputs/input.h"
+#include "include/inputs/keyboard.h"
+#include "include/inputs/mouse.h"
+#include "include/inputs/gamepad.h"
 // Log
-#include "log_manager.h"
+#include "include/logs/logger.h"
 // Parser
 //#include "gameparser.h"
-#include "coreparser.h"
+#include "include/core/coreparser.h"
 
 /***********************//*****
  *	Exception Libraries
  ***********************//****/
-#include "game_exception.h"
-#include "except_macros.h"
-#include "sudo_except.h"
+#include "include/exceptions/game_exception.h"
+#include "include/exceptions/except_macros.h"
 
 /***********************//*****
  *	STD Libraries
