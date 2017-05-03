@@ -1,36 +1,39 @@
-#include "GUIParser.h"
-#include "Interface.h"
-#include "GameException.h"
-#include "SudoExcept.h"
+#include "include/ui/gui_parser.h"
+#include "include/ui/user_interface.h"
+
+#include "tinyxml2.h"
+
+//#include "game_exception.h"
+#include "except_macros.h"
 
 #include <iostream>
 
-const std::string guiparser::main_tag = "gui";
-const std::string guiparser::type = "guiparser";
+const std::string asw::GuiParser::main_tag = "gui";
+const std::string asw::GuiParser::type = "GuiParser";
 
-my_pair::my_pair():
+asw::ui_parser_pair::ui_parser_pair():
 first(""), second(""){}
-my_pair::my_pair(const std::string &f, const std::string &s):
+asw::ui_parser_pair::ui_parser_pair(const std::string &f, const std::string &s):
 first(f),second(s){}
-my_pair::my_pair(const my_pair &mp):
+asw::ui_parser_pair::ui_parser_pair(const ui_parser_pair &mp):
 first(mp.first),second(mp.second){}
 
-guiparser::guiparser(const std::string &file):
+asw::GuiParser::GuiParser(const std::string &file):
 parser(file, main_tag){}
 
-guiparser::~guiparser(){}
+asw::GuiParser::~GuiParser(){}
 
-void guiparser::build_gui(interface * my_interface){
+void asw::GuiParser::buildGui(interface * my_interface){
 	
-	tinyxml2::XMLElement * tag = get_main_element();
+	tinyxml2::XMLElement * tag = getMainElement();
 	tinyxml2::XMLElement * widgets_tag = tag->FirstChildElement("widgets");
 	for(tinyxml2::XMLElement * window_tag = widgets_tag->FirstChildElement("window"); window_tag != nullptr; window_tag = window_tag->NextSiblingElement("window")){
-		std::string child_name = build_window(my_interface, window_tag);
-		my_interface->add_root_child(child_name);
+		std::string child_name = buildWindow(my_interface, window_tag);
+		my_interface->addRootChild(child_name);
 	}
 }
 
-std::string guiparser::build_window(interface * my_interface, tinyxml2::XMLElement * my_window){
+std::string asw::GuiParser::buildWindow(interface * my_interface, tinyxml2::XMLElement * my_window){
 	const char * name_cstr = my_window->Attribute("name"); // Grab the name, type, and look attributes to build the window
 	if(name_cstr == nullptr) THROW_TRACE("<window> requires a 'name' attribute.");	// Check if they exist, if not, then throw error.
 	const char * type_cstr = my_window->Attribute("type");
@@ -59,43 +62,43 @@ std::string guiparser::build_window(interface * my_interface, tinyxml2::XMLEleme
 	std::string look_str(look_cstr);
 	trim(look_str);
 	
-	my_interface->create_widget(name_str, type_str, look_str); // Create the widget.
+	my_interface->createWidget(name_str, type_str, look_str); // Create the widget.
 	
 	std::string lastr(loc_abs); // <location>'s and <area>'s relative and absolute attributes exist, so convert them to vector<float>s
 	trim(lastr);
-	std::vector<float> location_absolutes = parse_fvector(lastr);
+	std::vector<float> location_absolutes = stringToVector<float>(lastr);
 	std::string lrstr(loc_rel);
 	trim(lrstr);
-	std::vector<float> location_relatives = parse_fvector(lrstr);
+	std::vector<float> location_relatives = stringToVector<float>(lrstr);
 	std::string aastr(area_abs);
 	trim(aastr);
-	std::vector<float> area_absolutes = parse_fvector(aastr);
+	std::vector<float> area_absolutes = stringToVector<float>(aastr);
 	std::string arstr(area_rel);
 	trim(arstr);
-	std::vector<float> area_relatives = parse_fvector(arstr);
+	std::vector<float> area_relatives = stringToVector<float>(arstr);
 	
-	my_interface->set_position(name_str, location_absolutes, location_relatives); // Set the position and area for the widget.
-	my_interface->set_area(name_str, area_absolutes, area_relatives);
+	my_interface->setPosition(name_str, location_absolutes, location_relatives); // Set the position and area for the widget.
+	my_interface->setArea(name_str, area_absolutes, area_relatives);
 	
 	// Since a widget is able to have multiple events, it is important to loop over all events and add them to the widget!
 	for(tinyxml2::XMLElement * event = my_window->FirstChildElement("event"); event != nullptr; event = event->NextSiblingElement("event")){
 		const char * script_attribute = event->Attribute("script");
-		std::string script_name(script_attribute);
+		std::string scriptName(script_attribute);
 		trim(script_name);
-		my_interface->add_event(name_str, script_name);
+		my_interface->addEvent(name_str, script_name);
 	}
 	
 	for(tinyxml2::XMLElement * window_tag = my_window->FirstChildElement("window"); window_tag != nullptr; window_tag = window_tag->NextSiblingElement("window")){ // Recursively create this widget's children.
-		std::string child_name = build_window(my_interface, window_tag);
+		std::string child_name = buildWindow(my_interface, window_tag);
 		trim(child_name);
-		my_interface->add_child(name_str, child_name);
+		my_interface->addChild(name_str, child_name);
 	}
 	
 	tinyxml2::XMLElement * text_tag = my_window->FirstChildElement("text");
 	if(text_tag != nullptr){
 		std::string text_str(text_tag->Attribute("string"));
 		trim(text_str);
-		my_interface->set_text(name_str, text_str);
+		my_interface->setText(name_str, text_str);
 	}
 	return name_str;
 }
@@ -103,10 +106,10 @@ std::string guiparser::build_window(interface * my_interface, tinyxml2::XMLEleme
 
 
 
-std::vector<std::string> guiparser::get_fonts(){
+std::vector<std::string> asw::GuiParser::getFonts(){
 	std::vector<std::string> fonts;
 	
-	tinyxml2::XMLElement * tag = get_main_element();
+	tinyxml2::XMLElement * tag = getMainElement();
 	tinyxml2::XMLElement * fonts_tag = tag->FirstChildElement("fonts");
 	if(fonts_tag == nullptr) THROW_TRACE("<fonts> is needed in XML file.");
 	for(tinyxml2::XMLElement * font_tag = fonts_tag->FirstChildElement("font"); font_tag != nullptr; font_tag = font_tag->NextSiblingElement("font")){
@@ -117,10 +120,10 @@ std::vector<std::string> guiparser::get_fonts(){
 	}
 	return fonts;
 }
-std::vector<std::string> guiparser::get_schemes(){
+std::vector<std::string> asw::GuiParser::getSchemes(){
 	std::vector<std::string> schemes; // Vector we wish to return.
 	
-	tinyxml2::XMLElement * tag = get_main_element();
+	tinyxml2::XMLElement * tag = getMainElement();
 	tinyxml2::XMLElement * schemes_tag = tag->FirstChildElement("schemes");
 	if(schemes_tag == nullptr) THROW_TRACE("<schemes> is needed in XML file.");
 	// Loop over all <scheme> tags. Pull the contents of the 'file' attribute and store it in the schemes vector.
@@ -133,10 +136,10 @@ std::vector<std::string> guiparser::get_schemes(){
 	
 	return schemes;
 }
-std::vector<my_pair> guiparser::get_defaults(){
-	std::vector<my_pair> defaults;
+std::vector<ui_parser_pair> asw::GuiParser::getDefaults(){
+	std::vector<ui_parser_pair> defaults;
 	
-	tinyxml2::XMLElement * tag = get_main_element();
+	tinyxml2::XMLElement * tag = getMainElement();
 	tinyxml2::XMLElement * defaults_tag = tag->FirstChildElement("defaults");
 	if(defaults_tag == nullptr) THROW_TRACE("<defaults> is needed in XML file.");
 	
@@ -144,7 +147,7 @@ std::vector<my_pair> guiparser::get_defaults(){
 		const char * type_cstr = default_tag->Attribute("type");
 		const char * name_cstr = default_tag->Attribute("name");
 	//	std::pair<std::string, std::string> new_pair(std::string(type_cstr), std::string(name_cstr));
-		defaults.push_back(my_pair(std::string(type_cstr),std::string(name_cstr)));
+		defaults.push_back(ui_parser_pair(std::string(type_cstr),std::string(name_cstr)));
 	//	std::string type_str(type_cstr);
 	//	std::string name_str(name_cstr);
 	//	std::pair<std::string, std::string> the_pair(type_str, name_str);
@@ -154,12 +157,12 @@ std::vector<my_pair> guiparser::get_defaults(){
 	return defaults;
 }
 
-std::string guiparser::get_type(){
+std::string asw::GuiParser::getType(){
 	return type;
 }
 
-std::string guiparser::get_name(){
-	tinyxml2::XMLElement * tag = get_main_element();
+std::string asw::GuiParser::getName(){
+	tinyxml2::XMLElement * tag = getMainElement();
 	const char * name_cstr = tag->Attribute("name");
 	if(name_cstr == nullptr) THROW_TRACE("GUI needs a name.");
 	return std::string(name_cstr);
