@@ -13,7 +13,13 @@ namespace asw{
 			static const std::string m_type;
 			static const std::string m_tag;
 			
-			virtual void parseInputs(core * core_manager, tinyxml2::XMLElement * inputs_tag);
+			virtual bool parseInput(Core * core_manager, tinyxml2::XMLElement * input_tag);
+			
+			virtual void parseAudio(Core * core_manager, tinyxml2::XMLElement * core_tag);
+			virtual void parseInputs(Core * core_manager, tinyxml2::XMLElement * core_tag);
+			virtual void parseLogger(Core * core_manager, tinyxml2::XMLElement * core_tag);
+			virtual void parseRender(Core * core_manager, tinyxml2::XMLElement * core_tag);
+			virtual void parseScript(Core * core_manager, tinyxml2::XMLElement * core_tag);
 			
 		public:
 			/*!
