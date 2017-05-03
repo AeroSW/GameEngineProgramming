@@ -30,7 +30,7 @@ class ogre_render : public render{
 		 *	communicate with other managers.
 		 *	\param dox The document required to construct this render manager
 		 *	and its dependent managers.
-		 *	\exception game_error A game_error is generated when the
+		 *	\exception GameError A GameError is generated when the
 		 *	initialization of this render manager fails to complete.
 		 */
 		ogre_render(core * core_manager, const std::string &dox);
@@ -51,7 +51,7 @@ class ogre_render : public render{
 		 *	\param dox The XML document which contains the documentation for
 		 *	building this manager and its dependent managers.
 		 *	\return void
-		 *	\exception game_error A game_error is generated when the
+		 *	\exception GameError A GameError is generated when the
 		 *	initialization process for this render manager fails.
 		 */
 		static void initialize(core & core_manager, const std::string &dox);
@@ -112,7 +112,7 @@ class ogre_render : public render{
 		 *
 		 *	\param level_name The name of the level to change to.
 		 *	\return void
-		 *	\exception game_error A game_error will be generated if the
+		 *	\exception GameError A GameError will be generated if the
 		 *	requested level does not exist.
 		 */
 		virtual void change_level(const std::string &level_name);
@@ -127,7 +127,7 @@ class ogre_render : public render{
 		 *	\param y The number of units to offset the object's y coordinate.
 		 *	\param z The number of units to offset the object's z coordinate.
 		 *	\return void
-		 *	\exception game_error A game_error will be generated if the object
+		 *	\exception GameError A GameError will be generated if the object
 		 *	does not exist.
 		 */
 		virtual void translate_object(const std::string &obj, float x, float y, float z);
@@ -141,7 +141,7 @@ class ogre_render : public render{
 		 *	\param type The type of rotation (local or global).
 		 *	\param w The angle of the rotation.
 		 *	\return void
-		 *	\exception game_error A game_error will be generated if the object
+		 *	\exception GameError A GameError will be generated if the object
 		 *	does not exist.
 		 */
 		virtual void rotate_object(const std::string &obj, axis_t &axis, rotation_t &type, float w);
@@ -156,7 +156,7 @@ class ogre_render : public render{
 		 *	\param y The number of units to scale the object's y coordinate.
 		 *	\param z The number of units to scale the object's z coordinate.
 		 *	\return void
-		 *	\exception game_error A game_error will be generated if the object
+		 *	\exception GameError A GameError will be generated if the object
 		 *	does not exist.
 		 */
 		virtual void scale_object(const std::string &obj, float x, float y, float z);
@@ -167,7 +167,7 @@ class ogre_render : public render{
 		 *
 		 *	\param obj The name of the object being revealed.
 		 *	\return void
-		 *	\exception game_error A game_error will be generated if the object
+		 *	\exception GameError A GameError will be generated if the object
 		 *	does not exist.
 		 */
 		virtual void reveal_object(const std::string &obj);
@@ -178,7 +178,7 @@ class ogre_render : public render{
 		 *
 		 *	\param obj The name of the object to be hidden.
 		 *	\return void
-		 *	\exception game_error A game_error will be generated if
+		 *	\exception GameError A GameError will be generated if
 		 *	the object does not exist.
 		 */
 		virtual void hide_object(const std::string &obj);
@@ -190,7 +190,7 @@ class ogre_render : public render{
 		 *
 		 *	\param key The ascii character which was pressed.
 		 *	\return void
-		 *	\exception game_error A game_error will be generated if the
+		 *	\exception GameError A GameError will be generated if the
 		 *	key does not interact properly with the GUI.
 		 */
 		virtual void key_pressed(char &key);
@@ -202,7 +202,7 @@ class ogre_render : public render{
 		 *
 		 *	\param key The ascii character which was pressed.
 		 *	\return void
-		 *	\exception game_error A game_error will be generated if the
+		 *	\exception GameError A GameError will be generated if the
 		 *	key does not interact properly with the GUI.
 		 */
 		virtual void key_released(char &key);
@@ -218,7 +218,7 @@ class ogre_render : public render{
 		 *	\param rel The set of values for the mouse's relative
 		 *	position.
 		 *	\return void
-		 *	\exception game_error A game_error will be generated if the
+		 *	\exception GameError A GameError will be generated if the
 		 *	key does not interact properly with the GUI.
 		 */
 		virtual void mouse_clicked(uint8 id, std::vector<int> &abs, std::vector<int> &rel);
@@ -234,7 +234,7 @@ class ogre_render : public render{
 		 *	\param rel The set of values for the mouse's relative
 		 *	position.
 		 *	\return void
-		 *	\exception game_error A game_error will be generated if the
+		 *	\exception GameError A GameError will be generated if the
 		 *	key does not interact properly with the GUI.
 		 */
 		virtual void mouse_released(uint8 id, std::vector<int> &abs, std::vector<int> &rel);
@@ -248,7 +248,7 @@ class ogre_render : public render{
 		 *	\param rel The set of values for the mouse's relative
 		 *	position.
 		 *	\return void
-		 *	\exception game_error A game_error will be generated if the
+		 *	\exception GameError A GameError will be generated if the
 		 *	key does not interact properly with the GUI.
 		 */
 		virtual void mouse_moved(std::vector<int> &abs, std::vector<int> &rel);
@@ -291,7 +291,7 @@ class ogre_render : public render{
 		 *	\param parent The name of the node which is the parent.
 		 *	\param child The name of the node which will be the child.
 		 *	\return void
-		 *	\exception game_error A game_error is generated when either of
+		 *	\exception GameError A GameError is generated when either of
 		 *	the nodes can not be found.
 		 */
 		virtual void add_child(const std::string &parent, const std::string &child);
@@ -302,7 +302,7 @@ class ogre_render : public render{
 		 *
 		 *	\param child The name of the node which will be the child.
 		 *	\return void
-		 *	\exception game_error A game_error is generated when either of
+		 *	\exception GameError A GameError is generated when either of
 		 *	the nodes can not be found.
 		 */
 		virtual void add_root_child(const std::string &child);
@@ -313,7 +313,7 @@ class ogre_render : public render{
 		 *
 		 *	\param name The name for the scene manager.
 		 *	\return void
-		 *	\exception game_error A game_error is generated if a scene
+		 *	\exception GameError A GameError is generated if a scene
 		 *	manager already possesses the given name.
 		 */
 		virtual void create_scene_manager(const std::string &name);
@@ -325,7 +325,7 @@ class ogre_render : public render{
 		 *
 		 *	\param name The name of the manager to load.
 		 *	\return void
-		 *	\exception game_error A game_error is generated if Ogre
+		 *	\exception GameError A GameError is generated if Ogre
 		 *	does not have a scene manager with the given name.
 		 */
 		virtual void load_scene_manager(const std::string &name);
@@ -337,7 +337,7 @@ class ogre_render : public render{
 		 *	\param loc The location path of the resources.
 		 *	\param group The group name which this resource will be added to.
 		 *	\return void
-		 *	\exception game_error Generated by the location not existing.
+		 *	\exception GameError Generated by the location not existing.
 		 */
 		virtual void add_location(const std::string &loc, const std::string &group);
 		/*!
@@ -348,7 +348,7 @@ class ogre_render : public render{
 		 *	\param type The type of the resource.
 		 *	\param group The group this resource belongs to.
 		 *	\return void
-		 *	\exception game_error Generates a game_error when the group does not
+		 *	\exception GameError Generates a GameError when the group does not
 		 *	exist.
 		 */
 		virtual void declare_resource(const std::string &file, const std::string &type, const std::string &group);
@@ -359,7 +359,7 @@ class ogre_render : public render{
 		 *
 		 *	\param obj_src The resource structure.
 		 *	\return void
-		 *	\exception game_error A game_error is generated when the group
+		 *	\exception GameError A GameError is generated when the group
 		 *	does not exist.
 		 */
 		virtual void add_base(object_resource * obj_src);
@@ -371,7 +371,7 @@ class ogre_render : public render{
 		 *	\param material The name of the material.
 		 *	\param grp The group which the material will belong to.
 		 *	\return void
-		 *	\exception game_error A game_error is generated when the group
+		 *	\exception GameError A GameError is generated when the group
 		 *	does not exist.
 		 */
 		virtual void add_skin(const std::string &base, const std::string &material, const std::string &grp);
@@ -383,7 +383,7 @@ class ogre_render : public render{
 //		 *	\param clip A vector containing 2 elements
 //		 *	indicating the clip ranges for the camera.
 //		 *	\return void
-//		 *	\exception game_error A game_error is generated if the camera
+//		 *	\exception GameError A GameError is generated if the camera
 //		 *	already exists or clip is not of size 2.
 //		 */
 //		virtual void add_cam(const std::string &name, std::vector<float> &clip);
@@ -396,7 +396,7 @@ class ogre_render : public render{
 //		 *	\param colour A vector containing 3 elements which is the colour for the
 //		 *	light.
 //		 *	\return void
-//		 *	\exception game_error A game_error is generated if the light already exists.
+//		 *	\exception GameError A GameError is generated if the light already exists.
 //		 */
 //		virtual void add_light(const std::string &name, std::vector<float> &colour);
 		/*!
@@ -407,7 +407,7 @@ class ogre_render : public render{
 		 *	\param object_name The name of the object being attached to node.
 		 *	\param object An enum specifying the type of the object.
 		 *	\return void
-		 *	\exception game_error A game-error is generated when either the
+		 *	\exception GameError A game-error is generated when either the
 		 *	object does not exist in Ogre's resources or the scene node does
 		 *	not exist in Ogre's scene.
 		 */
@@ -423,7 +423,7 @@ class ogre_render : public render{
 		 *	\param time The time in seconds for how long the animation will last.
 		 *	\param track The animation's personal track number.
 		 *	\return void
-		 *	\exception game_error Generated when the node does not exist.
+		 *	\exception GameError Generated when the node does not exist.
 		 */
 		virtual void add_animation(const std::string &node, const std::string &animation_name, const float &time, const uint16 track);
 		/*!
@@ -436,7 +436,7 @@ class ogre_render : public render{
 		 *	\param time The time location for this frame.
 		 *	\param vals A vector containing the animation resource values.
 		 *	\return void
-		 *	\exception game_error A game_error is generated when one of the following
+		 *	\exception GameError A GameError is generated when one of the following
 		 *	occurs:  the animation does not exist, time is outside of time range for
 		 *	the animation, or the vector of values is of incorrect size.
 		 */
