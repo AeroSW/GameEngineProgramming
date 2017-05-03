@@ -1,8 +1,8 @@
-#include "Parser.h"
-#include "GameException.h"
-#include "SudoExcept.h"
+#include "include/parser.h"
+#include "include/except_macro.h"
+#include "tinyxml2.h"
 
-tinyxml2::XMLElement * parser::get_main_element(){
+tinyxml2::XMLElement * asw::Parser::getMainElement(){
 	if(doc != nullptr){
 		if(main_element == nullptr){
 			main_element = doc->FirstChildElement(main_tag.c_str());
@@ -13,14 +13,14 @@ tinyxml2::XMLElement * parser::get_main_element(){
 	THROW_TRACE("Document needs to be loaded.");
 }
 
-parser::parser(const std::string &document, const std::string &tag):
+asw::Parser::Parser(const std::string &document, const std::string &tag):
 main_tag(tag), file_name(document){
 	doc = nullptr;
 	main_element = nullptr;
 	load_file(file_name);
 }
 
-parser::~parser(){
+asw::Parser::~Parser(){
 	if(doc != nullptr){
 		doc->Clear();
 		main_element = nullptr;
@@ -29,11 +29,11 @@ parser::~parser(){
 	}
 }
 
-std::string parser::get_name(){
+std::string asw::Parser::getName(){
 	return file_name;
 }
 
-void parser::load_file(const std::string &document){
+void asw::Parser::loadFile(const std::string &document){
 	tinyxml2::XMLDocument * new_doc = new tinyxml2::XMLDocument();
 	tinyxml2::XMLError flag = new_doc->LoadFile(document.c_str());
 	if(flag != tinyxml2::XML_SUCCESS){
