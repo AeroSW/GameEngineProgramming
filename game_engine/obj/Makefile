@@ -1,7 +1,7 @@
 AutomatedMakefile = am
 CC		= g++
 
-MY_INC	= -I../include -I../include/managers -I../include/managers/inputs -I../include/audio -I../include/exceptions -I../include/interfaces -I../include/logs -I../include/listeners -I../include/parsers -I../include/scripts
+MY_INC	= -I../include -I../include/managers -I../include/managers/inputs -I../include/audio -I../include/exceptions -I../include/interfaces -I../include/logs -I../include/listeners -I../include/parsers -I../include/scripts -I../include/physics
 # GL_INC	= -I/usr/local/include/OGRE
 
 INC_DIRS= $(MY_INC) # $(GL_INC)
@@ -23,6 +23,7 @@ all	: $(FILES)
 	cd interfaces && $(MAKE)
 	cd audio && $(MAKE)
 	cd scripts && $(MAKE)
+	cd physics && $(MAKE)
 	
 Transform.o	: $(SRC)/Transform.cpp $(INC)/Transform.h
 	$(CC) $(CFLAGS) -o Transform.o $(SRC)/Transform.cpp
@@ -46,4 +47,5 @@ clean	:
 	cd ./interfaces && $(MAKE) clean
 	cd ./audio && $(MAKE) clean
 	cd ./scripts && $(MAKE) clean
+	cd ./physics && $(MAKE) clean
 	

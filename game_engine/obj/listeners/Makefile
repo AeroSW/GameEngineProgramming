@@ -11,7 +11,7 @@ CFLAGS	= -c -std=c++11 -g $(INC_DIRS)
 SRC	= ../../src/listeners
 INC	= ../../include/listeners
 
-FILES	= AnimationListener.o InputListener.o RenderListener.o AudioListener.o
+FILES	= AnimationListener.o InputListener.o RenderListener.o AudioListener.o PhysicsListener.o
 
 default	: all
 all	: $(FILES)
@@ -27,6 +27,9 @@ InputListener.o		: $(SRC)/InputListener.cpp $(INC)/InputListener.h
 
 AudioListener.o		: $(SRC)/AudioListener.cpp $(INC)/AudioListener.h
 	$(CC) $(CFLAGS) -o AudioListener.o $(SRC)/AudioListener.cpp
+
+PhysicsListener.o	: $(SRC)/PhysicsListener.cpp $(INC)/PhysicsListener.h
+	$(CC) $(CFLAGS) -o PhysicsListener.o $(SRC)/PhysicsListener.cpp
 
 clean	:
 	$(RM) ./*.o

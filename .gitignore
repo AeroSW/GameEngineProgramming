@@ -55,6 +55,6 @@ temp/
 
 game_engine/tests/
 
-game_engine/Templates\.txt
+game_engine/debug\.txt
 
-game_engine/assets/documentation/
+game_engine/Templates\.txt

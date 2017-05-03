@@ -13,6 +13,7 @@ class levelparser{
 		tinyxml2::XMLElement * lvl_element;
 		tinyxml2::XMLElement * get_lvl_element();
 		
+		void parse_plane(scene * scene_manager, const std::string &group, const std::string &obj_name, tinyxml2::XMLElement * plane_tag);
 		void parse_entity(scene * scene_manager, const std::string &group_name, const std::string &obj_name, tinyxml2::XMLElement * object);
 		void parse_camera(scene * scene_manager, const std::string &group_name, const std::string &obj_name, tinyxml2::XMLElement * object);
 		void parse_light(scene * scene_manager, const std::string &group_name, const std::string &obj_name, tinyxml2::XMLElement * object);

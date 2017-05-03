@@ -104,6 +104,10 @@ void levelparser::parse_scene(scene * manager){
 					parse_light(manager, group, obj_name, object);
 					manager->log("Light " + obj_name + " added to " + group + ".");
 				}
+				else if(obj_type.compare("plane") == 0){
+					parse_plane(manager, group, obj_name, object);
+					manager->log("Plane " + obj_name + " added to " + group + ".");
+				}
 				else throw_trace("Unknown type attribute.");
 			}
 		}
@@ -113,6 +117,7 @@ void levelparser::parse_scene(scene * manager){
 		parse_graph(manager, graph);
 	}
 }
+
 
 std::string levelparser::get_name(){
 	tinyxml2::XMLElement * lvl = get_lvl_element();
@@ -167,6 +172,36 @@ void levelparser::parse_graph(scene * manager, tinyxml2::XMLElement * graph){
 	for(tinyxml2::XMLElement * node_elem = root_elem->FirstChildElement("node"); node_elem != nullptr; node_elem = node_elem->NextSiblingElement("node")){
 		std::string node_name = recursive_parsing(manager, node_elem);
 		manager->add_root_child(node_name);
+	}
+}
+
+void levelparser::parse_plane(scene * manager, const std::string &group, const std::string &obj_name, tinyxml2::XMLElement * object){
+	tinyxml2::XMLElement * material_tag = object->FirstChildElement("mat");
+	tinyxml2::XMLElement * width_tag = object->FirstChildElement("width");
+	tinyxml2::XMLElement * height_tag = object->FirstChildElement("height");
+	
+	const char * axis_attr = object->Attribute("axis");
+	
+	if(axis_attr == nullptr) throw_trace("Object tag for planes need an axis attribute.");
+	if(width_tag == nullptr || height_tag == nullptr) throw_trace("Width and Height tags are needed for plane.");
+	
+	std::string axis_str(axis_attr);
+	std::string width_str(width_tag->GetText());
+	std::string height_str(height_tag->GetText());
+	
+	trim(axis_str);
+	trim(width_str);
+	trim(height_str);
+	
+	float width = std::stof(width_str);
+	float height = std::stof(height_str);
+	
+	manager->add_plane(obj_name, axis_str, width, height, group);
+	
+	if(material_tag != nullptr){
+		std::string material(material_tag->GetText());
+		trim(material);
+		manager->add_material(obj_name, material, group);
 	}
 }
 

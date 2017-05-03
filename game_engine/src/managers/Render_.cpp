@@ -4,6 +4,8 @@
 // Exception Includes
 #include "Asserts.h"
 #include "RenderException.h"
+#include "GameException.h"
+#include "SudoExcept.h"
 
 // Manager Includes
 #include "Manager.h"
@@ -17,10 +19,14 @@
 #include "InputListener.h"
 #include "RenderListener.h"
 #include "AudioListener.h"
+#include "PhysicsListener.h"
 
 // Interface Includes
 #include "Interface.h"
 #include "Cegui.h"
+
+// Physics Includes
+#include "BulletPhysics.h"
 
 // std Includes
 #define _USE_MATH_DEFINES
@@ -38,6 +44,11 @@ void render::loop_animations(float timestep){
 }
 void render::update_audio(float timestep){
 	my_manager->update_audio(timestep);
+}
+void render::update_physics(float timestep){
+	if(physics_manager != nullptr){
+		physics_manager->check_bodies(timestep);
+	}
 }
 
 void render::build_levels(std::vector<std::string> &names){
@@ -69,6 +80,21 @@ void render::build_gui(){
 	}
 	catch(std::exception &e){
 
+		ASSERT_CRITICAL(false, e.what());
+	}
+}
+
+void render::build_physics(){
+	try{
+		std::string p_file = gp->get_physics("physics");
+		my_manager->log("Physics grabbed.");
+		physics_manager = new bullet(this, p_file);
+		my_manager->log("Physics Manager Created!!!!");
+	}
+	catch(game_error &e){
+		ASSERT_LOG(false, e.what());
+	}
+	catch(std::exception &e){
 		ASSERT_CRITICAL(false, e.what());
 	}
 }
@@ -129,6 +155,7 @@ void render::init(){
 render::render(manager * m, const std::string &xml_file){
 	my_manager = m;
 	my_interface = nullptr;
+	physics_manager = nullptr;
 	try{
 		gp = new gameparser(xml_file);
 		my_manager->log("Gameparser created.");
@@ -143,6 +170,7 @@ render::render(manager * m, const std::string &xml_file){
 	listeners.push_back(new animationlistener(this));
 	listeners.push_back(new inputlistener(this));
 	listeners.push_back(new audiolistener(this));
+	listeners.push_back(new physicslistener(this));
 	my_manager->log("Animation listener is initialized.");
 //	root->addFrameListener(al);
 	for(renderlistener * r : listeners){
@@ -197,6 +225,7 @@ uint32 render::get_win_height(){
 void render::start_render(){
 	load_level(1);
 	build_gui();
+	build_physics();
 	root->startRendering();
 }
 void render::stop_render(){
@@ -470,6 +499,49 @@ void render::next_camera(){
 	ogre_cam->setAspectRatio(aspect_ratio);
 }
 
+std::vector<float> render::get_node_position(const std::string &node_name){
+	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name + " does not exist in scene.");
+	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
+	Ogre::Vector3 m_orientation = m_node->getPosition();
+	std::vector<float> orien;
+	orien.push_back(m_orientation.x);
+	orien.push_back(m_orientation.y);
+	orien.push_back(m_orientation.z);
+	return orien;
+}
+std::vector<float> render::get_node_orientation(const std::string &node_name){
+	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name + " does not exist in scene.");
+	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
+	Ogre::Quaternion m_orientation = m_node->getOrientation();
+	std::vector<float> orien;
+	orien.push_back(m_orientation.w);
+	orien.push_back(m_orientation.x);
+	orien.push_back(m_orientation.y);
+	orien.push_back(m_orientation.z);
+	return orien;
+}
+void render::set_node_position(const std::string &node_name, float x, float y, float z){
+	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name + " does not exist in scene.");
+	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
+	
+	m_node->setPosition(Ogre::Vector3(x, y, z));
+	
+	/*Ogre::Vector3 new_pos(x, y, z);
+	Ogre::Vector3 my_loc_pos = m_node->getPosition();
+	Ogre::Vector3 new_loc = new_pos - m_node->convertLocalToWorldPosition(my_loc_pos);
+	m_node->translate(new_loc,  Ogre::Node::TransformSpace::TS_WORLD);*/
+}
+void render::set_node_orientation(const std::string &node_name, float w, float x, float y, float z){
+	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name  + " does not exist in scene.");
+	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
+	m_node->setOrientation(Ogre::Quaternion(w,x,y,z));
+//	Ogre::Quaternion local_orientation = m_node->convertWorldToLocalOrientation(Ogre::Quaternion(w, x, y, z));
+//	m_node->setOrientation(local_orientation);
+}
+bool render::has_node(const std::string &name){
+	return ogre_scene->hasSceneNode(name);
+}
+
 
 
 // Mouse Movement functions
@@ -543,6 +615,23 @@ bool render::has_group(const std::string &group){
 // Ogre Scene Manager
 
 // Entity
+void render::add_plane(const std::string &name, const std::string &axis, float w, float h, const std::string &group){
+	if(!rgm->resourceGroupExists(group)) throw render_error(group + " resource group does not exist.", 222);
+//	if(!rgm->resourceExists(group, name)) throw render_error(mesh + " resource does not exist.", 223);
+	if(!ogre_scene->hasEntity(name)){
+		Ogre::Plane plane(Ogre::Vector3::UNIT_Y, 0);
+		Ogre::Vector3 axis_vector;
+		if(axis.compare("x") == 0) axis_vector = Ogre::Vector3::UNIT_X;
+		else if(axis.compare("y") == 0) axis_vector = Ogre::Vector3::UNIT_Y;
+		else if(axis.compare("z") == 0) axis_vector = Ogre::Vector3::UNIT_Z;
+		else throw_trace("Invalid axis.");
+		Ogre::MeshPtr plane_ptr = Ogre::MeshManager::getSingleton().createPlane(name, group, plane, w, h, 1, 1, true, 1, 1, 1, axis_vector);
+		ogre_scene->createEntity(name, plane_ptr);
+	}
+	if(!levels[curr_level].has_entity(name)){
+		levels[curr_level].add_entity(name);
+	}
+}
 void render::add_entity(const std::string &entity, const std::string &mesh, const std::string &group){
 	if(!rgm->resourceGroupExists(group)) throw render_error(group + " resource group does not exist.", 222);
 	if(!rgm->resourceExists(group, mesh)) throw render_error(mesh + " resource does not exist.", 223);
