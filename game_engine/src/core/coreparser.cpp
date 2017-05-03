@@ -1,13 +1,12 @@
 #include "include/core/coreparser.h"
 
 #include "include/core/core.h"
-
 #include "tinyxml2.h"
 
 #include "except_macros.h"
 
-const std::string CoreParser::m_type	= "CoreParser";
-const std::string CoreParser::m_tag		= "core";
+const std::string asw::CoreParser::m_type	= "CoreParser";
+const std::string asw::CoreParser::m_tag		= "core";
 
 asw::CoreParser::CoreParser(const std::string &dox):
 Parser(dox, m_tag){}
