@@ -45,14 +45,14 @@ void cegui::init(){
 
 	// Grab all schemes specified in XML file.
 	my_schemes = my_parser->get_schemes();
-	if(my_schemes.size() < 1) throw_trace("Need atleast 1 scheme specified.");
+	if(my_schemes.size() < 1) THROW_TRACE("Need atleast 1 scheme specified.");
 	CEGUI::SchemeManager * sm = CEGUI::SchemeManager::getSingletonPtr();
 	for(uint c = 0; c < my_schemes.size(); c++){
 		sm->createFromFile(my_schemes[c]);
 	}
 	// Grab all fonts specified in XML file.
 	my_fonts = my_parser->get_fonts();
-	if(my_fonts.size() < 1) throw_trace("Need atleast 1 font specified.");
+	if(my_fonts.size() < 1) THROW_TRACE("Need atleast 1 font specified.");
 	CEGUI::FontManager * fm = CEGUI::FontManager::getSingletonPtr();
 	for(uint c = 0; c < my_fonts.size(); c++){
 		fm->createFromFile(my_fonts[c]);
@@ -84,13 +84,13 @@ void cegui::init(){
 		if(font_flag && mouse_flag && toolt_flag) break;
 	}
 	if(!font_flag){
-		throw_trace("Need a default font specified.");
+		THROW_TRACE("Need a default font specified.");
 	}
 	else if(!mouse_flag){
-		throw_trace("Need a default mouse specified.");
+		THROW_TRACE("Need a default mouse specified.");
 	}
 	else if(!toolt_flag){
-		throw_trace("Need a default tooltip type specified.");
+		THROW_TRACE("Need a default tooltip type specified.");
 	}
 	else{
 		my_renderer->log("Default tooltips setup.");
@@ -128,7 +128,7 @@ interface(r, setup){
 		my_parser->build_gui(this); // Builds layout
 	}
 	catch(std::exception &e){
-		throw_trace(std::string(e.what()));
+		THROW_TRACE(std::string(e.what()));
 	}
 
 }
@@ -169,7 +169,7 @@ void cegui::mouse_click_event(uint8 button, std::vector<int> &abs, std::vector<i
 		my_context->injectMouseButtonDown(click_id);
 	}
 	catch(std::runtime_error &e){
-		throw_trace(std::string(e.what()));
+		THROW_TRACE(std::string(e.what()));
 	}
 }
 
@@ -190,7 +190,7 @@ void cegui::mouse_release_event(uint8 button, std::vector<int> &abs, std::vector
 		my_context->injectMouseButtonUp(click_id);
 	}
 	catch(std::runtime_error &e){
-		throw_trace(std::string(e.what()));
+		THROW_TRACE(std::string(e.what()));
 	}
 }
 
@@ -220,8 +220,8 @@ void cegui::add_child(const std::string &p, const std::string &c){
 		}
 		if(child != nullptr && parent != nullptr) break;
 	}
-	if(parent == nullptr) throw_trace("Parent " + p + " does not exist.");
-	if(child == nullptr) throw_trace("Child " + c + " does not exist.");
+	if(parent == nullptr) THROW_TRACE("Parent " + p + " does not exist.");
+	if(child == nullptr) THROW_TRACE("Child " + c + " does not exist.");
 	parent->addChild(child);
 }
 
@@ -327,7 +327,7 @@ void cegui::create_widget(const std::string &n, const std::string &t, const std:
 		my_windows.push_back(wp);
 	}
 	else{
-		throw_trace("Type " + t + " does not exist.");
+		THROW_TRACE("Type " + t + " does not exist.");
 	}
 }
 

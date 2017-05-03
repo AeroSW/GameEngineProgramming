@@ -23,7 +23,7 @@ void bass_audio::init(manager * a_manager, const std::string &xml_doc){
 void bass_audio::init_device(int device, DWORD rate, DWORD flags, void * win){
 	BOOL bass_act = BASS_Init(device, rate, flags, win, 0);
 	if(!bass_act){
-	//	throw_trace("Output device not detected.");
+	//	THROW_TRACE("Output device not detected.");
 		my_manager->log("Audio initialization problem");
 	}
 	std::stringstream device_stream;
@@ -36,7 +36,7 @@ void bass_audio::init_device(int device, DWORD rate, DWORD flags, void * win){
 	}
 	else{
 		BASS_Free();
-	//	throw_trace("BASS failed to initialize.");
+	//	THROW_TRACE("BASS failed to initialize.");
 		my_manager->log("BASS failed to initialize.");
 	}
 }
@@ -67,14 +67,14 @@ HSAMPLE bass_audio::generate_HSAMPLE(audio_resource * resource){
 	//	std::cout << "File: " << resource->get_file() << "\n";
 		info = BASS_StreamCreateFile(FALSE, resource->get_file().c_str(),0,0,0);
 		if(info) chan = info;
-		else throw_trace("Audio file failed to convert.");
+		else THROW_TRACE("Audio file failed to convert.");
 	}
 	else{
 	//	std::cout << "Name: " << resource->get_name() << "\n";
 	//	std::cout << "File: " << resource->get_file() << "\n";
 		info = BASS_SampleLoad(FALSE, resource->get_file().c_str(),0,0,1,0);
 		if(info) chan = BASS_SampleGetChannel(info, false);
-		else throw_trace("Audio file failed to convert.");
+		else THROW_TRACE("Audio file failed to convert.");
 	}
 	return chan;
 }
@@ -99,7 +99,7 @@ void bass_audio::play(uint index){
 		bi->my_resource = resource;
 		audio_queue.enqueue(bi);
 	}
-	catch(game_error &e){
+	catch(GameError &e){
 		ASSERT_LOG(false, e.what());
 	}
 }
@@ -123,7 +123,7 @@ void bass_audio::queue(const std::string &name){
 			audio_queue.enqueue(bi);
 		//	std::cout << "Queue Size: " << audio_queue.size() << std::endl;
 		}
-		catch(game_error &e){
+		catch(GameError &e){
 			ASSERT_LOG(false, e.what());
 		}
 	}

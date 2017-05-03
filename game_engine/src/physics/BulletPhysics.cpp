@@ -75,7 +75,7 @@ bullet::~bullet(){
 }
 
 void bullet::add_resource(const std::string &name, const std::string &node){
-	if(!render_manager->has_node(node)) throw_trace(node + " must exist in Ogre.");
+	if(!render_manager->has_node(node)) THROW_TRACE(node + " must exist in Ogre.");
 	bullet_resource * br = new bullet_resource();
 	br->m_name = name;
 	br->m_shape = new btCompoundShape();
@@ -97,7 +97,7 @@ void bullet::add_object(const std::string &resource_name, object_struct * my_str
 			
 			btCollisionShape * m_shape = create_shape(my_struct->shape, my_struct->my_args);
 			
-			if(my_struct->basis.size() != 4) throw_trace("Basis needs x, y, and z values with w radian rotation value.");
+			if(my_struct->basis.size() != 4) THROW_TRACE("Basis needs x, y, and z values with w radian rotation value.");
 			btQuaternion my_q(my_struct->basis[1], my_struct->basis[2], my_struct->basis[3], my_struct->basis[0]);
 			btMatrix3x3 my_matrix(my_q);
 			
@@ -123,7 +123,7 @@ void bullet::add_object(const std::string &resource_name, object_struct * my_str
 			break;
 		}
 	}
-	if(!f_flag) throw_trace(resource_name + " does not exist.");
+	if(!f_flag) THROW_TRACE(resource_name + " does not exist.");
 }
 
 void bullet::check_bodies(float timestep){
@@ -138,28 +138,28 @@ void bullet::set_gravity(float val){
 btCollisionShape * bullet::create_shape(shape_t &shape, std::vector<float> args){
 	switch(shape){
 		case shape_t::BOX: 
-			if(args.size() != 3) throw_trace("Incorrect number of arguments for box shape.");
+			if(args.size() != 3) THROW_TRACE("Incorrect number of arguments for box shape.");
 			return new btBoxShape(btVector3(args[0],args[1],args[2]));
 		case shape_t::CONE:
-		//	if(args.size() != 2) throw_trace("Incorrect number of arguments for cone shape.");
+		//	if(args.size() != 2) THROW_TRACE("Incorrect number of arguments for cone shape.");
 		//	return new btConeShape(args[0],args[1]);
 		case shape_t::CYLINDER:
-			if(args.size() != 3) throw_trace("Incorrect number of arguments for cylinder shape.");
+			if(args.size() != 3) THROW_TRACE("Incorrect number of arguments for cylinder shape.");
 			return new btCylinderShape(btVector3(args[0],args[1],args[2]));
 		case shape_t::CYLINDER_X:
-			if(args.size() != 3) throw_trace("Incorrect number of arguments for cylinder shape.");
+			if(args.size() != 3) THROW_TRACE("Incorrect number of arguments for cylinder shape.");
 			return new btCylinderShapeX(btVector3(args[0],args[1],args[2]));
 		case shape_t::PLANE:
-		//	if(args.size() != 4) throw_trace("Incorrect number of arguments for plane shape.");
+		//	if(args.size() != 4) THROW_TRACE("Incorrect number of arguments for plane shape.");
 		//	return new btStaticPlaneShape(btVector3(args[0], args[1], args[2]),args[3]);
 		case shape_t::SPHERE:
-			if(args.size() != 1) throw_trace("Incorrect number of arguments for sphere shape.");
+			if(args.size() != 1) THROW_TRACE("Incorrect number of arguments for sphere shape.");
 			return new btSphereShape(args[0]);
 		case shape_t::SQUARE:
-			if(args.size() != 2) throw_trace("Incorrect number of arguments for square shape.");
+			if(args.size() != 2) THROW_TRACE("Incorrect number of arguments for square shape.");
 			return new btBox2dShape(btVector3(args[0],args[1],0.0f));
 		default:
-			throw_trace("Undefined shape.");
+			THROW_TRACE("Undefined shape.");
 	};
 }
 
@@ -182,7 +182,7 @@ void bullet::update_bodies(){
 					break;
 				}
 			}
-			if(!has_flag) throw_trace("Rigid body should not exist.");
+			if(!has_flag) THROW_TRACE("Rigid body should not exist.");
 			
 			// Get the transform for current body.
 			btTransform m_transformation;

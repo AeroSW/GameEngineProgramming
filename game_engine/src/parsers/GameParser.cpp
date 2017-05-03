@@ -17,18 +17,18 @@ std::string gameparser::get_level(const std::string &skey){
 	try{
 		game = get_main_element();
 	}
-	catch(game_error &e){
-		throw_trace(std::string(e.what()));
+	catch(GameError &e){
+		THROW_TRACE(std::string(e.what()));
 	}
 	tinyxml2::XMLElement * lvl = game->FirstChildElement("level"); // Grab the first level tag.
 	if(lvl == nullptr){ // Check if file is properly formatted.
-		throw_trace("Game needs atleast 1 level.");
+		THROW_TRACE("Game needs atleast 1 level.");
 	}
 	std::string result; // Initialize string.
 	for(;lvl != nullptr; lvl = lvl->NextSiblingElement("level")){ // Loop over all elements with "level" tag.
 		const char * lvl_attr = lvl->Attribute("name"); // Get the name attribute from the tag.
 		if(lvl_attr == nullptr){ // Check if the file is properly formatted.
-			throw_trace("Level needs a name.");
+			THROW_TRACE("Level needs a name.");
 		}
 		std::string val(lvl_attr); // Get the value of the attribute(the key).
 		trim(val);
@@ -50,15 +50,15 @@ std::string gameparser::get_gui(const std::string &skey){
 	try{
 		game = get_main_element();
 	}
-	catch(game_error &e){
-		throw_trace(std::string(e.what()));
+	catch(GameError &e){
+		THROW_TRACE(std::string(e.what()));
 	}
 	tinyxml2::XMLElement * gui = game->FirstChildElement("gui"); // Grab the first level tag.
 	std::string result = ""; // Initialize string.
 	for(;gui != nullptr; gui = gui->NextSiblingElement("gui")){ // Loop over all elements with "level" tag.
 		const char * gui_attr = gui->Attribute("name"); // Get the name attribute from the tag.
 		if(gui_attr == nullptr){ // Check if the file is properly formatted.
-			throw_trace("GUI needs a name.");
+			THROW_TRACE("GUI needs a name.");
 		}
 		std::string val(gui_attr); // Get the value of the attribute(the key).
 		trim(val);
@@ -77,12 +77,12 @@ std::string gameparser::get_physics(const std::string &skey){
 	try{
 		game = get_main_element();
 	}
-	catch(game_error &e){
-		throw_trace(std::string(e.what()));
+	catch(GameError &e){
+		THROW_TRACE(std::string(e.what()));
 	}
 	for(tinyxml2::XMLElement * p_tag = game->FirstChildElement("physics"); p_tag != nullptr; p_tag = p_tag->NextSiblingElement("physics")){
 		const char * name_attr = p_tag->Attribute("name");
-		if(name_attr == nullptr) throw_trace("Physics needs a name.");
+		if(name_attr == nullptr) THROW_TRACE("Physics needs a name.");
 		std::string val(name_attr);
 		trim(val);
 		if(val.compare(skey) == 0){
@@ -100,12 +100,12 @@ std::vector<std::string> gameparser::get_levels(){
 	try{
 		game = get_main_element();
 	}
-	catch(game_error &e){
-		throw_trace(std::string(e.what()));
+	catch(GameError &e){
+		THROW_TRACE(std::string(e.what()));
 	}
 	tinyxml2::XMLElement * lvl = game->FirstChildElement("level"); // Grab the first level tag.
 	if(lvl == nullptr){
-		throw_trace("Game needs atleast 1 level.");
+		THROW_TRACE("Game needs atleast 1 level.");
 	}
 	for(;lvl != nullptr; lvl = lvl->NextSiblingElement("level")){ // Loop over level tags.
 		std::string lvl_file(lvl->GetText()); // Get the filename.
@@ -121,8 +121,8 @@ std::vector<std::string> gameparser::get_guis(){
 	try{
 		game = get_main_element();
 	}
-	catch(game_error &e){
-		throw_trace(std::string(e.what()));
+	catch(GameError &e){
+		THROW_TRACE(std::string(e.what()));
 	}
 	for(tinyxml2::XMLElement * gui = game->FirstChildElement("gui"); gui != nullptr; gui = gui->NextSiblingElement("gui")){
 		std::string gui_file(gui->GetText());
@@ -137,12 +137,12 @@ std::string gameparser::get_name(){
 	try{
 		game = get_main_element();
 	}
-	catch(game_error &e){
-		throw_trace(std::string(e.what()));
+	catch(GameError &e){
+		THROW_TRACE(std::string(e.what()));
 	}
 	const char * game_attr = game->Attribute("name");
 	if(game_attr == nullptr){
-		throw_trace("Game needs a name.");
+		THROW_TRACE("Game needs a name.");
 	}
 	std::string name(game_attr);
 	trim(name);

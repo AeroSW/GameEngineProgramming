@@ -19,7 +19,7 @@ physics_parser::~physics_parser(){}
 void physics_parser::setup_physics(bullet * bullet_manager){
 	tinyxml2::XMLElement * main_tag = get_main_element();
 	tinyxml2::XMLElement * setup_tag = main_tag->FirstChildElement("setup");
-	if(setup_tag == nullptr) throw_trace("<setup> tag is needed for setup parsing.");
+	if(setup_tag == nullptr) THROW_TRACE("<setup> tag is needed for setup parsing.");
 	tinyxml2::XMLElement * gravity_tag = setup_tag->FirstChildElement("gravity");
 	if(gravity_tag != nullptr){
 		const char * val_attribute = gravity_tag->Attribute("value");
@@ -38,12 +38,12 @@ void physics_parser::setup_physics(bullet * bullet_manager){
 void physics_parser::build_physics(bullet * bullet_manager){
 	tinyxml2::XMLElement * main_tag = get_main_element();
 	tinyxml2::XMLElement * resources_tag = main_tag->FirstChildElement("resources");
-	if(resources_tag == nullptr) throw_trace("Resources tag is needed to add resources to physics engine.");
+	if(resources_tag == nullptr) THROW_TRACE("Resources tag is needed to add resources to physics engine.");
 	for(tinyxml2::XMLElement * resource_tag = resources_tag->FirstChildElement("resource"); resource_tag != nullptr; resource_tag = resource_tag->NextSiblingElement("resource")){
 		const char * resource_name = resource_tag->Attribute("name");
 		const char * scene_attach = resource_tag->Attribute("node");
-		if(resource_name == nullptr) throw_trace("Name attribute is needed for resource.");
-		if(scene_attach == nullptr) throw_trace("Node attribute is needed for scene node association.");
+		if(resource_name == nullptr) THROW_TRACE("Name attribute is needed for resource.");
+		if(scene_attach == nullptr) THROW_TRACE("Node attribute is needed for scene node association.");
 		std::string name(resource_name);
 		std::string attach(scene_attach);
 		trim(name);
@@ -70,7 +70,7 @@ void physics_parser::build_resource(bullet * bullet_manager, const std::string &
 	for(tinyxml2::XMLElement * object_tag = resource_tag->FirstChildElement("object"); object_tag != nullptr; object_tag = object_tag->NextSiblingElement("object")){
 		const char * name_attr = object_tag->Attribute("name");
 		const char * mass_attr = object_tag->Attribute("mass");
-		if(name_attr == nullptr || mass_attr == nullptr) throw_trace("Name and mass attributes are needed for objects.");
+		if(name_attr == nullptr || mass_attr == nullptr) THROW_TRACE("Name and mass attributes are needed for objects.");
 		name = std::string(name_attr);
 		trim(name);
 		std::string mass_str(mass_attr);
@@ -81,13 +81,13 @@ void physics_parser::build_resource(bullet * bullet_manager, const std::string &
 		tinyxml2::XMLElement * origin_tag = object_tag->FirstChildElement("origin");
 		tinyxml2::XMLElement * inertia_tag = object_tag->FirstChildElement("inertia");
 		if(shape_tag == nullptr || basis_tag == nullptr || origin_tag == nullptr || inertia_tag == nullptr){
-			throw_trace("<shape>, <basis>, <origin>, and <inertia> tags are needed in resource tree.");
+			THROW_TRACE("<shape>, <basis>, <origin>, and <inertia> tags are needed in resource tree.");
 		}
 		
 		{ // shape
 			const char * type_attr = shape_tag->Attribute("type");
 			const char * type_args = shape_tag->GetText();
-			if(type_attr == nullptr) throw_trace("Shape needs a type attribute.");
+			if(type_attr == nullptr) THROW_TRACE("Shape needs a type attribute.");
 			std::string type_args_str;
 			if(type_args != nullptr){
 				type_args_str = std::string(type_args);
@@ -118,7 +118,7 @@ void physics_parser::build_resource(bullet * bullet_manager, const std::string &
 				shape = shape_t::SQUARE;
 			}
 			else{
-				throw_trace("Undefined type.")
+				THROW_TRACE("Undefined type.")
 			}
 		}
 		

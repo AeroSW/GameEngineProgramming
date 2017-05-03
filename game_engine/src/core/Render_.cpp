@@ -58,7 +58,7 @@ void render::build_levels(std::vector<std::string> &names){
 			my_manager->log(lvl.get_name() + " has been created.");
 			levels.push_back(lvl);
 		}
-		catch(game_error &e){
+		catch(GameError &e){
 			ASSERT_CRITICAL(false, e.what());
 		}
 	}
@@ -75,7 +75,7 @@ void render::build_gui(){
 		my_interface = new cegui(this, g_file);
 		my_manager->log("Interface initialized.");
 	}
-	catch(game_error &e){
+	catch(GameError &e){
 		ASSERT_LOG(false, e.what());
 	}
 	catch(std::exception &e){
@@ -91,7 +91,7 @@ void render::build_physics(){
 		physics_manager = new bullet(this, p_file);
 		my_manager->log("Physics Manager Created!!!!");
 	}
-	catch(game_error &e){
+	catch(GameError &e){
 		ASSERT_LOG(false, e.what());
 	}
 	catch(std::exception &e){
@@ -125,7 +125,7 @@ void render::init(){
 			build_levels(level_files);
 			my_manager->log("Levels are now built.");
 		}
-		catch(game_error &e){
+		catch(GameError &e){
 			ASSERT_CRITICAL(false, e.what());
 		}
 		root->setRenderSystem(render_system);
@@ -160,7 +160,7 @@ render::render(manager * m, const std::string &xml_file){
 		gp = new gameparser(xml_file);
 		my_manager->log("Gameparser created.");
 	}
-	catch(game_error &e){
+	catch(GameError &e){
 		throw render_error(std::string(e.what()), 94);
 	}
 	init();
@@ -500,7 +500,7 @@ void render::next_camera(){
 }
 
 std::vector<float> render::get_node_position(const std::string &node_name){
-	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name + " does not exist in scene.");
+	if(!ogre_scene->hasSceneNode(node_name)) THROW_TRACE(node_name + " does not exist in scene.");
 	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
 	Ogre::Vector3 m_orientation = m_node->getPosition();
 	std::vector<float> orien;
@@ -510,7 +510,7 @@ std::vector<float> render::get_node_position(const std::string &node_name){
 	return orien;
 }
 std::vector<float> render::get_node_orientation(const std::string &node_name){
-	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name + " does not exist in scene.");
+	if(!ogre_scene->hasSceneNode(node_name)) THROW_TRACE(node_name + " does not exist in scene.");
 	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
 	Ogre::Quaternion m_orientation = m_node->getOrientation();
 	std::vector<float> orien;
@@ -521,7 +521,7 @@ std::vector<float> render::get_node_orientation(const std::string &node_name){
 	return orien;
 }
 void render::set_node_position(const std::string &node_name, float x, float y, float z){
-	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name + " does not exist in scene.");
+	if(!ogre_scene->hasSceneNode(node_name)) THROW_TRACE(node_name + " does not exist in scene.");
 	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
 	
 	m_node->setPosition(Ogre::Vector3(x, y, z));
@@ -532,7 +532,7 @@ void render::set_node_position(const std::string &node_name, float x, float y, f
 	m_node->translate(new_loc,  Ogre::Node::TransformSpace::TS_WORLD);*/
 }
 void render::set_node_orientation(const std::string &node_name, float w, float x, float y, float z){
-	if(!ogre_scene->hasSceneNode(node_name)) throw_trace(node_name  + " does not exist in scene.");
+	if(!ogre_scene->hasSceneNode(node_name)) THROW_TRACE(node_name  + " does not exist in scene.");
 	Ogre::SceneNode * m_node = ogre_scene->getSceneNode(node_name);
 	m_node->setOrientation(Ogre::Quaternion(w,x,y,z));
 //	Ogre::Quaternion local_orientation = m_node->convertWorldToLocalOrientation(Ogre::Quaternion(w, x, y, z));
@@ -624,7 +624,7 @@ void render::add_plane(const std::string &name, const std::string &axis, float w
 		if(axis.compare("x") == 0) axis_vector = Ogre::Vector3::UNIT_X;
 		else if(axis.compare("y") == 0) axis_vector = Ogre::Vector3::UNIT_Y;
 		else if(axis.compare("z") == 0) axis_vector = Ogre::Vector3::UNIT_Z;
-		else throw_trace("Invalid axis.");
+		else THROW_TRACE("Invalid axis.");
 		Ogre::MeshPtr plane_ptr = Ogre::MeshManager::getSingleton().createPlane(name, group, plane, w, h, 1, 1, true, 1, 1, 1, axis_vector);
 		ogre_scene->createEntity(name, plane_ptr);
 	}

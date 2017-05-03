@@ -16,7 +16,7 @@ audio_parser::~audio_parser(){}
 std::string audio_parser::get_name(){
 	tinyxml2::XMLElement * my_audio_element = get_main_element();
 	const char * name_attr = my_audio_element->Attribute("name");
-	if(name_attr == nullptr) throw_trace("<audio> tag needs a name attribute!");
+	if(name_attr == nullptr) THROW_TRACE("<audio> tag needs a name attribute!");
 	std::string name(name_attr);
 	return name;
 }
@@ -30,14 +30,14 @@ void audio_parser::parse_audio(audio * my_audio){
 	// Parse samples first
 	tinyxml2::XMLElement * my_samples_element = my_audio_element->FirstChildElement("samples");
 	tinyxml2::XMLElement * my_streams_element = my_audio_element->FirstChildElement("streams");
-	if(my_samples_element == nullptr) throw_trace("<samples> tag is needed.");
-	if(my_streams_element == nullptr) throw_trace("<streams> tag is needed.");
+	if(my_samples_element == nullptr) THROW_TRACE("<samples> tag is needed.");
+	if(my_streams_element == nullptr) THROW_TRACE("<streams> tag is needed.");
 
 	for(tinyxml2::XMLElement * sample_elem = my_samples_element->FirstChildElement("sample"); sample_elem != nullptr; sample_elem = sample_elem->NextSiblingElement("sample")){
 		const char * name_attr = sample_elem->Attribute("name");
 		const char * file_attr = sample_elem->Attribute("file");
-		if(name_attr == nullptr) throw_trace("<sample> needs a 'name' attribute.");
-		if(file_attr == nullptr) throw_trace("<sample> needs a 'file' attribute.");
+		if(name_attr == nullptr) THROW_TRACE("<sample> needs a 'name' attribute.");
+		if(file_attr == nullptr) THROW_TRACE("<sample> needs a 'file' attribute.");
 		std::string name_str(name_attr);
 		std::string file_str(file_attr);
 		my_audio->add_sample(name_str, file_str);
@@ -48,8 +48,8 @@ void audio_parser::parse_audio(audio * my_audio){
 	for(tinyxml2::XMLElement * stream = my_streams_element->FirstChildElement("stream"); stream != nullptr; stream = stream->NextSiblingElement("stream")){
 		const char * name_attr = stream->Attribute("name");
 		const char * file_attr = stream->Attribute("file");
-		if(name_attr == nullptr) throw_trace("<stream> needs a 'name' attribute.");
-		if(file_attr == nullptr) throw_trace("<stream> needs a 'file' attribute.");
+		if(name_attr == nullptr) THROW_TRACE("<stream> needs a 'name' attribute.");
+		if(file_attr == nullptr) THROW_TRACE("<stream> needs a 'file' attribute.");
 		std::string name_str(name_attr);
 		std::string file_str(file_attr);
 		my_audio->add_stream(name_str, file_str);

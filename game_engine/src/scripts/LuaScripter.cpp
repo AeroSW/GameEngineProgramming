@@ -86,7 +86,7 @@ void lua_scripter::exe_script(const std::string &script, std::vector<std::string
 //	std::cout << "Inside LuaScripter Execute Script." << std::endl;
 	uint arg_size = args.size();
 //	std::cout << "My number of arguments: " << arg_size << std::endl;
-	if(arg_size > 8) throw_trace("Luabridge only supports up to 8 arguments.");
+	if(arg_size > 8) THROW_TRACE("Luabridge only supports up to 8 arguments.");
 	for(uint cx = 1; cx <= arg_size; cx++){
 		std::string param_name = "param_" + std::to_string(cx);
 	//	std::cout << param_name << " = " << args[cx-1] << std::endl;

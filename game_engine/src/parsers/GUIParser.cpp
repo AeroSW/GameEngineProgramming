@@ -32,25 +32,25 @@ void guiparser::build_gui(interface * my_interface){
 
 std::string guiparser::build_window(interface * my_interface, tinyxml2::XMLElement * my_window){
 	const char * name_cstr = my_window->Attribute("name"); // Grab the name, type, and look attributes to build the window
-	if(name_cstr == nullptr) throw_trace("<window> requires a 'name' attribute.");	// Check if they exist, if not, then throw error.
+	if(name_cstr == nullptr) THROW_TRACE("<window> requires a 'name' attribute.");	// Check if they exist, if not, then throw error.
 	const char * type_cstr = my_window->Attribute("type");
-	if(type_cstr == nullptr) throw_trace("<window> requires a 'type' attribute.");
+	if(type_cstr == nullptr) THROW_TRACE("<window> requires a 'type' attribute.");
 	const char * look_cstr = my_window->Attribute("look");
-	if(look_cstr == nullptr) throw_trace("<window> requires a 'look' attribute.");
+	if(look_cstr == nullptr) THROW_TRACE("<window> requires a 'look' attribute.");
 	
 	tinyxml2::XMLElement * loc_tag = my_window->FirstChildElement("location"); // Grab <location> and <area>
-	if(loc_tag == nullptr) throw_trace("<location> must be present within <window> tree."); // Check if they exist, if not, throw error.
+	if(loc_tag == nullptr) THROW_TRACE("<location> must be present within <window> tree."); // Check if they exist, if not, throw error.
 	tinyxml2::XMLElement * area_tag = my_window->FirstChildElement("area");
-	if(area_tag == nullptr) throw_trace("<area> must be present within <window> tree.");
+	if(area_tag == nullptr) THROW_TRACE("<area> must be present within <window> tree.");
 	
 	const char * loc_abs = loc_tag->Attribute("absolute"); // Grab <location>'s and <area>'s absolute and relative attributes
-	if(loc_abs == nullptr) throw_trace("<location> needs an 'absolute' attribute."); // Check if they exist, if not, then throw error.
+	if(loc_abs == nullptr) THROW_TRACE("<location> needs an 'absolute' attribute."); // Check if they exist, if not, then throw error.
 	const char * loc_rel = loc_tag->Attribute("relative");
-	if(loc_abs == nullptr) throw_trace("<location> needs an 'relative' attribute.");
+	if(loc_abs == nullptr) THROW_TRACE("<location> needs an 'relative' attribute.");
 	const char * area_abs = area_tag->Attribute("absolute");
-	if(loc_abs == nullptr) throw_trace("<area> needs an 'absolute' attribute.");
+	if(loc_abs == nullptr) THROW_TRACE("<area> needs an 'absolute' attribute.");
 	const char * area_rel = area_tag->Attribute("relative");
-	if(loc_abs == nullptr) throw_trace("<area> needs an 'relative' attribute.");
+	if(loc_abs == nullptr) THROW_TRACE("<area> needs an 'relative' attribute.");
 	
 	std::string name_str(name_cstr); // name, type, and look exist, so convert them to std::string and trim whitespace off.
 	trim(name_str);
@@ -108,7 +108,7 @@ std::vector<std::string> guiparser::get_fonts(){
 	
 	tinyxml2::XMLElement * tag = get_main_element();
 	tinyxml2::XMLElement * fonts_tag = tag->FirstChildElement("fonts");
-	if(fonts_tag == nullptr) throw_trace("<fonts> is needed in XML file.");
+	if(fonts_tag == nullptr) THROW_TRACE("<fonts> is needed in XML file.");
 	for(tinyxml2::XMLElement * font_tag = fonts_tag->FirstChildElement("font"); font_tag != nullptr; font_tag = font_tag->NextSiblingElement("font")){
 		const char * file_cstr = font_tag->Attribute("file");
 		std::string file_str(file_cstr);
@@ -122,7 +122,7 @@ std::vector<std::string> guiparser::get_schemes(){
 	
 	tinyxml2::XMLElement * tag = get_main_element();
 	tinyxml2::XMLElement * schemes_tag = tag->FirstChildElement("schemes");
-	if(schemes_tag == nullptr) throw_trace("<schemes> is needed in XML file.");
+	if(schemes_tag == nullptr) THROW_TRACE("<schemes> is needed in XML file.");
 	// Loop over all <scheme> tags. Pull the contents of the 'file' attribute and store it in the schemes vector.
 	for(tinyxml2::XMLElement * scheme_tag = schemes_tag->FirstChildElement("scheme"); scheme_tag != nullptr; scheme_tag = scheme_tag->NextSiblingElement("scheme")){
 		const char * file_cstr = scheme_tag->Attribute("file");
@@ -138,7 +138,7 @@ std::vector<my_pair> guiparser::get_defaults(){
 	
 	tinyxml2::XMLElement * tag = get_main_element();
 	tinyxml2::XMLElement * defaults_tag = tag->FirstChildElement("defaults");
-	if(defaults_tag == nullptr) throw_trace("<defaults> is needed in XML file.");
+	if(defaults_tag == nullptr) THROW_TRACE("<defaults> is needed in XML file.");
 	
 	for(tinyxml2::XMLElement * default_tag = defaults_tag->FirstChildElement("default"); default_tag != nullptr; default_tag = default_tag->NextSiblingElement("default")){
 		const char * type_cstr = default_tag->Attribute("type");
@@ -161,6 +161,6 @@ std::string guiparser::get_type(){
 std::string guiparser::get_name(){
 	tinyxml2::XMLElement * tag = get_main_element();
 	const char * name_cstr = tag->Attribute("name");
-	if(name_cstr == nullptr) throw_trace("GUI needs a name.");
+	if(name_cstr == nullptr) THROW_TRACE("GUI needs a name.");
 	return std::string(name_cstr);
 }

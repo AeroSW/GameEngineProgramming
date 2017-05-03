@@ -6,11 +6,11 @@ tinyxml2::XMLElement * parser::get_main_element(){
 	if(doc != nullptr){
 		if(main_element == nullptr){
 			main_element = doc->FirstChildElement(main_tag.c_str());
-			if(main_element == nullptr) throw_trace(main_tag + " tag was not found.");
+			if(main_element == nullptr) THROW_TRACE(main_tag + " tag was not found.");
 		}
 		return main_element;
 	}
-	throw_trace("Document needs to be loaded.");
+	THROW_TRACE("Document needs to be loaded.");
 }
 
 parser::parser(const std::string &document, const std::string &tag):
@@ -38,7 +38,7 @@ void parser::load_file(const std::string &document){
 	tinyxml2::XMLError flag = new_doc->LoadFile(document.c_str());
 	if(flag != tinyxml2::XML_SUCCESS){
 		delete new_doc;
-		if(doc == nullptr) throw_trace("Initial file, " + document + " needs to exist.");
+		if(doc == nullptr) THROW_TRACE("Initial file, " + document + " needs to exist.");
 		return;
 	}
 	if(doc != nullptr){

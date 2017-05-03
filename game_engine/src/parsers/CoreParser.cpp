@@ -27,42 +27,42 @@ void coreparser::construct_engine(core * core_manager){
 	tinyxml2::XMLElement * script_element = my_element->FirstChildElement("script");
 	tinyxml2::XMLElement * audio_element = my_element->FirstChildElement("audio");
 	tinyxml2::XMLElement * inputs_element = my_element->FirstChildElement("inputs");
-	if(logger_element == nullptr) throw_trace("<logger> tag is needed with log text document.");
-	if(render_element == nullptr) throw_trace("<render> tag is needed for render manager creation.");
-	if(script_element == nullptr) throw_trace("<script> tag is needed for core manager setup.");
+	if(logger_element == nullptr) THROW_TRACE("<logger> tag is needed with log text document.");
+	if(render_element == nullptr) THROW_TRACE("<render> tag is needed for render manager creation.");
+	if(script_element == nullptr) THROW_TRACE("<script> tag is needed for core manager setup.");
 	// Initialize the logger
 	const char * file_attr = logger_element->Attribute("file");
-	if(file_attr == nullptr) throw_trace("'file' attribute is needed for logger tag.");
+	if(file_attr == nullptr) THROW_TRACE("'file' attribute is needed for logger tag.");
 	string file_str(file_attr);
 	trim(file_str);
 	core_manager->create_logger(file_str); // Initialize the logger.
 	// Initialize the renderer
 	file_attr = render_element->Attribute("file");
-	if(file_attr == nullptr) throw_trace("'file' attribute is needed for render tag.");
+	if(file_attr == nullptr) THROW_TRACE("'file' attribute is needed for render tag.");
 	file_str = string(file_attr);
 	trim(file_str);
 	try{
 		core_manager->create_render(file_str);
 	}
-	catch(game_error &e){
-		throw_trace(e.what());
+	catch(GameError &e){
+		THROW_TRACE(e.what());
 	}
 	// Initialize the scripter
 	file_attr = script_element->Attribute("file");
-	if(file_attr == nullptr) throw_trace("'file' attribute is needed for script tag.");
+	if(file_attr == nullptr) THROW_TRACE("'file' attribute is needed for script tag.");
 	file_str = string(file_attr);
 	trim(file_str);
 	try{
 		core_manager->create_scripter(file_str);
 	}
-	catch(game_error &e){
-		throw_trace(e.what());
+	catch(GameError &e){
+		THROW_TRACE(e.what());
 	}
 	// Check if there is an audio manager.
 	if(audio_element != nullptr){
 		// Since there is an audio tag, initialize the audio manager.
 		file_attr = audio_element->Attribute("file");
-		if(file_attr == nullptr) throw_trace("'file' attribute is needed for audio tag.");
+		if(file_attr == nullptr) THROW_TRACE("'file' attribute is needed for audio tag.");
 		file_str = string(file_attr);
 		trim(file_str);
 		core_manager->create_audio(file_str);
@@ -89,7 +89,7 @@ void coreparser::construct_engine(core * core_manager){
 					core_manager->create_input(input_t::DUALSHOCK4, file_str);
 				}
 				else{
-					throw_trace("Invalid input type.");
+					THROW_TRACE("Invalid input type.");
 				}
 			}
 		}
