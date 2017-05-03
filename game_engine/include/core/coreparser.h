@@ -1,12 +1,14 @@
-#ifndef CORE_COREPARSER_H
-#define CORE_COREPARSER_H
+#ifndef ASW_INCLUDE_CORE_COREPARSER_H
+#define ASW_INCLUDE_CORE_COREPARSER_H
 
 #include "include/Parser.h"
 
-class asw::core;
 //class tinyxml2::XMLElement;
 
 namespace asw{
+	// Forward-Declarations
+	class core;
+	
 	class CoreParser : public Parser{
 		
 		private:
