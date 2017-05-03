@@ -50,6 +50,9 @@ void scene::unload_resources(std::vector<std::string> &resources){
 }
 
 // Entity Functions
+void scene::add_plane(const std::string &plane, const std::string &axis, float &width, float &height, const std::string &group){
+	my_renderer->add_plane(plane, axis, width, height, group);
+}
 void scene::add_entity(const std::string &entity, const std::string &mesh, const std::string &group){
 	my_renderer->add_entity(entity, mesh, group);
 }

@@ -10,7 +10,7 @@ SRC	= ../../src/parsers
 
 CFLAGS	= -c -g -std=c++11 $(INC_DIRS)
 
-FILES	= AudioParser.o LevelParser.o GameParser.o tinyxml2.o GUIParser.o Parser.o ScriptParser.o
+FILES	= AudioParser.o LevelParser.o GameParser.o tinyxml2.o GUIParser.o Parser.o ScriptParser.o PhysicsParser.o
 
 default	: all
 all	: $(FILES)
@@ -35,6 +35,9 @@ Parser.o	: $(SRC)/Parser.cpp $(INC)/Parser.h
 
 ScriptParser.o	: $(SRC)/ScriptParser.cpp $(INC)/ScriptParser.h
 	$(CC) $(CFLAGS) -o ScriptParser.o $(SRC)/ScriptParser.cpp
+
+PhysicsParser.o	: $(SRC)/PhysicsParser.cpp $(INC)/PhysicsParser.h
+	$(CC) $(CFLAGS) -o PhysicsParser.o $(SRC)/PhysicsParser.cpp -I../../include/physics -I/usr/local/include/bullet
 
 clean	:
 	$(RM) ./*.o

@@ -72,6 +72,28 @@ std::string gameparser::get_gui(const std::string &skey){
 	return result;
 }
 
+std::string gameparser::get_physics(const std::string &skey){
+	tinyxml2::XMLElement * game;
+	try{
+		game = get_main_element();
+	}
+	catch(game_error &e){
+		throw_trace(std::string(e.what()));
+	}
+	for(tinyxml2::XMLElement * p_tag = game->FirstChildElement("physics"); p_tag != nullptr; p_tag = p_tag->NextSiblingElement("physics")){
+		const char * name_attr = p_tag->Attribute("name");
+		if(name_attr == nullptr) throw_trace("Physics needs a name.");
+		std::string val(name_attr);
+		trim(val);
+		if(val.compare(skey) == 0){
+			std::string text(p_tag->GetText());
+			trim(text);
+			return text;
+		}
+	}
+	return "";
+}
+
 std::vector<std::string> gameparser::get_levels(){
 	std::vector<std::string> levels;
 	tinyxml2::XMLElement * game;

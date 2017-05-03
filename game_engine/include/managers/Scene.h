@@ -32,6 +32,7 @@ class scene{
 		void unload_resources(std::vector<std::string> &resources);
 		
 		// Entity Functions.
+		void add_plane(const std::string &obj_name, const std::string &axis, float &w, float &h, const std::string &group);
 		void add_entity(const std::string &obj_name, const std::string &mesh, const std::string &group_name);
 		void add_material(const std::string &obj_name, const std::string &material, const std::string &group_name);
 		bool has_group(const std::string &group);
