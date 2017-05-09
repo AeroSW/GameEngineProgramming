@@ -3,20 +3,20 @@
 
 #include "Parser.h"
 
-class audio;
+class Audio;
 
-class audio_parser : public parser{
+class AudioParser : public Parser{
 	private:
 		const static std::string main_tag;	// audio
 		const static std::string type;		// audio_parser
 	public:
-		audio_parser(const std::string &file);
-		virtual ~audio_parser();
+		AudioParser(const std::string &file);
+		virtual ~AudioParser();
 
-		virtual std::string get_name();
-		virtual std::string get_type();
+		virtual std::string getName();
+		virtual std::string getType();
 
-		void parse_audio(audio * my_audio);
+		void parse_audio(Audio * my_audio);
 };
 
 #endif

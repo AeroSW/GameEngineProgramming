@@ -3,8 +3,8 @@
  *	Manager Libraries
  *************************//***/
 // Audio
-#include "include/audio/audio.h"
-#include "include/audio/bassaudio.h"
+#include "include/Audio/Audio.h"
+#include "include/Audio/bassaudio.h"
 // Script
 #include "include/scripts/scripter.h"
 #include "include/scripts/luascripter.h"

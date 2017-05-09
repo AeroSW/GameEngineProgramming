@@ -1,26 +1,20 @@
-// My Header File
-#include "OgreRender.h"
-// Core Header
-#include "Core.h"
-// Render Parser
-#include "RenderParser.h"
-// Level
-#include "Level.h"
-// Listeners
-#include "RenderListener.h"
-#include "AnimationListener.h"
-#include "AudioListener.h"
-#include "InputListener.h"
-// UI
-#include "UserInterface.h"
-#include "Cegui.h"
-// Resources
-#include "RenderResource.h"
-// Exceptions
-#include "GameException.h"
-#include "SudoExcept.h"
+#include "renderers/ogre_render.h"
+#include "renderers/renderparser.h"
+#include "renderers/level.h"
+#include "renderers/render_resource.h"
+#include "renderers/listeners/renderlistener.h"
+#include "renderers/listeners/animationlistener.h"
+#include "renderers/listeners/audiolistener.h"
+#include "renderers/listeners/inputlistener.h"
+
+#include "core/core.h"
+
+#include "ui/user_interface.h"
+#include "ui/cegui.h"
+
+#include "game_exception.h"
 #include "except_macros.h"
-// STD
+
 #ifdef __linux__
 	#define _USE_MATH_DEFINES // defines PI, **not available on Windows
 #else
@@ -45,7 +39,7 @@ renderparser * render::my_parser = nullptr;
  *								PRIVATE METHODS
  **********************************************//************************************
  **********************************************//***********************************/
-void ogre_render::render_init(core * _core, const std::string &my_dox){
+void asw::OgreRender::renderInit(core * _core, const std::string &my_dox){
 	ogre_root = nullptr;
 	ogre_render_window = nullptr;
 	ogre_active_scene_manager = nullptr;
@@ -54,7 +48,7 @@ void ogre_render::render_init(core * _core, const std::string &my_dox){
 		core_manager = _core;
 	}
 	if(my_parser == nullptr){
-		my_parser = new renderparser(my_dox);
+		my_parser = new RenderParser(my_dox);
 	}
 	
 	try{
@@ -91,14 +85,14 @@ void ogre_render::render_init(core * _core, const std::string &my_dox){
 	catch(Ogre::Exception &e){
 		THROW_TRACE(e.what());
 	}
-	my_parser->construct_renderer(this);
+	my_parser->constructRenderer(this);
 }
-void ogre_render::gui_init(const std::string &gui_dox){
+void asw::OgreRender::guiInit(const std::string &gui_dox){
 	if(ui_manager != nullptr){
 		delete ui_manager;
 		ui_manager = nullptr;
 	}
-	ui_manager = new cegui(this, gui_dox);
+	ui_manager = new Cegui(this, gui_dox);
 }
 
 /**********************************************//************************************
@@ -106,10 +100,10 @@ void ogre_render::gui_init(const std::string &gui_dox){
  *								PROTECTED METHODS
  **********************************************//************************************
  **********************************************//***********************************/
-ogre_render::ogre_render(core * cm, const std::string &dox){
+asw::OgreRender::OgreRender(core * cm, const std::string &dox){
 	render_init(cm, dox);
 }
-ogre_render::~ogre_render(){
+asw::OgreRender::~OgreRender(){
 	if(ui_manager != nullptr){
 		delete ui_manager;
 		ui_manager = nullptr;
@@ -135,34 +129,34 @@ ogre_render::~ogre_render(){
  **********************************************//************************************
  **********************************************//***********************************/
 
-void ogre_render::begin_render(){
-	bool ui_flag = my_parser->has_ui();
+void asw::OgreRender::beginRender(){
+	bool ui_flag = my_parser->hasUserInterface();
 	if(ui_flag){
-		my_parser->init_ui_resources(this);
-		std::string dox = my_parser->get_ui_file();
-		gui_init(dox);
+		my_parser->initUserInterfaceResources(this);
+		std::string dox = my_parser->getUserInterfaceFile();
+		guiInit(dox);
 	}
 	ogre_root->startRendering();
 }
-void ogre_render::call_script(const std::string &script, std::vector<std::string> &args){
-	core_manager->call_script(script, args);
+void asw::OgreRender::callScript(const std::string &script, std::vector<std::string> &args){
+	core_manager->callScript(script, args);
 }
-void ogre_render::create_gui(const std::string &gui_dox){
+void asw::OgreRender::createGui(const std::string &gui_dox){
 	// Not needed for Ogre.
 }
-uint32 ogre_render::window_height(){
+uint32 asw::OgreRender::windowHeight(){
 	return ogre_viewport->getActualHeight();
 }
-uint32 ogre_render::window_width(){
+uint32 asw::OgreRender::windowWidth(){
 	return ogre_viewport->getActualWidth();
 }
-uint32 ogre_render::window_handle(){
+uint32 asw::OgreRender::windowHandle(){
 	return window_handler;
 }
-std::string ogre_render::active_level(){
-	return levels[curr_level]->get_name();
+std::string asw::OgreRender::activeLevel(){
+	return levels[curr_level]->getName();
 }
-void ogre_render::change_level(const std::string &lvl_name){
+void asw::OgreRender::changeLevel(const std::string &lvl_name){
 	if(levels[curr_level]->get_name().compare(lvl_name) != 0){
 		for(uint32 cx = 0; cx < levels.size(); cx++){
 			if(cx == curr_level) continue;
@@ -175,12 +169,12 @@ void ogre_render::change_level(const std::string &lvl_name){
 		}
 	}
 }
-void ogre_render::translate_object(const std::string &obj, float x, float y, float z){
+void asw::OgreRender::translateObject(const std::string &obj, float x, float y, float z){
 	if(!ogre_active_scene_manager->hasSceneNode(obj)) THROW_TRACE("Object, " + obj + " does not exist.");
 	Ogre::SceneNode * ogre_node = ogre_active_scene_manager->getSceneNode(obj);
 	ogre_node->translate(x, y, z);
 }
-void ogre_render::rotate_object(const std::string &obj, axis_t &a, rotation_t &r, float w){
+void asw::OgreRender::rotateObject(const std::string &obj, axis_t &a, rotation_t &r, float w){
 	if(!ogre_active_scene_manager->hasSceneNode(obj)) THROW_TRACE("Object, " + obj + " does not exist.");
 	Ogre::SceneNode * ogre_node = ogre_active_scene_manager->getSceneNode(obj);
 	Ogre::Vector3 ogre_vectre(0,0,0);
@@ -202,82 +196,82 @@ void ogre_render::rotate_object(const std::string &obj, axis_t &a, rotation_t &r
 	Ogre::Quaternion q(r, ogre_vectre);
 	ogre_node->rotate(q, ts);
 }
-void ogre_render::scale_object(const std::string &obj, float x, float y, float z){
+void asw::OgreRender::scaleObject(const std::string &obj, float x, float y, float z){
 	if(!ogre_active_scene_manager->hasSceneNode(obj)) THROW_TRACE("Object, " + obj + " does not exist.");
 	Ogre::SceneNode * ogre_node = ogre_active_scene_manager->getSceneNode(obj);
 	ogre_node->scale(x,y,z);
 }
-void ogre_render::reveal_object(const std::string &obj){
+void asw::OgreRender::revealObject(const std::string &obj){
 	std::cout << "Ogre has no easy way to implement this." << std::endl;
 }
-void ogre_render::hide_object(const std::string &obj){
+void asw::OgreRender::hideObject(const std::string &obj){
 	std::cout << "Ogre has no easy way to implement this." << std::endl;
 }
-void ogre_render::key_pressed(char &key){
+void asw::OgreRender::keyPressed(char &key){
 	if(ui_manager != nullptr){
-		ui_manager->key_press_event(key);
+		ui_manager->keyPressEvent(key);
 	}
 }
-void ogre_render::key_released(char &key){
+void asw::OgreRender::keyReleased(char &key){
 	if(ui_manager != nullptr){
-		ui_manager->key_release_event(key);
+		ui_manager->keyReleaseEvent(key);
 	}
 }
-void ogre_render::mouse_clicked(uint8 id, std::vector<int> &abs, std::vector<int> &rel){
+void asw::OgreRender::mouseClicked(uint8 id, std::vector<int> &abs, std::vector<int> &rel){
 	if(ui_manager != nullptr){
-		ui_manager->mouse_click_event(id, abs, rel);
+		ui_manager->mouseClickEvent(id, abs, rel);
 	}
 }
-void ogre_render::mouse_released(uint8 id, std::vector<int> &abs, std::vector<int> &rel){
+void asw::OgreRender::mouseReleased(uint8 id, std::vector<int> &abs, std::vector<int> &rel){
 	if(ui_manager != nullptr){
-		ui_manager->mouse_release_event(id, abs, rel);
+		ui_manager->mouseReleaseEvent(id, abs, rel);
 	}
 }
-void ogre_render::mouse_moved(std::vector<int> &abs, std::vector<int> &rel){
+void asw::OgreRender::mouseMoved(std::vector<int> &abs, std::vector<int> &rel){
 	if(ui_manager != nullptr){
-		ui_manager->mouse_move_event(abs, rel);
+		ui_manager->mouseMoveEvent(abs, rel);
 	}
 }
-void ogre_render::update_audio(float ts){
-	core_manager->update_audio(ts);
+void asw::OgreRender::updateAudio(float ts){
+	core_manager->updateAudio(ts);
 }
-void ogre_render::poll_inputs(float ts){
-	core_manager->poll_inputs(ts);
+void asw::OgreRender::pollInputs(float ts){
+	core_manager->pollInputs(ts);
 }
-void ogre_render::add_child(const std::string &parent, const std::string &child){
+void asw::OgreRender::addChild(const std::string &parent, const std::string &child){
 	if(!ogre_active_scene_manager->hasSceneNode(parent)) THROW_TRACE("Ogre scene node " + parent + " does not exist in active ogre scene manager.");
 	if(!ogre_active_scene_manager->hasSceneNode(child)) THROW_TRACE("Ogre scene node " + child + " does not exist in active ogre scene manager.");
 	Ogre::SceneNode * parent_node = ogre_active_scene_manager->getSceneNode(parent);
 	Ogre::SceneNode * child_node = ogre_active_scene_manager->getSceneNode(child);
 	parent_node->addChild(child_node);
 }
-void ogre_render::add_root_child(const std::string &child){
+void asw::OgreRender::addRootChild(const std::string &child){
 	if(!ogre_active_scene_manager->hasSceneNode(child)) THROW_TRACE("Ogre scene node " + child + " does not exist in active ogre scene manager.");
 	Ogre::SceneNode * root = ogre_active_scene_manager->getRootSceneNode();
 	Ogre::SceneNode * node = ogre_active_scene_manager->getSceneNode(child);
 	root->addChild(node);
 }
-void ogre_render::create_scene_manager(const std::string &name){
+void asw::OgreRender::createSceneManager(const std::string &name){
 	if(!ogre_root->hasSceneManager(name)){
 		ogre_active_scene_manager = ogre_root->createSceneManager(Ogre::ST_GENERIC, name);
 	}
 }
-void ogre_render::load_scene_manager(const std::string &name){
+void asw::OgreRender::loadSceneManager(const std::string &name){
 	if(!ogre_root->hasSceneManger(name)) THROW_TRACE("Ogre scene manager " + name + " does not exist.");
 		ogre_active_scene_manager = ogre_root->getSceneManager(name);
 }
-void ogre_render::add_location(const std::string &loc, const std::string &group){
+void asw::OgreRender::addLocation(const std::string &loc, const std::string &group){
 	if(!ogre_rgm->resourceLocationExists(loc, group)){
 		ogre_rgm->addResourceLocation(loc, "FileSystem", group);
 	}
 }
-void ogre_render::declare_resource(const std::string &file, const std::string &type, const std::string &group){
+void asw::OgreRender::declareResource(const std::string &file, const std::string &type, const std::string &group){
 	if(!ogre_rgm->resourceGroupExists(group)) THROW_TRACE("Ogre resource group does not exist.");
 	if(!ogre_rgm->resourceExists(group, file)){
 		ogre_rgm->declareResource(file, type, group);
 	}
 }
-void ogre_render::add_base(object_resource * &obj_src){
+void asw::OgreRender::addBase(object_resource * &obj_src){
 	switch(obj_src.object){
 		case object_t::CAMERA:
 			if(!ogre_active_scene_manager->hasCamera(obj_src.name)){
@@ -315,13 +309,13 @@ void ogre_render::add_base(object_resource * &obj_src){
 			break;
 	};
 }
-void ogre_render::add_skin(const std::string &base, const std::string &material, const std::string &grp){
+void asw::OgreRender::addSkin(const std::string &base, const std::string &material, const std::string &grp){
 	if(!ogre_rgm->resourceGroupExists(grp)) THROW_TRACE("Ogre group, " + grp + ", does not exist.");
 	if(!ogre_active_scene_manager->hasEntity(base)) THROW_TRACE("Ogre entity, " + base + ", does not exist.");
 	Ogre::Entity * ogre_entity  ogre_active_scene_manager->getEntity(base);
 	ogre_entity->setMaterialName(material);
 }
-/*void ogre_render::add_cam(const std::string &name, float near, float far){
+/*void asw::OgreRender::add_cam(const std::string &name, float near, float far){
 	if(!ogre_active_scene_manager->hasCamera(name)){
 		ogre_active_scene_manager->createCamera(name);
 	}
@@ -330,7 +324,7 @@ void ogre_render::add_skin(const std::string &base, const std::string &material,
 	ogre_cam->setFarClipDistance(far);
 	ogre_cam->setAspectRatio(aspect_ratio);
 }
-void ogre_render::add_light(const std::string &name, light_t &l){
+void asw::OgreRender::add_light(const std::string &name, light_t &l){
 	if(!ogre_active_scene_manager->hasLight(name)){
 		ogre_active_scene_manager->createLight(name);
 	}
@@ -348,7 +342,7 @@ void ogre_render::add_light(const std::string &name, light_t &l){
 	}
 	ogre_light->setDiffuseColour(1,1,1);
 }*/
-void ogre_render::attach_object(const std::string &node, const std::string &object, object_t &o){
+void asw::OgreRender::attachObject(const std::string &node, const std::string &object, object_t &o){
 	if(!ogre_active_scene_manager->hasSceneNode(node)) THROW_TRACE("Ogre scene node, " + node + ", does not exist in active scene manager.");
 	Ogre::MovableObject * ogre_mo = nullptr;
 	try{
@@ -370,7 +364,7 @@ void ogre_render::attach_object(const std::string &node, const std::string &obje
 	Ogre::SceneNode * ogre_node = ogre_active_scene_manager->getSceneNode(node);
 	ogre_node->attachObject(ogre_mo);
 }
-void ogre_render::add_animation(const std::string &node, const std::string &animation_name, const float &time, const uint16 track){
+void asw::OgreRender::addAnimation(const std::string &node, const std::string &animation_name, const float &time, const uint16 track){
 	if(!ogre_active_scene_manager->hasSceneNode(node)) THROW_TRACE("Ogre scene node, " + node + ", does not exist.");
 	Ogre::Animation * ogre_animation = nullptr;
 	if(!ogre_scene->hasAnimation(anim_name)){
@@ -384,7 +378,7 @@ void ogre_render::add_animation(const std::string &node, const std::string &anim
 		ogre_animation->createNodeTrack(track, ogre_node);
 	}
 }
-void ogre_render::add_frame(const std::string &animation_name, const uint16 track, const float time, std::vector<anim_resource*> ar){
+void asw::OgreRender::addFrame(const std::string &animation_name, const uint16 track, const float time, std::vector<anim_resource*> ar){
 	if(!ogre_active_scene_manager->hasAnimation(animation_name)) THROW_TRACE("Ogre animation, " + animation_name + ", does not exist.");
 	Ogre::Animation * ogre_animation = ogre_active_scene_manager->getAnimation(animation_name);
 	if(!ogre_active_scene_manager->hasNodeTrack(track_num)) THROW_TRACE("Ogre animation, " + animation_name + ", does not have track num " + std::to_string(track));

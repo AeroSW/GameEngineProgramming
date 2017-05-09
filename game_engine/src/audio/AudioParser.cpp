@@ -1,19 +1,19 @@
-#include "AudioParser.h"
-#include "Audio.h"
-#include "GameException.h"
-#include "SudoExcept.h"
+#include "audio/AudioParser.h"
+#include "audio/Audio.h"
+#include "game_exception.h"
+#include "except_macros.h"
 
 #include <iostream>
 
-const std::string audio_parser::main_tag = "audio";
-const std::string audio_parser::type = "audio_parser";
+const std::string AudioParser::main_tag = "audio";
+const std::string AudioParser::type = "audio_parser";
 
-audio_parser::audio_parser(const std::string &document):
+AudioParser::AudioParser(const std::string &document):
 parser(document, main_tag){}
 
-audio_parser::~audio_parser(){}
+AudioParser::~AudioParser(){}
 
-std::string audio_parser::get_name(){
+std::string AudioParser::getName(){
 	tinyxml2::XMLElement * my_audio_element = get_main_element();
 	const char * name_attr = my_audio_element->Attribute("name");
 	if(name_attr == nullptr) THROW_TRACE("<audio> tag needs a name attribute!");
@@ -21,11 +21,11 @@ std::string audio_parser::get_name(){
 	return name;
 }
 
-std::string audio_parser::get_type(){
+std::string AudioParser::getType(){
 	return type;
 }
 
-void audio_parser::parse_audio(audio * my_audio){
+void AudioParser::parseAudio(Audio * my_audio){
 	tinyxml2::XMLElement * my_audio_element = get_main_element();
 	// Parse samples first
 	tinyxml2::XMLElement * my_samples_element = my_audio_element->FirstChildElement("samples");
@@ -42,9 +42,6 @@ void audio_parser::parse_audio(audio * my_audio){
 		std::string file_str(file_attr);
 		my_audio->add_sample(name_str, file_str);
 	}
-	std::cout << "\n\n\n\n\n\n\n";
-	std::cout << "Made it through samples." << std::endl;
-	std::cout << "\n\n\n\n\n\n\n";
 	for(tinyxml2::XMLElement * stream = my_streams_element->FirstChildElement("stream"); stream != nullptr; stream = stream->NextSiblingElement("stream")){
 		const char * name_attr = stream->Attribute("name");
 		const char * file_attr = stream->Attribute("file");

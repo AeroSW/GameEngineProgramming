@@ -1,5 +1,5 @@
 // Functions.cpp
-#include "include/functions.h"
+#include "functions.h"
 
 #include <algorithm>
 #include <functional>

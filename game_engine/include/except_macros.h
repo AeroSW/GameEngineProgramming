@@ -9,7 +9,7 @@
 #endif
 
 #ifndef ASSERT_LOG
-	#define	ASSERT_LOG(ARG, MSG) if(!expr){Logger::logFailure(__FILE__, __LINE__, MSG);}
+	#define	ASSERT_LOG(ARG, MSG) if(!ARG){Logger::logFailure(__FILE__, __LINE__, MSG);}
 #endif
 
 #ifndef ASSERT_CRITICAL

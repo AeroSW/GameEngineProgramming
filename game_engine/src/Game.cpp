@@ -1,7 +1,11 @@
 #include <memory>
-#include "Manager.h"
+#include "core/core.h"
 
 int main(){
-	manager * my_man = manager::get_manager("./assets/xmls/game.xml", "./assets/logs/my_log.txt", "./assets/xmls/audio/GameAudio.xml", "./assets/xmls/scripts/script.xml", gamepad_t::DUALSHOCK4);
+    Core::initialize("./assets/game-xmls/core/core.xml");
+	Core * core_manager = Core::getSingletonPtr();
+	core_manager->startEngine();
+	core_manager = nullptr;
+	Core::destroy();
 	return 0;
 }

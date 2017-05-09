@@ -6,7 +6,7 @@
 // Bass Header
 #include "bass.h"
 
-class bass_audio : public audio{
+class BassAudio : public Audio{
 	private:
 		// Do stuff
 		struct BASS_info{
@@ -24,19 +24,19 @@ class bass_audio : public audio{
 
 	public:
 		// Do stuff
-		bass_audio(manager * m, const std::string &doc);
-		~bass_audio();
+		BassAudio(manager * m, const std::string &doc);
+		~BassAudio();
 
 	//	virtual audio_info * create_info();
 
-		void init_device(int device = -1, DWORD rate = 44100, DWORD flags = 0, void * win = 0);
-		void free_device();
+		void initDevice(int device = -1, DWORD rate = 44100, DWORD flags = 0, void * win = 0);
+		void freeDevice();
 
-		virtual void add_sample(const std::string &name, const std::string &file);
-		virtual void add_stream(const std::string &name, const std::string &file);
+		virtual void addSample(const std::string &name, const std::string &file);
+		virtual void addStream(const std::string &name, const std::string &file);
 
-		virtual void set_volume(float val);
-		virtual void update_audio(float time);
+		virtual void setVolume(float val);
+		virtual void updateAudio(float time);
 
 	//	virtual void play(uint index); // Queues resources to play.
 		virtual void queue(const std::string &track);
@@ -45,10 +45,10 @@ class bass_audio : public audio{
 	//	virtual void pause();
 		virtual void stop();
 		virtual void skip(bool forward);
-		virtual bool is_playing();
-		virtual uint track_count();
-		virtual uint num_playing();
-		virtual std::string get_current_song();
+		virtual bool isPlaying();
+		virtual uint trackCount();
+		virtual uint numPlaying();
+		virtual std::string getCurrentSong();
 };
 
 #endif

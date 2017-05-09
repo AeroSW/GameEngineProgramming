@@ -58,3 +58,13 @@ game_engine/tests/
 game_engine/debug\.txt
 
 game_engine/Templates\.txt
+
+\.codelite/
+
+GameEngine\.workspace
+
+*.workspace
+
+game_engine/asw-Game-Engine/
+
+*.project
